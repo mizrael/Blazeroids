@@ -1,0 +1,59 @@
+﻿@page "/"
+@using System.Drawing
+@using Blazeroids.Core
+@using Blazeroids.Core.Assets
+@using Blazor.Extensions
+
+@inject IJSRuntime JsRuntime
+@inject IAssetsResolver AssetsResolver
+
+<Assets Source="assets/assets.json" OnLoaded="@OnAssetsLoaded" />
+
+<div id="canvasContainer" style="position: fixed; opacity: 1; background-color: black; width: 100%; height: 100%">
+    <BECanvas @ref="_canvas"></BECanvas>
+</div>
+
+@code
+{
+    BECanvasComponent _canvas;
+    GameContext _game;
+
+    protected async Task OnAssetsLoaded()
+    { 
+        await InitGame();
+    }
+
+    private async Task InitGame()
+    {
+        var canvasMeta = await JsRuntime.InvokeAsync<CanvasMeta>("initCanvas", DotNetObjectReference.Create(this));
+        
+        _canvas.Height = canvasMeta.Height;
+        _canvas.Width = canvasMeta.Width;
+
+        _game = await BlazeroidsGame.Create(_canvas, AssetsResolver);
+
+        // this will make sure that the viewport is correctly initialized
+        await JsRuntime.InvokeAsync<object>("gameWindowResize", DotNetObjectReference.Create(this));
+    }
+
+    [JSInvokable]
+    public async ValueTask GameLoop()
+    {
+        if (null == _game)
+            return;
+        await _game.Step();
+    }
+
+    [JSInvokable]
+    public async ValueTask OnResize(int screenWidth, int screenHeight)
+    {
+        if (null == _game) return;
+        _game.Display.Size = new Size(screenWidth, screenHeight);
+    }
+
+    public class CanvasMeta
+    {
+        public int Width { get; set; }
+        public int Height { get; set; }
+    }
+}

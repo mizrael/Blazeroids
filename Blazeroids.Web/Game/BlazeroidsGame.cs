@@ -86,8 +86,10 @@ namespace Blazeroids.Web.Game
         protected override async ValueTask Render()
         {
             await _context.ClearRectAsync(0, 0, this.Display.Size.Width, this.Display.Size.Height);
-            
+
+            await _context.BeginBatchAsync();
             await Render(_sceneGraph.Root);
+            await _context.EndBatchAsync();
         }
 
         private async ValueTask Render(GameObject node)

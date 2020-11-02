@@ -16,7 +16,7 @@ namespace Blazeroids.Core.Components
         public async ValueTask Render(GameContext game, Canvas2DContext context)
         {
             await context.SaveAsync();
-
+            
             await context.TranslateAsync(_transform.World.Position.X, _transform.World.Position.Y);
             await context.RotateAsync(_transform.World.Rotation);
             

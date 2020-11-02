@@ -1,27 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using Blazeroids.Core.Exceptions;
 
 namespace Blazeroids.Core.Components
 {
-    internal class ComponentsFactory
-    {
-        private ComponentsFactory() { }
-
-        private static readonly Lazy<ComponentsFactory> _instance = new Lazy<ComponentsFactory>(new ComponentsFactory());
-        public static ComponentsFactory Instance => _instance.Value;
-
-        public TC Create<TC>(GameObject owner) where TC : class, IComponent
-        {
-            var type = typeof(TC);
-            var ctor = type.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, null, new []{typeof(GameObject)}, null);
-            return ctor.Invoke(new[] {owner}) as TC;
-        }  
-    }
-
-
     public class ComponentsCollection : IEnumerable<IComponent>
     {
         private readonly GameObject _owner;

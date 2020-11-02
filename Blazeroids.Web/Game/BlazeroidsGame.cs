@@ -6,7 +6,7 @@ using Blazeroids.Core.Components;
 using Blazor.Extensions;
 using Blazor.Extensions.Canvas.Canvas2D;
 
-namespace Blazeroids.Web
+namespace Blazeroids.Web.Game
 {
     public class BlazeroidsGame : GameContext
     {
@@ -30,13 +30,7 @@ namespace Blazeroids.Web
             fpsCounter.Components.Add<FPSCounterComponent>();
             game._sceneGraph.Root.AddChild(fpsCounter);
 
-            var player = new GameObject();
-            var playerSprite = assetsResolver.Get<Sprite>("assets/playerShip2_green.png");
-            var playerTransform = player.Components.Add<TransformComponent>();
-            playerTransform.Local.Position.X = canvas.Width / 2 - playerSprite.Size.Width;
-            playerTransform.Local.Position.Y = canvas.Height - playerSprite.Size.Height * 2;
-            var playerSpriteRenderer = player.Components.Add<SpriteRenderComponent>();
-            playerSpriteRenderer.Sprite = playerSprite;
+            var player = BuildPlayer(canvas, assetsResolver);
             game._sceneGraph.Root.AddChild(player);
 
             var rand = new Random();
@@ -44,6 +38,26 @@ namespace Blazeroids.Web
                 AddAsteroid(game, canvas, assetsResolver, rand);
 
             return game;
+        }
+
+        private static GameObject BuildPlayer(BECanvasComponent canvas, IAssetsResolver assetsResolver)
+        {
+            var player = new GameObject();
+            var playerSprite = assetsResolver.Get<Sprite>("assets/playerShip2_green.png");
+            var playerTransform = player.Components.Add<TransformComponent>();
+            playerTransform.Local.Position.X = canvas.Width / 2 - playerSprite.Size.Width;
+            playerTransform.Local.Position.Y = canvas.Height - playerSprite.Size.Height * 2;
+            var playerSpriteRenderer = player.Components.Add<SpriteRenderComponent>();
+            playerSpriteRenderer.Sprite = playerSprite;
+
+            var bbox = player.Components.Add<BoundingBoxComponent>();
+            bbox.SetSize(playerSprite.Size);
+
+            var rigidBody = player.Components.Add<MovingBodyComponent>();
+            rigidBody.MaxSpeed = 400f;
+
+            player.Components.Add<PlayerBrain>();
+            return player;
         }
 
         private static void AddAsteroid(BlazeroidsGame game, BECanvasComponent canvas, IAssetsResolver assetsResolver, Random rand)

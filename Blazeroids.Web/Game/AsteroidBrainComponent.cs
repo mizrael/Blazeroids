@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Blazeroids.Core;
 using Blazeroids.Core.Components;
 
-namespace Blazeroids.Web
+namespace Blazeroids.Web.Game
 {
     public class AsteroidBrainComponent : BaseComponent
     {

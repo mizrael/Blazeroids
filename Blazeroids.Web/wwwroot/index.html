@@ -76,6 +76,12 @@
             };
 
             if (window.game.canvas) {               
+                window.game.canvas.onkeydown = (e) => {
+                    game.instance.invokeMethodAsync('OnKeyDown', e.keyCode);
+                };
+                window.game.canvas.onkeyup = (e) => {
+                    game.instance.invokeMethodAsync('OnKeyUp', e.keyCode);
+                };
                 window.game.canvas.onblur = (e) => {
                     window.game.canvas.focus();
                 };

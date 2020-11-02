@@ -2,6 +2,7 @@
 @using System.Drawing
 @using Blazeroids.Core
 @using Blazeroids.Core.Assets
+@using Blazeroids.Web.Game
 @using Blazor.Extensions
 
 @inject IJSRuntime JsRuntime
@@ -19,14 +20,14 @@
     GameContext _game;
 
     protected async Task OnAssetsLoaded()
-    { 
+    {
         await InitGame();
     }
 
     private async Task InitGame()
     {
         var canvasMeta = await JsRuntime.InvokeAsync<CanvasMeta>("initCanvas", DotNetObjectReference.Create(this));
-        
+
         _canvas.Height = canvasMeta.Height;
         _canvas.Width = canvasMeta.Width;
 
@@ -50,6 +51,14 @@
         if (null == _game) return;
         _game.Display.Size = new Size(screenWidth, screenHeight);
     }
+
+    [JSInvokable]
+    public async ValueTask OnKeyDown(int keyCode) =>
+        InputSystem.Instance.SetKeyState((Keys)keyCode, ButtonState.States.Down);
+
+    [JSInvokable]
+    public async ValueTask OnKeyUp(int keyCode) =>
+        InputSystem.Instance.SetKeyState((Keys)keyCode, ButtonState.States.Up);
 
     public class CanvasMeta
     {

@@ -7,16 +7,13 @@ namespace Blazeroids.Core
         public Vector2 Position;
 
         public Vector2 Scale;
-
-        public Vector2 Direction;
-
+        
         public float Rotation;
 
         public void Clone(ref Transform source)
         {
             this.Position = source.Position;
             this.Scale = source.Scale;
-            this.Direction = source.Direction;
             this.Rotation = source.Rotation;
         }
 
@@ -24,7 +21,6 @@ namespace Blazeroids.Core
         {
             Position = Vector2.Zero,
             Scale = Vector2.One,
-            Direction = Vector2.UnitX,
             Rotation = 0f
         };
     }

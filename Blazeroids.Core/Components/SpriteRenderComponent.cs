@@ -19,9 +19,10 @@ namespace Blazeroids.Core.Components
             
             await context.TranslateAsync(_transform.World.Position.X, _transform.World.Position.Y);
             await context.RotateAsync(_transform.World.Rotation);
-            
-            await context.DrawImageAsync(Sprite.Source, -Sprite.Origin.X, -Sprite.Origin.Y ,
-                Sprite.Size.Width, Sprite.Size.Height);
+            await context.ScaleAsync(_transform.World.Scale.X, _transform.World.Scale.Y);
+
+            await context.DrawImageAsync(Sprite.Source, -Sprite.Origin.X, -Sprite.Origin.Y,
+                                         Sprite.Size.Width, Sprite.Size.Height);
             
             await context.RestoreAsync();
         }

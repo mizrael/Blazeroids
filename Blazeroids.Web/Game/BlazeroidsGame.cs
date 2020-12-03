@@ -43,15 +43,18 @@ namespace Blazeroids.Web.Game
         private static GameObject BuildPlayer(BECanvasComponent canvas, IAssetsResolver assetsResolver)
         {
             var player = new GameObject();
-            var playerSprite = assetsResolver.Get<Sprite>("assets/playerShip2_green.png");
+
+            var sprite = assetsResolver.Get<Sprite>("assets/playerShip2_green.png");
+
             var playerTransform = player.Components.Add<TransformComponent>();
-            playerTransform.Local.Position.X = canvas.Width / 2 - playerSprite.Size.Width;
-            playerTransform.Local.Position.Y = canvas.Height - playerSprite.Size.Height * 2;
+            playerTransform.Local.Position.X = canvas.Width / 2 - sprite.Size.Width;
+            playerTransform.Local.Position.Y = canvas.Height - sprite.Size.Height * 2;
+
             var playerSpriteRenderer = player.Components.Add<SpriteRenderComponent>();
-            playerSpriteRenderer.Sprite = playerSprite;
+            playerSpriteRenderer.Sprite = sprite;
 
             var bbox = player.Components.Add<BoundingBoxComponent>();
-            bbox.SetSize(playerSprite.Size);
+            bbox.SetSize(sprite.Size);
 
             var rigidBody = player.Components.Add<MovingBodyComponent>();
             rigidBody.MaxSpeed = 400f;
@@ -74,6 +77,9 @@ namespace Blazeroids.Web.Game
             spriteRenderer.Sprite = sprite;
 
             asteroid.Components.Add<AsteroidBrainComponent>();
+
+            var bbox = asteroid.Components.Add<BoundingBoxComponent>();
+            bbox.SetSize(sprite.Size);
 
             game._sceneGraph.Root.AddChild(asteroid);
         }

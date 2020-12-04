@@ -26,6 +26,23 @@ namespace Blazeroids.Web.Game
 
         public override async ValueTask Update(GameContext game)
         {
+            HandleMovement(game);
+
+            HandleShooting(game);
+        }
+
+        private void HandleShooting(GameContext game)
+        {
+            var isShooting = (InputSystem.Instance.GetKeyState(Keys.Space).State == ButtonState.States.Down);
+            if (isShooting)
+            {
+                _weapon ??= Owner.Components.Get<Weapon>();
+                _weapon?.Shoot(game);
+            }
+        }
+
+        private void HandleMovement(GameContext game)
+        {
             if (_transform.World.Position.X < -_spriteRender.Sprite.Size.Width)
                 _transform.Local.Position.X = game.Display.Size.Width + _halfSize.Width;
             else if (_transform.World.Position.X > game.Display.Size.Width + _spriteRender.Sprite.Size.Width)
@@ -47,15 +64,8 @@ namespace Blazeroids.Web.Game
                 _movingBody.Thrust = _enginePower;
             else if (InputSystem.Instance.GetKeyState(Keys.Down).State == ButtonState.States.Down)
                 _movingBody.Thrust = -_enginePower;
-            else 
+            else
                 _movingBody.Thrust = 0f;
-
-            var isShooting = (InputSystem.Instance.GetKeyState(Keys.Space).State == ButtonState.States.Down);
-            if (isShooting)
-            {
-                _weapon = _weapon ?? Owner.Components.Get<Weapon>();
-                _weapon?.Shoot(game);
-            }
         }
     }
 }

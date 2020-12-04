@@ -10,6 +10,7 @@ namespace Blazeroids.Web.Game
         private readonly MovingBodyComponent _movingBody;
         private readonly TransformComponent _transform;
         private readonly SpriteRenderComponent _spriteRender;
+        private Weapon _weapon;
         private readonly Size _halfSize;
         
         private float _enginePower = 1000f;
@@ -49,6 +50,12 @@ namespace Blazeroids.Web.Game
             else 
                 _movingBody.Thrust = 0f;
 
+            var isShooting = (InputSystem.Instance.GetKeyState(Keys.Space).State == ButtonState.States.Down);
+            if (isShooting)
+            {
+                _weapon = _weapon ?? Owner.Components.Get<Weapon>();
+                _weapon?.Shoot(game);
+            }
         }
     }
 }

@@ -1,6 +1,6 @@
 {
-  "imagePath": "sheet.png",
-  "SubTexture": [
+  "imagePath": "assets/sheet.png",
+  "sprites": [
     {
       "name": "beam0.png",
       "x": "143",

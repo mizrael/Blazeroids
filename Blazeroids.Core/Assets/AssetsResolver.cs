@@ -28,6 +28,6 @@ namespace Blazeroids.Core.Assets
             return asset;
         }
 
-        public TA Get<TA>(string name) where TA : class, IAsset => _assets[name] as TA;
+        public TA Get<TA>(string path) where TA : class, IAsset => _assets[path] as TA;
     }
 }

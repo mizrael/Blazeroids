@@ -18,13 +18,24 @@
 {
     BECanvasComponent _canvas;
     GameContext _game;
+    bool _assetsLoaded = false;
+    bool _initialized = false;
 
-    protected async Task OnAssetsLoaded()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await InitGame();
+        if (!_initialized && _assetsLoaded)
+        {
+            await InitGame();
+            _initialized = true;
+        }
     }
 
-    private async Task InitGame()
+    protected void OnAssetsLoaded()
+    {
+        _assetsLoaded = true;
+    }
+
+    private async ValueTask InitGame()
     {
         var canvasMeta = await JsRuntime.InvokeAsync<CanvasMeta>("initCanvas", DotNetObjectReference.Create(this));
 

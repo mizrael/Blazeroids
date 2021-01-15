@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 using System.Threading.Tasks;
 using Blazor.Extensions.Canvas.Canvas2D;
@@ -6,7 +7,7 @@ namespace Blazeroids.Core.Components
 {
     public class BoundingBoxComponent : BaseComponent
 #if DEBUG
-    //    , IRenderable
+        , IRenderable
 #endif
     {
         private readonly TransformComponent _transform; 
@@ -20,6 +21,9 @@ namespace Blazeroids.Core.Components
 
         public void SetSize(Size size)
         {
+#if DEBUG
+            Console.WriteLine($"new size: {size}");
+#endif
             _boundingBox.Size = size;
             _halfSize = size / 2;
         }
@@ -32,6 +36,10 @@ namespace Blazeroids.Core.Components
 
         public async ValueTask Render(GameContext game, Canvas2DContext context)
         {
+#if DEBUG
+            Console.WriteLine($"bounding box: {_boundingBox}");
+#endif
+            
             var tmpW = context.LineWidth;
             var tmpS = context.StrokeStyle;
 

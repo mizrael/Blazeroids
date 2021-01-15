@@ -1,18 +1,6 @@
 ﻿[
   {
-    "path": "assets/enemyRed1.png",
-    "type": "sprite"
-  },
-  {
-    "path": "assets/meteorBrown_big1.png",
-    "type": "sprite"
-  },
-  {
-    "path": "assets/playerShip2_green.png",
-    "type": "sprite"
-  },
-  {
-    "path": "assets/backgrounds/blue.png",
-    "type": "sprite"
+    "path": "assets/sheet.json",
+    "type": "spritesheet"
   }
 ]

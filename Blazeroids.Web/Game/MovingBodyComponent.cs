@@ -46,6 +46,8 @@ namespace Blazeroids.Web.Game
         {
             this.Thrust = 0f;
             this.RotationSpeed = 0f;
+            _rotationVelocity = 0;
+            _velocity = Vector2.Zero;
         }
         
         #region Properties

@@ -33,11 +33,6 @@ namespace Blazeroids.Web.Game
 
         private void OnItemDisabled(GameObject item)
         {
-
-#if DEBUG
-            Console.WriteLine($"returning item");
-#endif
-            
             _pool.Return(item);
         }
     }

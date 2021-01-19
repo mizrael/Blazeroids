@@ -34,8 +34,9 @@ namespace Blazeroids.Core
             get => _enabled;
             set
             {
+                var oldValue = _enabled;
                 _enabled = value;
-                if(!_enabled)
+                if(!_enabled && oldValue)
                     this.OnDisabled?.Invoke(this);
             }
         }

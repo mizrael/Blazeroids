@@ -22,7 +22,7 @@ namespace Blazeroids.Core.Components
 
         public async ValueTask Render(GameContext game, Canvas2DContext context)
         {
-            if (null == Animation)
+            if (null == Animation || !this.Owner.Enabled)
                 return;
             
             if (game.GameTime.TotalMilliseconds - _lastUpdate > 1000f/Animation.Fps)

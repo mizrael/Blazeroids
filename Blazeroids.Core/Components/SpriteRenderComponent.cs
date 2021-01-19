@@ -16,20 +16,15 @@ namespace Blazeroids.Core.Components
 
         public async ValueTask Render(GameContext game, Canvas2DContext context)
         {
-#if DEBUG
-            Console.WriteLine($"rendering sprite '{Sprite.ElementRef.Id}'");
-#endif
+            if (!this.Owner.Enabled)
+                return;
             
-            //  return;
             await context.SaveAsync();
 
             await context.TranslateAsync(_transform.World.Position.X, _transform.World.Position.Y);
             await context.RotateAsync(_transform.World.Rotation);
             await context.ScaleAsync(_transform.World.Scale.X, _transform.World.Scale.Y);
-
-            //await context.DrawImageAsync(Sprite.ElementRef, -Sprite.Origin.X, -Sprite.Origin.X,
-            //                             Sprite.Bounds.Width, Sprite.Bounds.Height);
-
+            
             await context.DrawImageAsync(Sprite.ElementRef, Sprite.Bounds.X, Sprite.Bounds.Y,
                 Sprite.Bounds.Width, Sprite.Bounds.Height,
                 -Sprite.Origin.X, -Sprite.Origin.X,

@@ -31,7 +31,7 @@ namespace Blazeroids.Core.Utils
 
         public static Vector2 Rotate(ref Vector2 v, float degrees)
         {
-            var radians = degrees * Deg2Rad;
+            var radians = degrees * MathUtils.Deg2Rad;
             var sin = MathF.Sin(radians);
             var cos = MathF.Cos(radians);
             
@@ -40,7 +40,10 @@ namespace Blazeroids.Core.Utils
 
             return new Vector2(cos * tx - sin * ty, sin * tx + cos * ty);
         }
+    }
 
-        private const float Deg2Rad = (MathF.PI * 2) / 360;
+    public static class MathUtils
+    {
+        public const float Deg2Rad = (MathF.PI * 2) / 360;
     }
 }

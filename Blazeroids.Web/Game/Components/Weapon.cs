@@ -1,5 +1,8 @@
-﻿using Blazeroids.Core;
+﻿using System;
+using System.Numerics;
+using Blazeroids.Core;
 using Blazeroids.Core.Components;
+using Blazeroids.Core.Utils;
 using Blazeroids.Web.Game.GameObjects;
 
 namespace Blazeroids.Web.Game.Components
@@ -26,10 +29,14 @@ namespace Blazeroids.Web.Game.Components
 
             var bullet = Spawner.Spawn();
             var bulletTransform = bullet.Components.Get<TransformComponent>();
-            bulletTransform.Local.Position = _ownerTransform.World.Position;
-            bulletTransform.Local.Rotation = _ownerTransform.World.Rotation;
+
+            bulletTransform.Local.Rotation = _ownerTransform.Local.Rotation;
+
+            bulletTransform.Local.Position = _ownerTransform.World.Position + Offset * _ownerTransform.Local.GetDirection();
         }
-        
-        public Spawner Spawner { get; set; }
+
+        public Spawner Spawner;
+
+        public Vector2 Offset = new Vector2(0, -50);
     }
 }

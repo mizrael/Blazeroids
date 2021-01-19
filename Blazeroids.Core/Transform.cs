@@ -1,4 +1,6 @@
+using System;
 using System.Numerics;
+using Blazeroids.Core.Utils;
 
 namespace Blazeroids.Core
 {
@@ -9,6 +11,12 @@ namespace Blazeroids.Core
         public Vector2 Scale;
         
         public float Rotation;
+
+        public Vector2 GetDirection()
+        {
+            var radians = Rotation * MathUtils.Deg2Rad;
+            return new Vector2(MathF.Sin(Rotation), MathF.Cos(Rotation));
+        } 
 
         public void Clone(Transform source)
         {

@@ -2,7 +2,7 @@
 using Blazeroids.Core;
 using Blazeroids.Core.Utils;
 
-namespace Blazeroids.Web.Game
+namespace Blazeroids.Web.Game.GameObjects
 {
     public class Spawner : GameObject
     {

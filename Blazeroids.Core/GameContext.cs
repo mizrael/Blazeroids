@@ -10,6 +10,8 @@ namespace Blazeroids.Core
         {
             if (_isFirst)
             {
+                await this.Init();
+                
                 this.GameTime.Start();
                 _isFirst = false;
             }
@@ -20,6 +22,7 @@ namespace Blazeroids.Core
             await Render();
         }
 
+        protected abstract ValueTask Init();
         protected abstract ValueTask Update();
         protected abstract ValueTask Render();
 

@@ -5,9 +5,9 @@ using Blazeroids.Core;
 using Blazeroids.Core.Components;
 using Blazeroids.Core.Utils;
 
-namespace Blazeroids.Web.Game
+namespace Blazeroids.Web.Game.Components
 {
-    public class MovingBodyComponent : BaseComponent
+    public class MovingBody : BaseComponent
     {
         #region Members
 
@@ -17,7 +17,7 @@ namespace Blazeroids.Web.Game
 
         #endregion Members
 
-        public MovingBodyComponent(GameObject owner) : base(owner)
+        public MovingBody(GameObject owner) : base(owner)
         {
             _transform = owner.Components.Get<TransformComponent>();
         }

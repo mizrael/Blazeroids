@@ -42,8 +42,8 @@
         _canvas.Height = canvasMeta.Height;
         _canvas.Width = canvasMeta.Width;
 
-        _game = await BlazeroidsGame.Create(_canvas, AssetsResolver);
-
+        _game = new BlazeroidsGame(_canvas, AssetsResolver);
+        
         // this will make sure that the viewport is correctly initialized
         await JsRuntime.InvokeAsync<object>("gameWindowResize", DotNetObjectReference.Create(this));
     }

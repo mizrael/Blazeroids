@@ -1,8 +1,8 @@
-﻿using System;
-using Blazeroids.Core;
+﻿using Blazeroids.Core;
 using Blazeroids.Core.Components;
+using Blazeroids.Web.Game.GameObjects;
 
-namespace Blazeroids.Web.Game
+namespace Blazeroids.Web.Game.Components
 {
     public class Weapon : BaseComponent
     {

@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 using Blazeroids.Core;
 using Blazeroids.Core.Components;
 
-namespace Blazeroids.Web.Game
+namespace Blazeroids.Web.Game.Components
 {
     public class PlayerBrain : BaseComponent
     {
-        private readonly MovingBodyComponent _movingBody;
+        private readonly MovingBody _movingBody;
         private readonly TransformComponent _transform;
         private readonly SpriteRenderComponent _spriteRender;
         private Weapon _weapon;
@@ -18,7 +18,7 @@ namespace Blazeroids.Web.Game
 
         public PlayerBrain(GameObject owner) : base(owner)
         {
-            _movingBody = owner.Components.Get<MovingBodyComponent>();
+            _movingBody = owner.Components.Get<MovingBody>();
             _transform = owner.Components.Get<TransformComponent>();
             _spriteRender = owner.Components.Get<SpriteRenderComponent>();
             _halfSize = _spriteRender.Sprite.Bounds.Size / 2;

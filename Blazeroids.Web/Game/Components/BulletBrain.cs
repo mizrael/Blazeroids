@@ -3,16 +3,16 @@ using Blazeroids.Core;
 using Blazeroids.Core.Components;
 using Blazor.Extensions;
 
-namespace Blazeroids.Web.Game
+namespace Blazeroids.Web.Game.Components
 {
-    public class BulletBrainComponent : BaseComponent
+    public class BulletBrain : BaseComponent
     {
-        private readonly MovingBodyComponent _movingBody;
+        private readonly MovingBody _movingBody;
         private readonly TransformComponent _transformComponent;
         
-        public BulletBrainComponent(GameObject owner) : base(owner)
+        public BulletBrain(GameObject owner) : base(owner)
         {
-            _movingBody = owner.Components.Get<MovingBodyComponent>();
+            _movingBody = owner.Components.Get<MovingBody>();
             _transformComponent = owner.Components.Get<TransformComponent>();
         }
         

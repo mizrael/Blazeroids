@@ -1,4 +1,5 @@
-﻿using Blazeroids.Core;
+﻿using System;
+using Blazeroids.Core;
 using Blazeroids.Core.Components;
 
 namespace Blazeroids.Web.Game
@@ -7,7 +8,8 @@ namespace Blazeroids.Web.Game
     {
         private long _lastBulletFiredTime = 0;
         private long _fireRate = 500;
-
+        private TransformComponent _ownerTransform;
+        
         public Weapon(GameObject owner) : base(owner)
         {
         }
@@ -18,10 +20,16 @@ namespace Blazeroids.Web.Game
             if (!canShoot)
                 return;
 
+            _ownerTransform ??= Owner.Components.Get<TransformComponent>();
+
             _lastBulletFiredTime = game.GameTime.TotalMilliseconds;
 
-            // create bullet, set position and direction 
-            // append bullet to player children
+            var bullet = Spawner.Spawn();
+            var bulletTransform = bullet.Components.Get<TransformComponent>();
+            bulletTransform.Local.Position = _ownerTransform.World.Position;
+            bulletTransform.Local.Rotation = _ownerTransform.World.Rotation;
         }
+        
+        public Spawner Spawner { get; set; }
     }
 }

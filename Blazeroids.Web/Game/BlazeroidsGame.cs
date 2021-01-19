@@ -1,9 +1,9 @@
 using System;
-using System.Numerics;
 using System.Threading.Tasks;
 using Blazeroids.Core;
 using Blazeroids.Core.Assets;
 using Blazeroids.Core.Components;
+using Blazeroids.Core.Utils;
 using Blazor.Extensions;
 using Blazor.Extensions.Canvas.Canvas2D;
 
@@ -29,7 +29,10 @@ namespace Blazeroids.Web.Game
             //fpsCounter.Components.Add<FPSCounterComponent>();
             //game._sceneGraph.Root.AddChild(fpsCounter);
 
-            var player = BuildPlayer(canvas, assetsResolver);
+            var bulletSpawner = BuildBulletSpawner(canvas, assetsResolver);
+            game._sceneGraph.Root.AddChild(bulletSpawner);
+            
+            var player = BuildPlayer(canvas, assetsResolver, bulletSpawner);
             game._sceneGraph.Root.AddChild(player);
 
             var rand = new Random();
@@ -39,7 +42,47 @@ namespace Blazeroids.Web.Game
             return game;
         }
 
-        private static GameObject BuildPlayer(BECanvasComponent canvas, IAssetsResolver assetsResolver)
+        private static Spawner BuildBulletSpawner(BECanvasComponent canvas, IAssetsResolver assetsResolver)
+        {
+            var spriteSheet = assetsResolver.Get<SpriteSheet>("assets/sheet.json");
+            
+            var spawner = new Spawner(() =>
+            {
+                var bullet = new GameObject();
+                bullet.Components.Add<TransformComponent>();
+
+                var bulletSpriteRenderer = bullet.Components.Add<SpriteRenderComponent>();
+                bulletSpriteRenderer.Sprite = spriteSheet.Get("fire01.png");
+
+                var bulletBBox = bullet.Components.Add<BoundingBoxComponent>();
+                bulletBBox.SetSize(bulletSpriteRenderer.Sprite.Bounds.Size);
+
+                var speed = 7000f;
+                
+                var bulletRigidBody = bullet.Components.Add<MovingBodyComponent>();
+                bulletRigidBody.MaxSpeed = speed;
+
+                var brain = bullet.Components.Add<BulletBrainComponent>();
+                brain.Speed = speed;
+                brain.Canvas = canvas;
+
+                return bullet;
+            }, bullet =>
+            {
+                bullet.Components.Get<MovingBodyComponent>().Reset();
+                
+                bullet.Components.Get<TransformComponent>().Local.Reset();
+                bullet.Components.Get<TransformComponent>().World.Reset();
+            });
+
+            spawner.Components.Add<TransformComponent>();
+
+            return spawner;
+        }
+
+        private static GameObject BuildPlayer(BECanvasComponent canvas, 
+            IAssetsResolver assetsResolver,
+            Spawner bulletSpawner)
         {
             var player = new GameObject();
 
@@ -60,7 +103,11 @@ namespace Blazeroids.Web.Game
             var rigidBody = player.Components.Add<MovingBodyComponent>();
             rigidBody.MaxSpeed = 400f;
 
+            var weapon = player.Components.Add<Weapon>();
+            weapon.Spawner = bulletSpawner;
+
             player.Components.Add<PlayerBrain>();
+            
             return player;
         }
 

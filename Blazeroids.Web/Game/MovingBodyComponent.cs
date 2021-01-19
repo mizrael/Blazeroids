@@ -41,6 +41,12 @@ namespace Blazeroids.Web.Game
 
             _transform.Local.Position += _velocity * dt;
         }
+
+        public void Reset()
+        {
+            this.Thrust = 0f;
+            this.RotationSpeed = 0f;
+        }
         
         #region Properties
 
@@ -48,7 +54,7 @@ namespace Blazeroids.Web.Game
         public float MaxSpeed = 1f;
         public float Drag = 5f;
         
-        public float RotationSpeed = 1f;
+        public float RotationSpeed = 0f;
         public float RotationDrag = 5f;
 
         public float Mass = 1f;

@@ -1,4 +1,3 @@
-using System;
 using System.Drawing;
 using System.Threading.Tasks;
 using Blazor.Extensions.Canvas.Canvas2D;
@@ -7,7 +6,7 @@ namespace Blazeroids.Core.Components
 {
     public class BoundingBoxComponent : BaseComponent
 #if DEBUG
-     //   , IRenderable
+       // , IRenderable
 #endif
     {
         private readonly TransformComponent _transform; 
@@ -27,8 +26,8 @@ namespace Blazeroids.Core.Components
 
         public override async ValueTask Update(GameContext game)
         {
-            _boundingBox.X = (int)_transform.World.Position.X - _halfSize.Width;
-            _boundingBox.Y = (int)_transform.World.Position.Y - _halfSize.Height;
+            _boundingBox.X = (int) _transform.World.Position.X - _halfSize.Width;
+            _boundingBox.Y = (int) _transform.World.Position.Y - _halfSize.Height;
         }
 
         public async ValueTask Render(GameContext game, Canvas2DContext context)

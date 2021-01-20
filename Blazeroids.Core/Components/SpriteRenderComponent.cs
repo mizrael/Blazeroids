@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Blazeroids.Core.Assets;
 using Blazor.Extensions.Canvas.Canvas2D;
@@ -25,10 +24,11 @@ namespace Blazeroids.Core.Components
             await context.RotateAsync(_transform.World.Rotation);
             await context.ScaleAsync(_transform.World.Scale.X, _transform.World.Scale.Y);
             
-            await context.DrawImageAsync(Sprite.ElementRef, Sprite.Bounds.X, Sprite.Bounds.Y,
+            await context.DrawImageAsync(Sprite.ElementRef, 
+                Sprite.Bounds.X, Sprite.Bounds.Y,
                 Sprite.Bounds.Width, Sprite.Bounds.Height,
-                -Sprite.Origin.X, -Sprite.Origin.X,
-                Sprite.Bounds.Width, Sprite.Bounds.Height);
+                Sprite.Origin.X, Sprite.Origin.Y,
+                -Sprite.Bounds.Width, -Sprite.Bounds.Height);
 
             await context.RestoreAsync();
         }

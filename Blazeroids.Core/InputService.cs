@@ -30,8 +30,6 @@ namespace Blazeroids.Core
 
         public void SetKeyState(Keys key, ButtonState.States state)
         {
-            Console.WriteLine($"{key} : {state}");
-            
             var oldState = _keyboardStates[key];
             _keyboardStates[key] = new ButtonState(state, oldState.State == ButtonState.States.Down);
         }

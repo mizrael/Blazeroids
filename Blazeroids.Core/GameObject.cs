@@ -25,9 +25,10 @@ namespace Blazeroids.Core
 
         public IEnumerable<GameObject> Children => _children;
         public GameObject Parent { get; private set; }
-        
-        public OnDisabledHandler OnDisabled { get; set; }
 
+        public OnDisabledHandler OnDisabled;
+        public delegate void OnDisabledHandler(GameObject gameObject);
+        
         private bool _enabled = true;
         public bool Enabled
         {
@@ -69,6 +70,4 @@ namespace Blazeroids.Core
 
         public override string ToString() => $"GameObject {this.Id}";
     }
-
-    public delegate void OnDisabledHandler(GameObject gameObject);
 }

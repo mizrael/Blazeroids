@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Blazeroids.Core;
 using Blazeroids.Core.Components;
 using Blazor.Extensions;
@@ -25,7 +26,7 @@ namespace Blazeroids.Web.Game.Components
                               _transformComponent.World.Position.X > this.Canvas.Width ||
                               _transformComponent.World.Position.Y > this.Canvas.Height;
             if (isOutScreen)
-                this.Owner.Enabled = false;
+                this.Owner.Enabled = false; 
         }
 
         public float Speed { get; set; }

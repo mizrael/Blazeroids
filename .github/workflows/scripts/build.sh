@@ -8,7 +8,7 @@ echo "building $projectName ..."
 buildPath="./build/$projectName-tmp"    
 dotnet publish $projectFile --output $buildPath --configuration Debug
 
-cp -Rp $buildPath/wwwroot/ ./build      
+cp -Rpv $buildPath/wwwroot ./build      
 rm -rf $buildPath
 
 sed -i -e "s/<base href=\"\/\" \/>/<base href=\"\/$solutionName\/\" \/>/g" ./build/index.html

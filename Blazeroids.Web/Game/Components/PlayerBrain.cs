@@ -26,14 +26,14 @@ namespace Blazeroids.Web.Game.Components
 
         public override async ValueTask Update(GameContext game)
         {
-            HandleMovement(game);
-
-            HandleShooting(game);
+            var inputService = game.GetService<InputService>();
+            HandleMovement(game, inputService);
+            HandleShooting(game, inputService);
         }
 
-        private void HandleShooting(GameContext game)
+        private void HandleShooting(GameContext game, InputService inputService)
         {
-            var isShooting = (InputSystem.Instance.GetKeyState(Keys.Space).State == ButtonState.States.Down);
+            var isShooting = (inputService.GetKeyState(Keys.Space).State == ButtonState.States.Down);
             if (isShooting)
             {
                 _weapon ??= Owner.Components.Get<Weapon>();
@@ -41,8 +41,9 @@ namespace Blazeroids.Web.Game.Components
             }
         }
 
-        private void HandleMovement(GameContext game)
+        private void HandleMovement(GameContext game, InputService inputService)
         {
+            
             if (_transform.World.Position.X < -_spriteRender.Sprite.Bounds.Width)
                 _transform.Local.Position.X = game.Display.Size.Width + _halfSize.Width;
             else if (_transform.World.Position.X > game.Display.Size.Width + _spriteRender.Sprite.Bounds.Width)
@@ -53,16 +54,16 @@ namespace Blazeroids.Web.Game.Components
             else if (_transform.World.Position.Y > game.Display.Size.Height + _spriteRender.Sprite.Bounds.Height)
                 _transform.Local.Position.Y = -_halfSize.Height;
 
-            if (InputSystem.Instance.GetKeyState(Keys.Right).State == ButtonState.States.Down)
+            if (inputService.GetKeyState(Keys.Right).State == ButtonState.States.Down)
                 _movingBody.RotationSpeed = _rotationSpeed;
-            else if (InputSystem.Instance.GetKeyState(Keys.Left).State == ButtonState.States.Down)
+            else if (inputService.GetKeyState(Keys.Left).State == ButtonState.States.Down)
                 _movingBody.RotationSpeed = -_rotationSpeed;
             else
                 _movingBody.RotationSpeed = 0f;
 
-            if (InputSystem.Instance.GetKeyState(Keys.Up).State == ButtonState.States.Down)
+            if (inputService.GetKeyState(Keys.Up).State == ButtonState.States.Down)
                 _movingBody.Thrust = _enginePower;
-            else if (InputSystem.Instance.GetKeyState(Keys.Down).State == ButtonState.States.Down)
+            else if (inputService.GetKeyState(Keys.Down).State == ButtonState.States.Down)
                 _movingBody.Thrust = -_enginePower;
             else
                 _movingBody.Thrust = 0f;

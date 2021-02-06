@@ -1,32 +1,25 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using Blazeroids.Core.Utils;
 
 namespace Blazeroids.Core
 {
-    public class InputSystem
+    public class InputService : IGameService
     {
         private readonly IDictionary<MouseButtons, ButtonState> _buttonStates;
         private readonly IDictionary<Keys, ButtonState> _keyboardStates;
 
-        private InputSystem()
+        public InputService()
         {
             _buttonStates = EnumUtils.GetAllValues<MouseButtons>()
                 .ToDictionary(v => v, v => ButtonState.None);
 
             _keyboardStates = EnumUtils.GetAllValues<Keys>()
                                        .ToDictionary(v => v, v => ButtonState.None);
-
-
         }
-
-        public Point Coords;
-
-        private static readonly Lazy<InputSystem> _instance = new Lazy<InputSystem>(new InputSystem());
-        public static InputSystem Instance => _instance.Value;
-
+        
         public void SetButtonState(MouseButtons button, ButtonState.States state)
         {
             var oldState = _buttonStates[button];
@@ -37,11 +30,15 @@ namespace Blazeroids.Core
 
         public void SetKeyState(Keys key, ButtonState.States state)
         {
+            Console.WriteLine($"{key} : {state}");
+            
             var oldState = _keyboardStates[key];
             _keyboardStates[key] = new ButtonState(state, oldState.State == ButtonState.States.Down);
         }
 
         public ButtonState GetKeyState(Keys key) => _keyboardStates[key];
+        
+        public ValueTask Step() => ValueTask.CompletedTask;
     }
 
     public enum MouseButtons

@@ -23,6 +23,8 @@ namespace Blazeroids.Web.Game
 
         protected override async ValueTask Init()
         {   
+            this.AddService(new InputService());
+            
             var sceneGraph = new SceneGraph(this);
             this.AddService(sceneGraph);
             

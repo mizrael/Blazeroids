@@ -18,8 +18,15 @@
 {
     BECanvasComponent _canvas;
     GameContext _game;
+    InputService _inputService;
+
     bool _assetsLoaded = false;
     bool _initialized = false;
+
+    protected void OnAssetsLoaded()
+    {
+        _assetsLoaded = true;
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -30,11 +37,6 @@
         }
     }
 
-    protected void OnAssetsLoaded()
-    {
-        _assetsLoaded = true;
-    }
-
     private async ValueTask InitGame()
     {
         var canvasMeta = await JsRuntime.InvokeAsync<CanvasMeta>("initCanvas", DotNetObjectReference.Create(this));
@@ -43,7 +45,7 @@
         _canvas.Width = canvasMeta.Width;
 
         _game = new BlazeroidsGame(_canvas, AssetsResolver);
-        
+
         // this will make sure that the viewport is correctly initialized
         await JsRuntime.InvokeAsync<object>("gameWindowResize", DotNetObjectReference.Create(this));
     }
@@ -54,6 +56,8 @@
         if (null == _game)
             return;
         await _game.Step();
+
+        _inputService ??= _game.GetService<InputService>();
     }
 
     [JSInvokable]
@@ -65,11 +69,11 @@
 
     [JSInvokable]
     public async ValueTask OnKeyDown(int keyCode) =>
-        InputSystem.Instance.SetKeyState((Keys)keyCode, ButtonState.States.Down);
+        _inputService.SetKeyState((Keys)keyCode, ButtonState.States.Down);
 
     [JSInvokable]
     public async ValueTask OnKeyUp(int keyCode) =>
-        InputSystem.Instance.SetKeyState((Keys)keyCode, ButtonState.States.Up);
+        _inputService.SetKeyState((Keys)keyCode, ButtonState.States.Up);
 
     public class CanvasMeta
     {

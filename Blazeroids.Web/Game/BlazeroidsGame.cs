@@ -14,34 +14,35 @@ namespace Blazeroids.Web.Game
     {
         private readonly BECanvasComponent _canvas;
         private readonly IAssetsResolver _assetsResolver;
-        private Canvas2DContext _context;
-        private readonly SceneGraph _sceneGraph;
-
-
+        
         public BlazeroidsGame(BECanvasComponent canvas, IAssetsResolver assetsResolver)
         {
-            _sceneGraph = new SceneGraph();
             _canvas = canvas;
             _assetsResolver = assetsResolver;
         }
 
         protected override async ValueTask Init()
-        {
-            _context = await _canvas.CreateCanvas2DAsync();
+        {   
+            var sceneGraph = new SceneGraph(this);
+            this.AddService(sceneGraph);
             
             //var fpsCounter = new GameObject();
             //fpsCounter.Components.Add<FPSCounterComponent>();
             //game._sceneGraph.Root.AddChild(fpsCounter);
 
             var bulletSpawner = BuildBulletSpawner();
-            _sceneGraph.Root.AddChild(bulletSpawner);
+            sceneGraph.Root.AddChild(bulletSpawner);
             
             var player = BuildPlayer(bulletSpawner);
-            _sceneGraph.Root.AddChild(player);
+            sceneGraph.Root.AddChild(player);
 
             var rand = new Random();
             for (var i = 0; i != 6; ++i)
-                AddAsteroid(rand);
+                AddAsteroid(sceneGraph, rand);
+
+            var context = await _canvas.CreateCanvas2DAsync();
+            var renderService = new RenderService(this, context);
+            this.AddService(renderService);
         }
 
         private Spawner BuildBulletSpawner()
@@ -111,7 +112,7 @@ namespace Blazeroids.Web.Game
             return player;
         }
 
-        private void AddAsteroid(Random rand)
+        private void AddAsteroid(SceneGraph sceneGraph, Random rand)
         {
             var asteroid = new GameObject();
 
@@ -130,34 +131,8 @@ namespace Blazeroids.Web.Game
             var bbox = asteroid.Components.Add<BoundingBoxComponent>();
             bbox.SetSize(sprite.Bounds.Size);
 
-            _sceneGraph.Root.AddChild(asteroid);
+            sceneGraph.Root.AddChild(asteroid);
         }
 
-        protected override async ValueTask Update()
-        {
-            await _sceneGraph.Update(this);
-        }
-
-        protected override async ValueTask Render()
-        {
-            await _context.ClearRectAsync(0, 0, this.Display.Size.Width, this.Display.Size.Height);
-
-            await _context.BeginBatchAsync();
-            await Render(_sceneGraph.Root);
-            await _context.EndBatchAsync();
-        }
-
-        private async ValueTask Render(GameObject node)
-        {
-            if (null == node)
-                return;
-
-            foreach(var component in node.Components)
-                if (component is IRenderable renderable)
-                    await renderable.Render(this, _context);
-
-            foreach (var child in node.Children)
-                await Render(child);
-        }
     }
 }

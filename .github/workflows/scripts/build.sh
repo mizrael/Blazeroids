@@ -1,13 +1,15 @@
-projects=($(ls -1 -- **/*.csproj))
-for i in "${projects[@]}"
-do
-    filename=$(basename -- "$i")    
-    filename="${filename%.*}"
-    buildPath="build/$filename-t"    
-	dotnet publish --configuration Release $i --output $buildPath
-    mv $buildPath/wwwroot/ "build/$filename"        
-    rm -rf $buildPath
+solutionName="Blazeroids"
+projectName="Blazeroids.Web"
+projectFile="$projectName/$projectName.csproj"
 
-    sed -i -e "s/<base href=\"\/\" \/>/<base href=\"\/Blazeroids\/$filename\/\" \/>/g" build/$filename/index.html
-done
+rm -rf "build"
+
+echo "building $projectName ..."
+buildPath="build/$projectName-tmp"    
+dotnet publish $projectFile --output $buildPath --configuration Debug
+mv $buildPath/wwwroot/ "build/"        
+rm -rf $buildPath
+
+sed -i -e "s/<base href=\"\/\" \/>/<base href=\"\/$solutionName\/\" \/>/g" build/wwwroot/index.html
+
 cp readme.md build/readme.md

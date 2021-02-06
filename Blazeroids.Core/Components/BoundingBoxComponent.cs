@@ -6,7 +6,7 @@ namespace Blazeroids.Core.Components
 {
     public class BoundingBoxComponent : BaseComponent
 #if DEBUG
-        , IRenderable
+    //    , IRenderable
 #endif
     {
         private readonly TransformComponent _transform; 

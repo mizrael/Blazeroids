@@ -30,6 +30,8 @@ namespace Blazeroids.Core
 #if DEBUG
                 Console.WriteLine($"collision detected {bbox.Owner.Id} => {collider.Owner.Id}");
 #endif
+                collider.CollideWith(bbox);
+                bbox.CollideWith(collider);
             }
         }
     }

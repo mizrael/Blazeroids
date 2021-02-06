@@ -130,11 +130,11 @@ namespace Blazeroids.Web.Game
 
             var spriteRenderer = asteroid.Components.Add<SpriteRenderComponent>();
             spriteRenderer.Sprite = sprite;
-
-            asteroid.Components.Add<AsteroidBrain>();
-
+            
             var bbox = asteroid.Components.Add<BoundingBoxComponent>();
             bbox.SetSize(sprite.Bounds.Size);
+
+            asteroid.Components.Add<AsteroidBrain>();
 
             sceneGraph.Root.AddChild(asteroid);
         }

@@ -10,6 +10,8 @@ namespace Blazeroids.Web.Game.Components
         private readonly MovingBody _movingBody;
         private readonly TransformComponent _transform;
         private readonly SpriteRenderComponent _spriteRender;
+        private readonly BoundingBoxComponent _boundingBox;
+        
         private Weapon _weapon;
         private readonly Size _halfSize;
         
@@ -22,6 +24,12 @@ namespace Blazeroids.Web.Game.Components
             _transform = owner.Components.Get<TransformComponent>();
             _spriteRender = owner.Components.Get<SpriteRenderComponent>();
             _halfSize = _spriteRender.Sprite.Bounds.Size / 2;
+
+            _boundingBox = owner.Components.Get<BoundingBoxComponent>();
+            _boundingBox.OnCollision += (sender, collidedWith) =>
+            {
+                this.Owner.Enabled = false;
+            };
         }
 
         public override async ValueTask Update(GameContext game)

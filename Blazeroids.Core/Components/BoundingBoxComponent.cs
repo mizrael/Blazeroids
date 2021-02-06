@@ -57,5 +57,10 @@ namespace Blazeroids.Core.Components
 
         public event OnPositionChangedHandler OnPositionChanged;
         public delegate void OnPositionChangedHandler(BoundingBoxComponent sender);
+
+        public void CollideWith(BoundingBoxComponent other) => this.OnCollision?.Invoke(this, other);
+
+        public event OnCollisionHandler OnCollision;
+        public delegate void OnCollisionHandler(BoundingBoxComponent sender, BoundingBoxComponent collidedWith);
     }
 }

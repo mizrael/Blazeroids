@@ -6,7 +6,7 @@ namespace Blazeroids.Core.Components
 {
     public class BoundingBoxComponent : BaseComponent
 #if DEBUG
-       // , IRenderable
+        , IRenderable
 #endif
     {
         private readonly TransformComponent _transform; 
@@ -28,8 +28,15 @@ namespace Blazeroids.Core.Components
 
         public override async ValueTask Update(GameContext game)
         {
-            _bounds.X = (int) _transform.World.Position.X - _halfSize.Width;
-            _bounds.Y = (int) _transform.World.Position.Y - _halfSize.Height;
+            var x = (int) _transform.World.Position.X - _halfSize.Width;
+            var y = (int) _transform.World.Position.Y - _halfSize.Height;
+
+            var changed = _bounds.X != x || _bounds.Y != y;
+            _bounds.X = x;
+            _bounds.Y = y;
+            
+            if(changed)
+                OnPositionChanged?.Invoke(this);
         }
 
         public async ValueTask Render(GameContext game, Canvas2DContext context)
@@ -48,7 +55,7 @@ namespace Blazeroids.Core.Components
             await context.SetLineWidthAsync(tmpW);
         }
 
-        public bool IntersectsWith(BoundingBoxComponent other) =>
-            _bounds.IntersectsWith(other._bounds);
+        public event OnPositionChangedHandler OnPositionChanged;
+        public delegate void OnPositionChangedHandler(BoundingBoxComponent sender);
     }
 }

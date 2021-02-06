@@ -14,10 +14,24 @@ namespace Blazeroids.Core
         {
             Bounds = bounds;
         }
+        
+        public Rectangle Bounds { get; }
 
         public void Add(BoundingBoxComponent bbox) => _colliders.Add(bbox);
         
-        public Rectangle Bounds { get; }
+        public void Remove(BoundingBoxComponent bbox) => _colliders.Remove(bbox);
+
+        public void CheckCollisions(BoundingBoxComponent bbox)
+        {
+            foreach (var collider in _colliders)
+            {
+                if (collider.Owner == bbox.Owner || !bbox.Bounds.IntersectsWith(collider.Bounds))
+                    continue;
+#if DEBUG
+                Console.WriteLine($"collision detected {bbox.Owner.Id} => {collider.Owner.Id}");
+#endif
+            }
+        }
     }
     
     public class CollisionService : IGameService
@@ -26,6 +40,7 @@ namespace Blazeroids.Core
         
         private CollisionBucket[,] _buckets;
         private readonly Size _bucketSize;
+        private Dictionary<int, IList<CollisionBucket>> _bucketsByCollider = new();
         
         public CollisionService(GameContext game, Size bucketSize)
         {
@@ -54,11 +69,24 @@ namespace Blazeroids.Core
             var colliders = FindAllColliders();
             foreach (var collider in colliders)
             {
-                AddToBuckets(collider);
+                collider.OnPositionChanged -= CheckCollisions;
+                collider.OnPositionChanged += CheckCollisions;
+                RefreshColliderBuckets(collider);
             }
         }
 
-        private void AddToBuckets(BoundingBoxComponent collider)
+        private void CheckCollisions(BoundingBoxComponent bbox)
+        {
+            RefreshColliderBuckets(bbox);
+            
+            var buckets = _bucketsByCollider[bbox.Owner.Id];
+            foreach (var bucket in buckets)
+            {
+                bucket.CheckCollisions(bbox);
+            }
+        }
+        
+        private void RefreshColliderBuckets(BoundingBoxComponent collider)
         {
             var rows = _buckets.GetLength(0);
             var cols = _buckets.GetLength(1);
@@ -68,6 +96,12 @@ namespace Blazeroids.Core
             var endX = (int) (cols * ((float) collider.Bounds.Right / _game.Display.Size.Width));
             var endY = (int) (rows * ((float) collider.Bounds.Bottom / _game.Display.Size.Height));
 
+            if (!_bucketsByCollider.ContainsKey(collider.Owner.Id))
+                _bucketsByCollider[collider.Owner.Id] = new List<CollisionBucket>();
+            foreach (var bucket in _bucketsByCollider[collider.Owner.Id])
+                bucket.Remove(collider);
+            _bucketsByCollider[collider.Owner.Id].Clear();
+
             for (int row = startY; row <= endY; row++)
             for (int col = startX; col <= endX; col++)
             {
@@ -75,9 +109,12 @@ namespace Blazeroids.Core
                     continue;
                 if (col < 0 || col >= cols)
                     continue;
-                
+
                 if (_buckets[row, col].Bounds.IntersectsWith(collider.Bounds))
+                {
+                    _bucketsByCollider[collider.Owner.Id].Add(_buckets[row, col]);
                     _buckets[row, col].Add(collider);
+                }
             }
         }
 

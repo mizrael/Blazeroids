@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Threading.Tasks;
 using Blazeroids.Core;
 using Blazeroids.Core.Assets;
@@ -6,7 +7,6 @@ using Blazeroids.Core.Components;
 using Blazeroids.Web.Game.Components;
 using Blazeroids.Web.Game.GameObjects;
 using Blazor.Extensions;
-using Blazor.Extensions.Canvas.Canvas2D;
 
 namespace Blazeroids.Web.Game
 {
@@ -24,6 +24,9 @@ namespace Blazeroids.Web.Game
         protected override async ValueTask Init()
         {   
             this.AddService(new InputService());
+
+            var collisionService = new CollisionService(this, new Size(64, 64));
+            this.AddService(collisionService);
             
             var sceneGraph = new SceneGraph(this);
             this.AddService(sceneGraph);

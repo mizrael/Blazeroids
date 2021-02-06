@@ -10,7 +10,7 @@ namespace Blazeroids.Core.Components
 #endif
     {
         private readonly TransformComponent _transform; 
-        private Rectangle _boundingBox;
+        private Rectangle _bounds;
         private Size _halfSize;
 
         private BoundingBoxComponent(GameObject owner) : base(owner)
@@ -18,16 +18,18 @@ namespace Blazeroids.Core.Components
             _transform = owner.Components.Get<TransformComponent>();
         }
 
+        public Rectangle Bounds => _bounds;
+
         public void SetSize(Size size)
         {
-            _boundingBox.Size = size;
+            _bounds.Size = size;
             _halfSize = size / 2;
         }
 
         public override async ValueTask Update(GameContext game)
         {
-            _boundingBox.X = (int) _transform.World.Position.X - _halfSize.Width;
-            _boundingBox.Y = (int) _transform.World.Position.Y - _halfSize.Height;
+            _bounds.X = (int) _transform.World.Position.X - _halfSize.Width;
+            _bounds.Y = (int) _transform.World.Position.Y - _halfSize.Height;
         }
 
         public async ValueTask Render(GameContext game, Canvas2DContext context)
@@ -38,12 +40,15 @@ namespace Blazeroids.Core.Components
             await context.BeginPathAsync();
             await context.SetStrokeStyleAsync("rgb(255,255,0)");
             await context.SetLineWidthAsync(3);
-            await context.StrokeRectAsync(_boundingBox.X, _boundingBox.Y,
-                _boundingBox.Width,
-                _boundingBox.Height);
+            await context.StrokeRectAsync(_bounds.X, _bounds.Y,
+                _bounds.Width,
+                _bounds.Height);
             
             await context.SetStrokeStyleAsync(tmpS);
             await context.SetLineWidthAsync(tmpW);
         }
+
+        public bool IntersectsWith(BoundingBoxComponent other) =>
+            _bounds.IntersectsWith(other._bounds);
     }
 }

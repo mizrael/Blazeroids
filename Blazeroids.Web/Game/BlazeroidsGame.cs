@@ -7,6 +7,7 @@ using Blazeroids.Core.Components;
 using Blazeroids.Web.Game.Components;
 using Blazeroids.Web.Game.GameObjects;
 using Blazor.Extensions;
+using Blazeroids.Core.Utils;
 
 namespace Blazeroids.Web.Game
 {
@@ -41,9 +42,8 @@ namespace Blazeroids.Web.Game
             var player = BuildPlayer(bulletSpawner);
             sceneGraph.Root.AddChild(player);
 
-            var rand = new Random();
             for (var i = 0; i != 6; ++i)
-                AddAsteroid(sceneGraph, rand);
+                AddAsteroid(sceneGraph);
 
             var context = await _canvas.CreateCanvas2DAsync();
             var renderService = new RenderService(this, context);
@@ -97,8 +97,8 @@ namespace Blazeroids.Web.Game
 
             var playerTransform = player.Components.Add<TransformComponent>();
 
-            playerTransform.Local.Position.X = _canvas.Width / 2 - sprite.Bounds.Width;
-            playerTransform.Local.Position.Y = _canvas.Height / 2 - sprite.Bounds.Height * 2;
+            playerTransform.Local.Position.X = _canvas.Width / 2;
+            playerTransform.Local.Position.Y = _canvas.Height / 2;
 
             var playerSpriteRenderer = player.Components.Add<SpriteRenderComponent>();
             playerSpriteRenderer.Sprite = sprite;
@@ -117,7 +117,7 @@ namespace Blazeroids.Web.Game
             return player;
         }
 
-        private void AddAsteroid(SceneGraph sceneGraph, Random rand)
+        private void AddAsteroid(SceneGraph sceneGraph)
         {
             var asteroid = new GameObject();
 
@@ -125,9 +125,18 @@ namespace Blazeroids.Web.Game
             var sprite = spriteSheet.Get("meteorBrown_big1.png");
             
             var transform = asteroid.Components.Add<TransformComponent>();
-            transform.Local.Position.X = rand.Next(sprite.Bounds.Width * 2, (int)_canvas.Width - sprite.Bounds.Width * 2);
-            transform.Local.Position.Y = rand.Next(sprite.Bounds.Height * 2, (int)(_canvas.Height/4)*3);
+           
+            var w = (double)_canvas.Width;
+            var rx = MathUtils.Random.NextDouble(0, .35, .65, 1);
+            var tx = MathUtils.Normalize(rx, 0, 1, -1, 1);
+            transform.Local.Position.X = (float)(tx * w/2 + w/2);
 
+            var h = (double)_canvas.Height;
+            var ry = MathUtils.Random.NextDouble(0, .35, .65, 1);
+            var ty = MathUtils.Normalize(ry, 0, 1, -1, 1);
+            transform.Local.Position.Y = (float)(ty * h/2 + h/2);
+
+            
             var spriteRenderer = asteroid.Components.Add<SpriteRenderComponent>();
             spriteRenderer.Sprite = sprite;
             

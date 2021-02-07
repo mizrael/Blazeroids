@@ -41,9 +41,4 @@ namespace Blazeroids.Core.Utils
             return new Vector2(cos * tx - sin * ty, sin * tx + cos * ty);
         }
     }
-
-    public static class MathUtils
-    {
-        public const float Deg2Rad = (MathF.PI * 2) / 360;
-    }
 }

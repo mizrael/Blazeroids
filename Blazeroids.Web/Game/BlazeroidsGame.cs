@@ -129,14 +129,13 @@ namespace Blazeroids.Web.Game
             var w = (double)_canvas.Width;
             var rx = MathUtils.Random.NextDouble(0, .35, .65, 1);
             var tx = MathUtils.Normalize(rx, 0, 1, -1, 1);
-            transform.Local.Position.X = (float)(tx * w/2 + w/2);
+            transform.Local.Position.X = (float)(tx * w/3 + w/2);
 
             var h = (double)_canvas.Height;
             var ry = MathUtils.Random.NextDouble(0, .35, .65, 1);
             var ty = MathUtils.Normalize(ry, 0, 1, -1, 1);
-            transform.Local.Position.Y = (float)(ty * h/2 + h/2);
+            transform.Local.Position.Y = (float)(ty * h/3 + h/2);
 
-            
             var spriteRenderer = asteroid.Components.Add<SpriteRenderComponent>();
             spriteRenderer.Sprite = sprite;
             

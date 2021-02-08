@@ -38,9 +38,12 @@ namespace Blazeroids.Core
 
             foreach (var service in _services.Values)
                 await service.Step();
+
+            await this.Update();
         }
 
         protected abstract ValueTask Init();
+        protected virtual ValueTask Update() => ValueTask.CompletedTask;
 
         public GameTime GameTime { get; } = new ();
         public Display Display { get; } = new ();

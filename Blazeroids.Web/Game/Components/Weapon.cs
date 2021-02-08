@@ -8,7 +8,6 @@ namespace Blazeroids.Web.Game.Components
     public class Weapon : BaseComponent
     {
         private long _lastBulletFiredTime = 0;
-        private long _fireRate = 500;
         private readonly TransformComponent _ownerTransform;
         
         public Weapon(GameObject owner) : base(owner)
@@ -18,7 +17,7 @@ namespace Blazeroids.Web.Game.Components
 
         public void Shoot(GameContext game)
         {
-            var canShoot = game.GameTime.TotalMilliseconds - _lastBulletFiredTime >= _fireRate;
+            var canShoot = game.GameTime.TotalMilliseconds - _lastBulletFiredTime >= FireRate;
             if (!canShoot)
                 return;
             
@@ -38,5 +37,6 @@ namespace Blazeroids.Web.Game.Components
         public Spawner Spawner;
 
         public float Offset = -50f;
+        private long FireRate = 150;
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Numerics;
 using System.Threading.Tasks;
 using Blazeroids.Core;
 using Blazeroids.Core.Assets;
@@ -15,7 +16,12 @@ namespace Blazeroids.Web.Game
     {
         private readonly BECanvasComponent _canvas;
         private readonly IAssetsResolver _assetsResolver;
-        
+
+        private long _lastAsteroidSpawnTime = 0;
+        private long _asteroidSpawnRate = 2000;
+        private Spawner _asteroidsSpawner;
+        private GameObject _player;
+
         public BlazeroidsGame(BECanvasComponent canvas, IAssetsResolver assetsResolver)
         {
             _canvas = canvas;
@@ -38,16 +44,28 @@ namespace Blazeroids.Web.Game
 
             var bulletSpawner = BuildBulletSpawner(collisionService);
             sceneGraph.Root.AddChild(bulletSpawner);
+
+            _player = BuildPlayer(bulletSpawner);
+            sceneGraph.Root.AddChild(_player);
+
+            _asteroidsSpawner = BuildAsteroidsSpawner(collisionService);
+            sceneGraph.Root.AddChild(_asteroidsSpawner);
             
-            var player = BuildPlayer(bulletSpawner);
-            sceneGraph.Root.AddChild(player);
-
-            for (var i = 0; i != 6; ++i)
-                AddAsteroid(sceneGraph);
-
             var context = await _canvas.CreateCanvas2DAsync();
             var renderService = new RenderService(this, context);
             this.AddService(renderService);
+        }
+
+        protected override ValueTask Update()
+        {
+            var canSpawnAsteroid = GameTime.TotalMilliseconds - _lastAsteroidSpawnTime >= _asteroidSpawnRate;
+            if (canSpawnAsteroid)
+            {
+                _lastAsteroidSpawnTime = GameTime.TotalMilliseconds;
+                _asteroidsSpawner.Spawn();
+            }
+
+            return base.Update();
         }
 
         private Spawner BuildBulletSpawner(CollisionService collisionService)
@@ -109,7 +127,7 @@ namespace Blazeroids.Web.Game
             bbox.SetSize(sprite.Bounds.Size);
 
             var rigidBody = player.Components.Add<MovingBody>();
-            rigidBody.MaxSpeed = 400f;
+            rigidBody.MaxSpeed = 1000f;
 
             var weapon = player.Components.Add<Weapon>();
             weapon.Spawner = bulletSpawner;
@@ -118,36 +136,58 @@ namespace Blazeroids.Web.Game
             
             return player;
         }
-
-        private void AddAsteroid(SceneGraph sceneGraph)
+        
+        private Spawner BuildAsteroidsSpawner(CollisionService collisionService)
         {
-            var asteroid = new GameObject();
-
             var spriteSheet = _assetsResolver.Get<SpriteSheet>("assets/sheet.json");
             var sprite = spriteSheet.Get("meteorBrown_big1.png");
-            
-            var transform = asteroid.Components.Add<TransformComponent>();
-           
-            var w = (double)_canvas.Width;
-            var rx = MathUtils.Random.NextDouble(0, .35, .65, 1);
-            var tx = MathUtils.Normalize(rx, 0, 1, -1, 1);
-            transform.Local.Position.X = (float)(tx * w/3 + w/2);
 
-            var h = (double)_canvas.Height;
-            var ry = MathUtils.Random.NextDouble(0, .35, .65, 1);
-            var ty = MathUtils.Normalize(ry, 0, 1, -1, 1);
-            transform.Local.Position.Y = (float)(ty * h/3 + h/2);
+            var spawner = new Spawner(() =>
+            {
+                var asteroid = new GameObject();
+                
+                asteroid.Components.Add<TransformComponent>();
+                
+                var spriteRenderer = asteroid.Components.Add<SpriteRenderComponent>();
+                spriteRenderer.Sprite = sprite;
 
-            var spriteRenderer = asteroid.Components.Add<SpriteRenderComponent>();
-            spriteRenderer.Sprite = sprite;
-            
-            var bbox = asteroid.Components.Add<BoundingBoxComponent>();
-            bbox.SetSize(sprite.Bounds.Size);
+                var bbox = asteroid.Components.Add<BoundingBoxComponent>();
+                bbox.SetSize(sprite.Bounds.Size);
 
-            asteroid.Components.Add<AsteroidBrain>();
+                asteroid.Components.Add<AsteroidBrain>();
 
-            sceneGraph.Root.AddChild(asteroid);
+                collisionService.Add(bbox);
+
+                return asteroid;
+            }, asteroid =>
+            {
+                var transform = asteroid.Components.Get<TransformComponent>();
+
+                transform.World.Reset(); 
+                transform.Local.Reset();
+                
+                transform.Local.Position.X = MathUtils.Random.NextBool() ? 0 : _canvas.Width;
+                transform.Local.Position.Y = MathUtils.Random.NextBool() ? 0 : _canvas.Height;
+                
+                var brain = asteroid.Components.Get<AsteroidBrain>();
+                var dir = _player.Components.Get<TransformComponent>().Local.Position - transform.Local.Position;
+                brain.Direction = Vector2.Normalize(dir);
+                brain.Speed = (float)MathUtils.Random.NextDouble(0.15, 0.5);
+
+                //var w = (double)_canvas.Width;
+                //var rx = MathUtils.Random.NextDouble(0, .4, .6, 1);
+                //var tx = MathUtils.Normalize(rx, 0, 1, -1, 1);
+                //transform.Local.Position.X = (float)(tx * w / 2.5 + w / 2);
+
+                //var h = (double)_canvas.Height;
+                //var ry = MathUtils.Random.NextDouble(0, .35, .65, 1);
+                //var ty = MathUtils.Normalize(ry, 0, 1, -1, 1);
+                //transform.Local.Position.Y = (float)(ty * h / 2.5 + h / 2);
+            });
+
+            spawner.Components.Add<TransformComponent>();
+
+            return spawner;
         }
-
     }
 }

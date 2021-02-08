@@ -17,9 +17,11 @@ namespace Blazeroids.Core.Utils
             double minValue1, double maxValue1,
             double minValue2, double maxValue2)
         {
-            return (1 == (random.Next() & 1)) ?
+            return random.NextBool() ?
                 random.NextDouble(minValue1, maxValue1) :
                 random.NextDouble(minValue2, maxValue2);
         }
+
+        public static bool NextBool(this Random random) => (1 == (random.Next() & 1));
     }
 }

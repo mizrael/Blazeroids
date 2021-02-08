@@ -52,7 +52,6 @@ namespace Blazeroids.Web.Game.Components
 
         private void HandleMovement(GameContext game, InputService inputService)
         {
-            
             if (_transform.World.Position.X < -_spriteRender.Sprite.Bounds.Width)
                 _transform.Local.Position.X = game.Display.Size.Width + _halfSize.Width;
             else if (_transform.World.Position.X > game.Display.Size.Width + _spriteRender.Sprite.Bounds.Width)

@@ -19,6 +19,8 @@ namespace Blazeroids.Web.Game
         private readonly IAssetsResolver _assetsResolver;
 
         private long _lastAsteroidSpawnTime = 0;
+        private long _startAsteroidSpawnRate = 2000;
+        private long _maxAsteroidSpawnRate = 500;
         private long _asteroidSpawnRate = 2000;
         private Spawner _asteroidsSpawner;
         private GameObject _player;
@@ -45,22 +47,34 @@ namespace Blazeroids.Web.Game
             _asteroidsSpawner = BuildAsteroidsSpawner(collisionService);
             sceneGraph.Root.AddChild(_asteroidsSpawner);
 
-            var fpsCounter = new GameObject();
-            var statsUI = fpsCounter.Components.Add<StatsUIComponent>();
-            statsUI.BulletSpawner = bulletSpawner;
-            statsUI.AsteroidsSpawner = _asteroidsSpawner;
-            sceneGraph.Root.AddChild(fpsCounter);
-
             _player = BuildPlayer(bulletSpawner);
             sceneGraph.Root.AddChild(_player);
             
+            var ui = BuidUI(bulletSpawner, _player);
+            sceneGraph.Root.AddChild(ui);
+
             var context = await _canvas.CreateCanvas2DAsync();
             var renderService = new RenderService(this, context);
             this.AddService(renderService);
         }
 
+        private GameObject BuidUI(Spawner bulletSpawner, GameObject player)
+        {
+            var ui = new GameObject();
+            var gameStats = ui.Components.Add<GameStatsUIComponent>();
+            gameStats.BulletSpawner = bulletSpawner;
+            gameStats.AsteroidsSpawner = _asteroidsSpawner;
+
+            var playerStats = ui.Components.Add<PlayerStatsUIComponent>();
+            playerStats.PlayerBrain = player.Components.Get<PlayerBrain>();
+            
+            return ui;
+        }
+
         protected override ValueTask Update()
         {
+            _asteroidSpawnRate = Math.Max(_asteroidSpawnRate - 1, _maxAsteroidSpawnRate);
+            
             var canSpawnAsteroid = GameTime.TotalMilliseconds - _lastAsteroidSpawnTime >= _asteroidSpawnRate;
             if (canSpawnAsteroid)
             {
@@ -135,7 +149,16 @@ namespace Blazeroids.Web.Game
             var weapon = player.Components.Add<Weapon>();
             weapon.Spawner = bulletSpawner;
 
-            player.Components.Add<PlayerBrain>();
+            var brain = player.Components.Add<PlayerBrain>();
+            brain.OnPlayerDead += player =>
+            {
+                _asteroidSpawnRate = _startAsteroidSpawnRate;
+                    
+                brain.Stats = PlayerStats.Default();
+                playerTransform.Local.Position.X = _canvas.Width / 2;
+                playerTransform.Local.Position.Y = _canvas.Height / 2;
+                player.Enabled = true;
+            };
             
             return player;
         }

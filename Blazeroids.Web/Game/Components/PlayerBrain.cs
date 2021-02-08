@@ -6,6 +6,22 @@ using Blazeroids.Core.GameServices;
 
 namespace Blazeroids.Web.Game.Components
 {
+    public struct PlayerStats
+    {
+        public float EnginePower;
+        public float RotationSpeed;
+        public int MaxHealth;
+        public int Health;
+
+        public static PlayerStats Default() => new PlayerStats()
+        {
+            EnginePower = 1000f,
+            RotationSpeed = 25f,
+            Health = 10,
+            MaxHealth = 10
+        };
+    }
+    
     public class PlayerBrain : BaseComponent
     {
         private readonly MovingBody _movingBody;
@@ -15,9 +31,8 @@ namespace Blazeroids.Web.Game.Components
         
         private Weapon _weapon;
         private readonly Size _halfSize;
-        
-        private float _enginePower = 1000f;
-        private float _rotationSpeed = 25f;
+
+        public PlayerStats Stats = PlayerStats.Default();
 
         public PlayerBrain(GameObject owner) : base(owner)
         {
@@ -30,9 +45,19 @@ namespace Blazeroids.Web.Game.Components
             _boundingBox.OnCollision += (sender, collidedWith) =>
             {
                 if (collidedWith.Owner.Components.TryGet<AsteroidBrain>(out var _))
-                    this.Owner.Enabled = false;
+                {
+                    this.Stats.Health--;
+                    if (0 == this.Stats.Health)
+                    {
+                        this.Owner.Enabled = false;
+                        this.OnPlayerDead?.Invoke(this.Owner);
+                    }
+                }
             };
         }
+
+        public event OnPlayerDeadHandler OnPlayerDead;
+        public delegate void OnPlayerDeadHandler(GameObject player);
 
         public override async ValueTask Update(GameContext game)
         {
@@ -64,16 +89,16 @@ namespace Blazeroids.Web.Game.Components
                 _transform.Local.Position.Y = -_halfSize.Height;
 
             if (inputService.GetKeyState(Keys.Right).State == ButtonState.States.Down)
-                _movingBody.RotationSpeed = _rotationSpeed;
+                _movingBody.RotationSpeed = this.Stats.RotationSpeed;
             else if (inputService.GetKeyState(Keys.Left).State == ButtonState.States.Down)
-                _movingBody.RotationSpeed = -_rotationSpeed;
+                _movingBody.RotationSpeed = -this.Stats.RotationSpeed;
             else
                 _movingBody.RotationSpeed = 0f;
 
             if (inputService.GetKeyState(Keys.Up).State == ButtonState.States.Down)
-                _movingBody.Thrust = _enginePower;
+                _movingBody.Thrust = this.Stats.EnginePower;
             else if (inputService.GetKeyState(Keys.Down).State == ButtonState.States.Down)
-                _movingBody.Thrust = -_enginePower;
+                _movingBody.Thrust = -this.Stats.EnginePower;
             else
                 _movingBody.Thrust = 0f;
         }

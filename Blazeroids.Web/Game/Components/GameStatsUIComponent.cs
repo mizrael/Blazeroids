@@ -6,14 +6,14 @@ using Blazor.Extensions.Canvas.Canvas2D;
 
 namespace Blazeroids.Web.Game.Components
 {
-    public class StatsUIComponent : BaseComponent, IRenderable
+    public class GameStatsUIComponent : BaseComponent, IRenderable
     {
         private int startY = 50;
         private int y = 50;
         private int lineHeight = 30;
         private int x = 20; 
         
-        private StatsUIComponent(GameObject owner) : base(owner)
+        private GameStatsUIComponent(GameObject owner) : base(owner)
         {
         }
 
@@ -44,9 +44,7 @@ namespace Blazeroids.Web.Game.Components
             await context.StrokeTextAsync(text, x, y).ConfigureAwait(false);
         }
 
-
-        public Spawner BulletSpawner { get; set; }
-        public Spawner AsteroidsSpawner { get; set; }
-
+        public Spawner BulletSpawner;
+        public Spawner AsteroidsSpawner;
     }
 }

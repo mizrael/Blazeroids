@@ -42,7 +42,7 @@ namespace Blazeroids.Core
         
         private CollisionBucket[,] _buckets;
         private readonly Size _bucketSize;
-        private Dictionary<int, IList<CollisionBucket>> _bucketsByCollider = new();
+        private readonly Dictionary<int, IList<CollisionBucket>> _bucketsByCollider = new();
         
         public CollisionService(GameContext game, Size bucketSize)
         {
@@ -67,13 +67,13 @@ namespace Blazeroids.Core
                     _bucketSize.Height);
                 _buckets[row, col] = new CollisionBucket(bounds);
             }
-            
+
+            _bucketsByCollider.Clear();
+
             var colliders = FindAllColliders();
             foreach (var collider in colliders)
             {
-                collider.OnPositionChanged -= CheckCollisions;
-                collider.OnPositionChanged += CheckCollisions;
-                RefreshColliderBuckets(collider);
+               Add(collider);
             }
         }
 
@@ -148,6 +148,13 @@ namespace Blazeroids.Core
             if(null == _buckets)
                 BuildBuckets();
             return ValueTask.CompletedTask;
+        }
+
+        public void Add(BoundingBoxComponent collider)
+        {
+            collider.OnPositionChanged -= CheckCollisions;
+            collider.OnPositionChanged += CheckCollisions;
+            RefreshColliderBuckets(collider);
         }
     }
 }

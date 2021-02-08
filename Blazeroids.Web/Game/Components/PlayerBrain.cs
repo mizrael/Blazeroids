@@ -16,7 +16,7 @@ namespace Blazeroids.Web.Game.Components
         private readonly Size _halfSize;
         
         private float _enginePower = 1000f;
-        private float _rotationSpeed = 10f;
+        private float _rotationSpeed = 25f;
 
         public PlayerBrain(GameObject owner) : base(owner)
         {

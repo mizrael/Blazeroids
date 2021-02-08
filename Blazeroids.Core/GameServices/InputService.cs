@@ -1,10 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Blazeroids.Core.Utils;
 
-namespace Blazeroids.Core
+namespace Blazeroids.Core.GameServices
 {
     public class InputService : IGameService
     {

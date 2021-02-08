@@ -2,6 +2,7 @@ using System.Drawing;
 using System.Threading.Tasks;
 using Blazeroids.Core;
 using Blazeroids.Core.Components;
+using Blazeroids.Core.GameServices;
 
 namespace Blazeroids.Web.Game.Components
 {

@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Blazeroids.Core
+namespace Blazeroids.Core.GameServices
 {
     public interface IGameService
     {

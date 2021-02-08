@@ -11,7 +11,7 @@ namespace Blazeroids.Web.Game.Components
         private int startY = 50;
         private int y = 50;
         private int lineHeight = 30;
-        private int x = 20;
+        private int x = 20; 
         
         private StatsUIComponent(GameObject owner) : base(owner)
         {

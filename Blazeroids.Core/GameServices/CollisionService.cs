@@ -1,10 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
 using Blazeroids.Core.Components;
 
-namespace Blazeroids.Core
+namespace Blazeroids.Core.GameServices
 {
     internal class CollisionBucket
     {   

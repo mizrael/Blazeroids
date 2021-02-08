@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Blazor.Extensions.Canvas.Canvas2D;
 
-namespace Blazeroids.Core
+namespace Blazeroids.Core.GameServices
 {
     public class RenderService : IGameService
     {

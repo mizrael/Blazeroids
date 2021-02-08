@@ -37,19 +37,21 @@ namespace Blazeroids.Web.Game
             
             var sceneGraph = new SceneGraph(this);
             this.AddService(sceneGraph);
-            
-            //var fpsCounter = new GameObject();
-            //fpsCounter.Components.Add<FPSCounterComponent>();
-            //game._sceneGraph.Root.AddChild(fpsCounter);
 
             var bulletSpawner = BuildBulletSpawner(collisionService);
             sceneGraph.Root.AddChild(bulletSpawner);
 
-            _player = BuildPlayer(bulletSpawner);
-            sceneGraph.Root.AddChild(_player);
-
             _asteroidsSpawner = BuildAsteroidsSpawner(collisionService);
             sceneGraph.Root.AddChild(_asteroidsSpawner);
+
+            var fpsCounter = new GameObject();
+            var statsUI = fpsCounter.Components.Add<StatsUIComponent>();
+            statsUI.BulletSpawner = bulletSpawner;
+            statsUI.AsteroidsSpawner = _asteroidsSpawner;
+            sceneGraph.Root.AddChild(fpsCounter);
+
+            _player = BuildPlayer(bulletSpawner);
+            sceneGraph.Root.AddChild(_player);
             
             var context = await _canvas.CreateCanvas2DAsync();
             var renderService = new RenderService(this, context);
@@ -154,7 +156,8 @@ namespace Blazeroids.Web.Game
                 var bbox = asteroid.Components.Add<BoundingBoxComponent>();
                 bbox.SetSize(sprite.Bounds.Size);
 
-                asteroid.Components.Add<AsteroidBrain>();
+                var brain = asteroid.Components.Add<AsteroidBrain>();
+                brain.Canvas = _canvas;
 
                 collisionService.Add(bbox);
 

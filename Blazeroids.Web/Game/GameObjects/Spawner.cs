@@ -28,12 +28,19 @@ namespace Blazeroids.Web.Game.GameObjects
 
             item.Enabled = true;
 
+            this.Spawned++;
+
             return item;
         }
 
         private void OnItemDisabled(GameObject item)
         {
             _pool.Return(item);
+            this.Returned++;
         }
+        
+        public int Spawned { get; private set; }
+        public int Returned { get; private set; }
+        public int Alive => Spawned - Returned;
     }
 }

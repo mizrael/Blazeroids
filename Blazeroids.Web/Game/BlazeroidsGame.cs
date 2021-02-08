@@ -36,7 +36,7 @@ namespace Blazeroids.Web.Game
             //fpsCounter.Components.Add<FPSCounterComponent>();
             //game._sceneGraph.Root.AddChild(fpsCounter);
 
-            var bulletSpawner = BuildBulletSpawner();
+            var bulletSpawner = BuildBulletSpawner(collisionService);
             sceneGraph.Root.AddChild(bulletSpawner);
             
             var player = BuildPlayer(bulletSpawner);
@@ -50,7 +50,7 @@ namespace Blazeroids.Web.Game
             this.AddService(renderService);
         }
 
-        private Spawner BuildBulletSpawner()
+        private Spawner BuildBulletSpawner(CollisionService collisionService)
         {
             var spriteSheet = _assetsResolver.Get<SpriteSheet>("assets/sheet.json");
             
@@ -73,6 +73,8 @@ namespace Blazeroids.Web.Game
                 var brain = bullet.Components.Add<BulletBrain>();
                 brain.Speed = speed;
                 brain.Canvas = _canvas;
+
+                collisionService.Add(bulletBBox);
 
                 return bullet;
             }, bullet =>

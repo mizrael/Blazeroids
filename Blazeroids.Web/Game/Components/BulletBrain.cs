@@ -10,13 +10,20 @@ namespace Blazeroids.Web.Game.Components
     {
         private readonly MovingBody _movingBody;
         private readonly TransformComponent _transformComponent;
+        private readonly BoundingBoxComponent _boundingBox;
         
         public BulletBrain(GameObject owner) : base(owner)
         {
             _movingBody = owner.Components.Get<MovingBody>();
             _transformComponent = owner.Components.Get<TransformComponent>();
+            _boundingBox = owner.Components.Get<BoundingBoxComponent>();
+            _boundingBox.OnCollision += (sender, collidedWith) =>
+            {
+                if (collidedWith.Owner.Components.TryGet<AsteroidBrain>(out var _))
+                    this.Owner.Enabled = false;
+            };
         }
-        
+
         public override async ValueTask Update(GameContext game)
         {
             _movingBody.Thrust = this.Speed;

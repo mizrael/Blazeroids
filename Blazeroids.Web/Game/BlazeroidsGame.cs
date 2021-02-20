@@ -10,6 +10,7 @@ using Blazeroids.Web.Game.Components;
 using Blazeroids.Web.Game.GameObjects;
 using Blazor.Extensions;
 using Blazeroids.Core.Utils;
+using Blazor.Extensions.Canvas.Canvas2D;
 
 namespace Blazeroids.Web.Game
 {
@@ -49,10 +50,10 @@ namespace Blazeroids.Web.Game
 
             _asteroidsSpawner = BuildAsteroidsSpawner(collisionService);
             sceneGraph.Root.AddChild(_asteroidsSpawner);
-            
+
             _player = BuildPlayer(bulletSpawner);
             sceneGraph.Root.AddChild(_player);
-            
+
             var ui = BuidUI(bulletSpawner, _player);
             sceneGraph.Root.AddChild(ui);
 
@@ -65,7 +66,7 @@ namespace Blazeroids.Web.Game
         {
             var background = new GameObject();
             
-            var sprite = _assetsResolver.Get<Sprite>("assets/backgrounds/darkPurple.png");
+            var sprite = _assetsResolver.Get<Sprite>("assets/backgrounds/blue.png");
 
             var transform = background.Components.Add<TransformComponent>();
             if(_canvas.Width > sprite.Bounds.Width)
@@ -73,8 +74,9 @@ namespace Blazeroids.Web.Game
             if (_canvas.Height > sprite.Bounds.Height)
                 transform.Local.Scale.Y = 2f * (float)_canvas.Height / sprite.Bounds.Height;
 
-            var renderer = background.Components.Add<SpriteRenderComponent>();
+            var renderer = background.Components.Add<RectRenderComponent>();
             renderer.Sprite = sprite;
+            renderer.RepeatPattern = RepeatPattern.Repeat;
 
             return background;
         }

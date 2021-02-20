@@ -13,9 +13,9 @@ namespace Blazeroids.Web.Game.Components
         public int MaxHealth;
         public int Health;
 
-        public static PlayerStats Default() => new PlayerStats()
+        public static PlayerStats Default() => new ()
         {
-            EnginePower = 1000f,
+            EnginePower = 2000f,
             RotationSpeed = 25f,
             Health = 10,
             MaxHealth = 10

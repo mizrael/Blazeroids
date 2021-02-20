@@ -144,12 +144,13 @@ namespace Blazeroids.Web.Game
             bbox.SetSize(sprite.Bounds.Size);
 
             var rigidBody = player.Components.Add<MovingBody>();
-            rigidBody.MaxSpeed = 1000f;
-
+            
             var weapon = player.Components.Add<Weapon>();
             weapon.Spawner = bulletSpawner;
 
             var brain = player.Components.Add<PlayerBrain>();
+            rigidBody.MaxSpeed = brain.Stats.EnginePower;
+            
             brain.OnPlayerDead += player =>
             {
                 _asteroidSpawnRate = _startAsteroidSpawnRate;

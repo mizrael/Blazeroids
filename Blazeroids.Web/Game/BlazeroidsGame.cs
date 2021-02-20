@@ -14,6 +14,15 @@ using Blazor.Extensions.Canvas.Canvas2D;
 
 namespace Blazeroids.Web.Game
 {
+    public enum Layers
+    {
+        Background = 0,
+        Items,
+        Enemies,
+        Player,
+        UI
+    }
+    
     public class BlazeroidsGame : GameContext
     {
         private readonly BECanvasComponent _canvas;
@@ -42,21 +51,21 @@ namespace Blazeroids.Web.Game
             var sceneGraph = new SceneGraph(this);
             this.AddService(sceneGraph);
 
-            var background = BuildBackground();
-            sceneGraph.Root.AddChild(background);
-
             var bulletSpawner = BuildBulletSpawner(collisionService);
             sceneGraph.Root.AddChild(bulletSpawner);
-
-            _asteroidsSpawner = BuildAsteroidsSpawner(collisionService);
-            sceneGraph.Root.AddChild(_asteroidsSpawner);
-
+            
             _player = BuildPlayer(bulletSpawner);
             sceneGraph.Root.AddChild(_player);
 
             var ui = BuidUI(bulletSpawner, _player);
             sceneGraph.Root.AddChild(ui);
 
+            _asteroidsSpawner = BuildAsteroidsSpawner(collisionService);
+            sceneGraph.Root.AddChild(_asteroidsSpawner);
+
+            var background = BuildBackground();
+            sceneGraph.Root.AddChild(background);
+            
             var context = await _canvas.CreateCanvas2DAsync();
             var renderService = new RenderService(this, context);
             this.AddService(renderService);
@@ -77,6 +86,7 @@ namespace Blazeroids.Web.Game
             var renderer = background.Components.Add<RectRenderComponent>();
             renderer.Sprite = sprite;
             renderer.RepeatPattern = RepeatPattern.Repeat;
+            renderer.LayerIndex = (int)Layers.Background;
 
             return background;
         }
@@ -92,7 +102,8 @@ namespace Blazeroids.Web.Game
 
                 var bulletSpriteRenderer = bullet.Components.Add<SpriteRenderComponent>();
                 bulletSpriteRenderer.Sprite = spriteSheet.Get("fire01.png");
-
+                bulletSpriteRenderer.LayerIndex = (int)Layers.Items;
+                
                 var bulletBBox = bullet.Components.Add<BoundingBoxComponent>();
                 bulletBBox.SetSize(bulletSpriteRenderer.Sprite.Bounds.Size);
 
@@ -135,7 +146,8 @@ namespace Blazeroids.Web.Game
 
             var playerSpriteRenderer = player.Components.Add<SpriteRenderComponent>();
             playerSpriteRenderer.Sprite = sprite;
-
+            playerSpriteRenderer.LayerIndex = (int)Layers.Player;
+            
             var bbox = player.Components.Add<BoundingBoxComponent>();
             bbox.SetSize(sprite.Bounds.Size);
 
@@ -166,7 +178,8 @@ namespace Blazeroids.Web.Game
             var gameStats = ui.Components.Add<GameStatsUIComponent>();
             gameStats.BulletSpawner = bulletSpawner;
             gameStats.AsteroidsSpawner = _asteroidsSpawner;
-
+            gameStats.LayerIndex = (int)Layers.UI;
+            
             var playerStats = ui.Components.Add<PlayerStatsUIComponent>();
             playerStats.PlayerBrain = player.Components.Get<PlayerBrain>();
 
@@ -186,6 +199,7 @@ namespace Blazeroids.Web.Game
                 
                 var spriteRenderer = asteroid.Components.Add<SpriteRenderComponent>();
                 spriteRenderer.Sprite = sprite;
+                spriteRenderer.LayerIndex = (int)Layers.Enemies;
 
                 var bbox = asteroid.Components.Add<BoundingBoxComponent>();
                 bbox.SetSize(sprite.Bounds.Size);

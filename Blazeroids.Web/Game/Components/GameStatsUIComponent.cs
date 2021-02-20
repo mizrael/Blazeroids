@@ -46,5 +46,7 @@ namespace Blazeroids.Web.Game.Components
 
         public Spawner BulletSpawner;
         public Spawner AsteroidsSpawner;
+
+        public int LayerIndex { get; set; }
     }
 }

@@ -9,12 +9,10 @@ namespace Blazeroids.Core.Components
         {
             this.Owner = owner ?? throw new ArgumentNullException(nameof(owner));
         }
-        
+
         //TODO: add an OnStart method
 
-        public virtual async ValueTask Update(GameContext game)
-        {
-        }
+        public virtual ValueTask Update(GameContext game) => ValueTask.CompletedTask;
 
         public GameObject Owner { get; }
     }

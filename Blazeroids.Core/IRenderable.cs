@@ -6,5 +6,7 @@ namespace Blazeroids.Core
     public interface IRenderable
     {
         ValueTask Render(GameContext game, Canvas2DContext context);
+        
+        int LayerIndex { get; set; }
     }
 }

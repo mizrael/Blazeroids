@@ -31,5 +31,6 @@ namespace Blazeroids.Web.Game.Components
         }
 
         public PlayerBrain PlayerBrain { get; set; }
+        public int LayerIndex { get; set; }
     }
 }

@@ -2,5 +2,9 @@
   {
     "path": "assets/sheet.json",
     "type": "spritesheet"
+  },
+  {
+    "path": "assets/backgrounds/darkPurple.png",
+    "type": "sprite"
   }
 ]

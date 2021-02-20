@@ -41,12 +41,15 @@ namespace Blazeroids.Web.Game
             var sceneGraph = new SceneGraph(this);
             this.AddService(sceneGraph);
 
+            var background = BuildBackground();
+            sceneGraph.Root.AddChild(background);
+
             var bulletSpawner = BuildBulletSpawner(collisionService);
             sceneGraph.Root.AddChild(bulletSpawner);
 
             _asteroidsSpawner = BuildAsteroidsSpawner(collisionService);
             sceneGraph.Root.AddChild(_asteroidsSpawner);
-
+            
             _player = BuildPlayer(bulletSpawner);
             sceneGraph.Root.AddChild(_player);
             
@@ -58,33 +61,24 @@ namespace Blazeroids.Web.Game
             this.AddService(renderService);
         }
 
-        private GameObject BuidUI(Spawner bulletSpawner, GameObject player)
+        private GameObject BuildBackground()
         {
-            var ui = new GameObject();
-            var gameStats = ui.Components.Add<GameStatsUIComponent>();
-            gameStats.BulletSpawner = bulletSpawner;
-            gameStats.AsteroidsSpawner = _asteroidsSpawner;
-
-            var playerStats = ui.Components.Add<PlayerStatsUIComponent>();
-            playerStats.PlayerBrain = player.Components.Get<PlayerBrain>();
+            var background = new GameObject();
             
-            return ui;
+            var sprite = _assetsResolver.Get<Sprite>("assets/backgrounds/darkPurple.png");
+
+            var transform = background.Components.Add<TransformComponent>();
+            if(_canvas.Width > sprite.Bounds.Width)
+                transform.Local.Scale.X = 2f * (float)_canvas.Width / sprite.Bounds.Width;
+            if (_canvas.Height > sprite.Bounds.Height)
+                transform.Local.Scale.Y = 2f * (float)_canvas.Height / sprite.Bounds.Height;
+
+            var renderer = background.Components.Add<SpriteRenderComponent>();
+            renderer.Sprite = sprite;
+
+            return background;
         }
-
-        protected override ValueTask Update()
-        {
-            _asteroidSpawnRate = Math.Max(_asteroidSpawnRate - 1, _maxAsteroidSpawnRate);
-            
-            var canSpawnAsteroid = GameTime.TotalMilliseconds - _lastAsteroidSpawnTime >= _asteroidSpawnRate;
-            if (canSpawnAsteroid)
-            {
-                _lastAsteroidSpawnTime = GameTime.TotalMilliseconds;
-                _asteroidsSpawner.Spawn();
-            }
-
-            return base.Update();
-        }
-
+        
         private Spawner BuildBulletSpawner(CollisionService collisionService)
         {
             var spriteSheet = _assetsResolver.Get<SpriteSheet>("assets/sheet.json");
@@ -163,7 +157,20 @@ namespace Blazeroids.Web.Game
             
             return player;
         }
-        
+
+        private GameObject BuidUI(Spawner bulletSpawner, GameObject player)
+        {
+            var ui = new GameObject();
+            var gameStats = ui.Components.Add<GameStatsUIComponent>();
+            gameStats.BulletSpawner = bulletSpawner;
+            gameStats.AsteroidsSpawner = _asteroidsSpawner;
+
+            var playerStats = ui.Components.Add<PlayerStatsUIComponent>();
+            playerStats.PlayerBrain = player.Components.Get<PlayerBrain>();
+
+            return ui;
+        }
+
         private Spawner BuildAsteroidsSpawner(CollisionService collisionService)
         {
             var spriteSheet = _assetsResolver.Get<SpriteSheet>("assets/sheet.json");
@@ -216,6 +223,20 @@ namespace Blazeroids.Web.Game
             spawner.Components.Add<TransformComponent>();
 
             return spawner;
+        }
+        
+        protected override ValueTask Update()
+        {
+            _asteroidSpawnRate = Math.Max(_asteroidSpawnRate - 1, _maxAsteroidSpawnRate);
+
+            var canSpawnAsteroid = GameTime.TotalMilliseconds - _lastAsteroidSpawnTime >= _asteroidSpawnRate;
+            if (canSpawnAsteroid)
+            {
+                _lastAsteroidSpawnTime = GameTime.TotalMilliseconds;
+                _asteroidsSpawner.Spawn();
+            }
+
+            return base.Update();
         }
     }
 }

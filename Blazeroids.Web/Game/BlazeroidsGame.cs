@@ -17,9 +17,9 @@ namespace Blazeroids.Web.Game
     public enum Layers
     {
         Background = 0,
-        Items,
         Enemies,
         Player,
+        Items,
         UI
     }
     
@@ -182,15 +182,28 @@ namespace Blazeroids.Web.Game
             
             var playerStats = ui.Components.Add<PlayerStatsUIComponent>();
             playerStats.PlayerBrain = player.Components.Get<PlayerBrain>();
-
+            playerStats.LayerIndex = (int)Layers.UI;
+            
             return ui;
         }
 
         private Spawner BuildAsteroidsSpawner(CollisionService collisionService)
         {
+            var spriteNames = new[]
+            {
+                "meteorBrown_big1.png",
+                "meteorBrown_big2.png",
+                "meteorBrown_big3.png",
+                "meteorBrown_big4.png",
+                "meteorGrey_big1.png",
+                "meteorGrey_big2.png",
+                "meteorGrey_big3.png",
+                "meteorGrey_big4.png",
+            };
+            int spriteIndex = 0;
+            
             var spriteSheet = _assetsResolver.Get<SpriteSheet>("assets/sheet.json");
-            var sprite = spriteSheet.Get("meteorBrown_big1.png");
-
+            
             var spawner = new Spawner(() =>
             {
                 var asteroid = new GameObject();
@@ -198,6 +211,8 @@ namespace Blazeroids.Web.Game
                 asteroid.Components.Add<TransformComponent>();
                 
                 var spriteRenderer = asteroid.Components.Add<SpriteRenderComponent>();
+                var sprite = spriteSheet.Get(spriteNames[spriteIndex]);
+                spriteIndex = spriteIndex + 1 % spriteNames.Length;
                 spriteRenderer.Sprite = sprite;
                 spriteRenderer.LayerIndex = (int)Layers.Enemies;
 

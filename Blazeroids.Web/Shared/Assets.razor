@@ -18,9 +18,9 @@
     [Parameter]
     public EventCallback OnLoaded { get; set; }
 
-    private readonly List<(IAsset asset, AssetData data)> _items = new ();
+    private readonly List<(IAsset asset, AssetMeta data)> _items = new ();
 
-    private readonly Dictionary<Type, Func<IAsset, AssetData, RenderFragment>> _renderers = new Dictionary<Type, Func<IAsset, AssetData, RenderFragment>>()
+    private readonly Dictionary<Type, Func<IAsset, AssetMeta, RenderFragment>> _renderers = new Dictionary<Type, Func<IAsset, AssetMeta, RenderFragment>>()
 {
         {
             typeof(Sprite), (a, d) => {
@@ -38,28 +38,22 @@
         }
     };
 
-        protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
+    {
+        var items = await Http.GetFromJsonAsync<AssetMeta[]>(this.Source);
+
+        foreach (var item in items)
         {
-            var items = await Http.GetFromJsonAsync<AssetData[]>(this.Source);
+            IAsset asset = null;
+            if (item.Type == "sprite")
+                asset = await this.AssetsResolver.Load<Sprite>(item);
+            else if (item.Type == "spritesheet")
+                asset = await this.AssetsResolver.Load<SpriteSheet>(item);
 
-            foreach (var item in items)
-            {
-                IAsset asset = null;
-                if (item.type == "sprite")
-                    asset = await this.AssetsResolver.Load<Sprite>(item.path);
-                else if (item.type == "spritesheet")
-                    asset = await this.AssetsResolver.Load<SpriteSheet>(item.path);
-
-                if (null != asset)
-                    _items.Add(new (asset, item));
-            }
-
-            await this.OnLoaded.InvokeAsync(this);
+            if (null != asset)
+                _items.Add(new (asset, item));
         }
 
-        internal class AssetData
-        {
-            public string path { get; set; }
-            public string type { get; set; }
-        }
+        await this.OnLoaded.InvokeAsync(this);
+    }
 }

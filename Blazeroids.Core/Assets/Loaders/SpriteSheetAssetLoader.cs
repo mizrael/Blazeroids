@@ -17,9 +17,9 @@ namespace Blazeroids.Core.Assets.Loaders
             _httpClient = httpClient;
         }
 
-        public async ValueTask<SpriteSheet> Load(string path)
+        public async ValueTask<SpriteSheet> Load(AssetMeta meta)
         {
-            var dto = await _httpClient.GetFromJsonAsync<SpriteSheetDTO>(path);
+            var dto = await _httpClient.GetFromJsonAsync<SpriteSheetDTO>(meta.Path);
             
             var elementRef = new ElementReference(Guid.NewGuid().ToString());
 
@@ -27,7 +27,7 @@ namespace Blazeroids.Core.Assets.Loaders
                 .Select(s => new SpriteBase(s.name, elementRef, new Rectangle(s.x, s.y, s.width, s.height)))
                 .ToArray();
 
-            return new SpriteSheet(path, elementRef, dto.imagePath, sprites);
+            return new SpriteSheet(meta.Path, elementRef, dto.imagePath, sprites);
         }
 
         internal class SpriteSheetDTO

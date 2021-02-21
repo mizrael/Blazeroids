@@ -5,6 +5,10 @@
   },
   {
     "path": "assets/backgrounds/blue.png",
-    "type": "sprite"
+    "type": "sprite",
+    "properties": {
+      "width": 256,
+      "height": 256
+    } 
   }
 ]

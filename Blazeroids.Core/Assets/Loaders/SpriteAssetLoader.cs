@@ -1,6 +1,5 @@
 using System;
 using System.Drawing;
-using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
@@ -16,16 +15,25 @@ namespace Blazeroids.Core.Assets.Loaders
             _httpClient = httpClient;
         }
 
-        public async ValueTask<Sprite> Load(string path)
+        public async ValueTask<Sprite> Load(AssetMeta meta)
         {
-            // TODO: remove call, add metadata in the assets file
-            var bytes = await _httpClient.GetByteArrayAsync(path);
-            await using var stream = new MemoryStream(bytes);
-            using var image = await SixLabors.ImageSharp.Image.LoadAsync(stream);
-            var bounds = new Rectangle(0, 0, image.Width, image.Height);
+            if (null == meta)
+                throw new ArgumentNullException(nameof(meta));
+            if (null == meta.Properties)
+                throw new ArgumentException("properties missing", nameof(AssetMeta.Properties));
+            
+            if(!meta.Properties.TryGetValue("width", out var tmp) ||
+               !int.TryParse(tmp.ToString(), out var width))
+                throw new ArgumentException("invalid width", nameof(AssetMeta.Properties));
+
+            if (!meta.Properties.TryGetValue("height", out tmp) ||
+                !int.TryParse(tmp.ToString(), out var height))
+                throw new ArgumentException("invalid height", nameof(AssetMeta.Properties));
+
+            var bounds = new Rectangle(0, 0, width, height);
 
             var elementRef = new ElementReference(Guid.NewGuid().ToString());
-            return new Sprite(path, elementRef, bounds, path);
+            return new Sprite(meta.Path, elementRef, bounds, meta.Path);
         }
     }
 }

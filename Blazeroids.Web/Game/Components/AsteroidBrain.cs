@@ -16,15 +16,21 @@ namespace Blazeroids.Web.Game.Components
         public Vector2 Direction;
         public float Speed = (float)MathUtils.Random.NextDouble(0.15, 0.5);
         public BECanvasComponent Canvas;
-        
+
+        public event OnDeathHandler OnDeath;
+        public delegate void OnDeathHandler(GameObject asteroid);
+
         private AsteroidBrain(GameObject owner) : base(owner)
         {   
             _transform = owner.Components.Get<TransformComponent>();
             _boundingBox = owner.Components.Get<BoundingBoxComponent>();
             _boundingBox.OnCollision += (sender, collidedWith) =>
             {
-                if (!collidedWith.Owner.Components.TryGet<AsteroidBrain>(out var _)) 
-                    this.Owner.Enabled = false;
+                if (collidedWith.Owner.Components.TryGet<AsteroidBrain>(out var _))
+                    return;
+
+                this.Owner.Enabled = false;
+                this.OnDeath?.Invoke(this.Owner);
             };
         }
 

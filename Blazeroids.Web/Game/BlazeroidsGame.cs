@@ -34,6 +34,8 @@ namespace Blazeroids.Web.Game
         private long _asteroidSpawnRate = 2000;
         private Spawner _asteroidsSpawner;
         private GameObject _player;
+        private GameStatsUIComponent _gameStats;
+        private int _killedAsteroids = 0;
 
         public BlazeroidsGame(BECanvasComponent canvas, IAssetsResolver assetsResolver)
         {
@@ -159,7 +161,7 @@ namespace Blazeroids.Web.Game
             var brain = player.Components.Add<PlayerBrain>();
             rigidBody.MaxSpeed = brain.Stats.EnginePower;
             
-            brain.OnPlayerDead += player =>
+            brain.OnDeath += player =>
             {
                 _asteroidSpawnRate = _startAsteroidSpawnRate;
                     
@@ -167,6 +169,7 @@ namespace Blazeroids.Web.Game
                 playerTransform.Local.Position.X = _canvas.Width / 2;
                 playerTransform.Local.Position.Y = _canvas.Height / 2;
                 player.Enabled = true;
+                _gameStats.ResetScore();
             };
             
             return player;
@@ -175,10 +178,10 @@ namespace Blazeroids.Web.Game
         private GameObject BuidUI(Spawner bulletSpawner, GameObject player)
         {
             var ui = new GameObject();
-            var gameStats = ui.Components.Add<GameStatsUIComponent>();
-            gameStats.BulletSpawner = bulletSpawner;
-            gameStats.AsteroidsSpawner = _asteroidsSpawner;
-            gameStats.LayerIndex = (int)Layers.UI;
+            _gameStats = ui.Components.Add<GameStatsUIComponent>();
+            _gameStats.BulletSpawner = bulletSpawner;
+            _gameStats.AsteroidsSpawner = _asteroidsSpawner;
+            _gameStats.LayerIndex = (int)Layers.UI;
             
             var playerStats = ui.Components.Add<PlayerStatsUIComponent>();
             playerStats.PlayerBrain = player.Components.Get<PlayerBrain>();
@@ -218,11 +221,15 @@ namespace Blazeroids.Web.Game
 
                 var bbox = asteroid.Components.Add<BoundingBoxComponent>();
                 bbox.SetSize(sprite.Bounds.Size);
-
+                collisionService.Add(bbox);
+                
                 var brain = asteroid.Components.Add<AsteroidBrain>();
                 brain.Canvas = _canvas;
-
-                collisionService.Add(bbox);
+                brain.OnDeath += o =>
+                {
+                    _killedAsteroids++;
+                    _gameStats.IncreaseScore();
+                };
 
                 return asteroid;
             }, asteroid =>

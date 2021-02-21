@@ -50,14 +50,14 @@ namespace Blazeroids.Web.Game.Components
                     if (0 == this.Stats.Health)
                     {
                         this.Owner.Enabled = false;
-                        this.OnPlayerDead?.Invoke(this.Owner);
+                        this.OnDeath?.Invoke(this.Owner);
                     }
                 }
             };
         }
 
-        public event OnPlayerDeadHandler OnPlayerDead;
-        public delegate void OnPlayerDeadHandler(GameObject player);
+        public event OnDeathHandler OnDeath;
+        public delegate void OnDeathHandler(GameObject player);
 
         public override async ValueTask Update(GameContext game)
         {

@@ -51,6 +51,9 @@ namespace Blazeroids.Web.Game
             var sceneGraph = new SceneGraph(this);
             this.AddService(sceneGraph);
 
+            _asteroidsSpawner = BuildAsteroidsSpawner(collisionService);
+            sceneGraph.Root.AddChild(_asteroidsSpawner);
+
             var bulletSpawner = BuildBulletSpawner(collisionService);
             sceneGraph.Root.AddChild(bulletSpawner);
             
@@ -59,9 +62,6 @@ namespace Blazeroids.Web.Game
 
             var ui = BuidUI(bulletSpawner, _player);
             sceneGraph.Root.AddChild(ui);
-
-            _asteroidsSpawner = BuildAsteroidsSpawner(collisionService);
-            sceneGraph.Root.AddChild(_asteroidsSpawner);
 
             var background = BuildBackground();
             sceneGraph.Root.AddChild(background);

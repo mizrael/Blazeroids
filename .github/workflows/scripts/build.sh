@@ -6,7 +6,7 @@ rm -rf ./build
 
 echo "building $projectName ..."
 buildPath="./build/$projectName-tmp"    
-dotnet publish $projectFile --output $buildPath --configuration Debug
+dotnet publish $projectFile --output $buildPath --configuration Release
 
 mv -v $buildPath/wwwroot/* $buildPath/wwwroot/.* ./build      
 rm -rf $buildPath

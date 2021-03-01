@@ -205,6 +205,7 @@ namespace Blazeroids.Web.Game
                 var renderer = explosion.Components.Add<AnimatedSpriteRenderComponent>();
                 renderer.Animation = explosionAnim;
                 renderer.LayerIndex = (int)Layers.Enemies;
+                renderer.OnAnimationComplete += _ => explosion.Enabled = false;
 
                 return explosion;
             }, explosion =>{

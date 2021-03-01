@@ -40,8 +40,12 @@ namespace Blazeroids.Core.Components
                     _currFramePosY = 0;
 
                 _currFrameIndex++;
-                if(_currFrameIndex >= Animation.FramesCount)
+                if(_currFrameIndex >= Animation.FramesCount){
                     this.Reset();
+                    this.OnAnimationComplete?.Invoke(this);
+                    if(!this.Owner.Enabled)
+                        return;
+                }                    
             }
 
             await context.SaveAsync();
@@ -76,6 +80,9 @@ namespace Blazeroids.Core.Components
             _currFramePosY = 0;
             _currFrameIndex = 0;
         }
+
+        public event OnAnimationCompleteHandler OnAnimationComplete;
+        public delegate void OnAnimationCompleteHandler(AnimatedSpriteRenderComponent renderer);
 
         public bool MirrorVertically { get; set; }
         public int LayerIndex { get; set; }

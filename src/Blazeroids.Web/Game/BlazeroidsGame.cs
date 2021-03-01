@@ -204,7 +204,7 @@ namespace Blazeroids.Web.Game
 
                 var renderer = explosion.Components.Add<AnimatedSpriteRenderComponent>();
                 renderer.Animation = explosionAnim;
-                renderer.LayerIndex = (int)Layers.Enemies;
+                renderer.LayerIndex = (int)Layers.Items;
                 renderer.OnAnimationComplete += _ => explosion.Enabled = false;
 
                 return explosion;
@@ -264,7 +264,11 @@ namespace Blazeroids.Web.Game
                     _gameStats.IncreaseScore();
 
                     var explosion = _explosionsSpawner.Spawn();
-                    explosion.Components.Get<TransformComponent>().Local.Clone(transform.Local);
+                    var explosionTransform = explosion.Components.Get<TransformComponent>();
+                    explosionTransform.Local.Position = transform.Local.Position;
+                    explosionTransform.Local.Position.X -= sprite.Bounds.Width;
+                    explosionTransform.Local.Position.Y -= sprite.Bounds.Height;
+
                     explosion.Enabled = true;
                 };
 

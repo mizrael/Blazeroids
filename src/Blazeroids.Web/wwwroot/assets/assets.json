@@ -4,10 +4,6 @@
     "type": "spritesheet"
   },
   {
-    "path": "assets/explosion1.json",
-    "type": "spritesheet"
-  },
-  {
     "path": "assets/backgrounds/blue.png",
     "type": "sprite",
     "properties": {

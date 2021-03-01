@@ -4,11 +4,15 @@
     "type": "spritesheet"
   },
   {
+    "path": "assets/explosion1.json",
+    "type": "spritesheet"
+  },
+  {
     "path": "assets/backgrounds/blue.png",
     "type": "sprite",
     "properties": {
       "width": 256,
       "height": 256
-    } 
+    }
   }
 ]

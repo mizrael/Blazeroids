@@ -1,6 +1,6 @@
 solutionName="Blazeroids"
 projectName="Blazeroids.Web"
-projectFile="$projectName/$projectName.csproj"
+projectFile="src/$projectName/$projectName.csproj"
 
 rm -rf ./build
 

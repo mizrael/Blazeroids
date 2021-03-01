@@ -19,6 +19,8 @@ namespace Blazeroids.Core.Assets
 
         public string Name { get; }
 
+        public IEnumerable<Animation> Animations => _animations.Values;
+
         public Animation GetAnimation(string name) => string.IsNullOrWhiteSpace(name) || !_animations.ContainsKey(name) ? null : _animations[name];
 
         private void AddAnimation(Animation animation)

@@ -1,0 +1,16 @@
+﻿@using Blazeroids.Core.Assets
+
+@if(this.Source is not null){
+    <div hidden data-type="animations" name="@this.Source.Name">
+
+    @foreach(var animation in this.Source.Animations){
+        <img hidden src="data:image/png;base64,@animation.ImageData" @ref="animation.ImageRef" data-name="@animation.Name" />
+    }
+
+    </div>
+}
+
+@code{
+    [Parameter]
+    public AnimationCollection Source { get; set; }
+}

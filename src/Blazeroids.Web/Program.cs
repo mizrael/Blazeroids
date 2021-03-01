@@ -18,6 +18,7 @@ namespace Blazeroids.Web
             builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddSingleton<IAssetsResolver, AssetsResolver>();
             builder.Services.AddSingleton<IAssetLoader<Sprite>, SpriteAssetLoader>();
+            builder.Services.AddSingleton<IAssetLoader<AnimationCollection>, AnimationsAssetLoader>();
             builder.Services.AddSingleton<IAssetLoader<SpriteSheet>, SpriteSheetAssetLoader>();
             builder.Services.AddSingleton<IAssetLoaderFactory>(ctx =>
             {
@@ -25,6 +26,7 @@ namespace Blazeroids.Web
                 
                 factory.Register(ctx.GetRequiredService<IAssetLoader<Sprite>>());
                 factory.Register(ctx.GetRequiredService<IAssetLoader<SpriteSheet>>());
+                factory.Register(ctx.GetRequiredService<IAssetLoader<AnimationCollection>>());
 
                 return factory;
             });

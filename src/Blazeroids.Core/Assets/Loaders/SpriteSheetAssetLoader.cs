@@ -20,7 +20,7 @@ namespace Blazeroids.Core.Assets.Loaders
         public async ValueTask<SpriteSheet> Load(AssetMeta meta)
         {
             var dto = await _httpClient.GetFromJsonAsync<SpriteSheetDTO>(meta.Path);
-            
+
             var elementRef = new ElementReference(Guid.NewGuid().ToString());
 
             var sprites = dto.sprites

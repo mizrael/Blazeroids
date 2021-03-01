@@ -4,7 +4,7 @@
 @inject ILogger<Assets> Logger
 @inject IAssetsResolver AssetsResolver
 
-<div class="assets">
+<div class="assets" hidden>
     @foreach (var item in _items)
     {
         @_renderers[item.Item1.GetType()](item.Item1, item.Item2)
@@ -21,7 +21,7 @@
     private readonly List<(IAsset asset, AssetMeta data)> _items = new ();
 
     private readonly Dictionary<Type, Func<IAsset, AssetMeta, RenderFragment>> _renderers = new Dictionary<Type, Func<IAsset, AssetMeta, RenderFragment>>()
-{
+    {
         {
             typeof(Sprite), (a, d) => {
                 var sprite = a as Sprite;
@@ -34,6 +34,14 @@
                 var spriteSheet = a as SpriteSheet;
                 
                 return @<img name="@spriteSheet.ElementRef.Id" @ref="spriteSheet.ElementRef" src="@spriteSheet.ImagePath" hidden />;
+            }
+        },
+        {
+            typeof(AnimationCollection), (a, d) =>
+            {
+                var animColl = a as AnimationCollection;
+
+                return @<Animations Source="@animColl" />;                 
             }
         }
     };
@@ -49,6 +57,8 @@
                 asset = await this.AssetsResolver.Load<Sprite>(item);
             else if (item.Type == "spritesheet")
                 asset = await this.AssetsResolver.Load<SpriteSheet>(item);
+            else if (item.Type == "animations")
+                asset = await this.AssetsResolver.Load<AnimationCollection>(item);
 
             if (null != asset)
                 _items.Add(new (asset, item));

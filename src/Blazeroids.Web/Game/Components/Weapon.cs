@@ -1,7 +1,6 @@
 ﻿using System.Numerics;
 using Blazeroids.Core;
 using Blazeroids.Core.Components;
-using Blazeroids.Web.Game.GameObjects;
 
 namespace Blazeroids.Web.Game.Components
 {

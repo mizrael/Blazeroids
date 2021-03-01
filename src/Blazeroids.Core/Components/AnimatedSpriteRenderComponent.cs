@@ -41,7 +41,7 @@ namespace Blazeroids.Core.Components
 
                 _currFrameIndex++;
                 if(_currFrameIndex >= Animation.FramesCount)
-                    _currFrameIndex = _currFramePosX = _currFramePosY = 0;
+                    this.Reset();
             }
 
             await context.SaveAsync();
@@ -69,6 +69,12 @@ namespace Blazeroids.Core.Components
                 _currFramePosX = _currFramePosY = 0;
                 _animation = value;
             }
+        }
+
+        public void Reset(){            
+            _currFramePosX = 0;
+            _currFramePosY = 0;
+            _currFrameIndex = 0;
         }
 
         public bool MirrorVertically { get; set; }

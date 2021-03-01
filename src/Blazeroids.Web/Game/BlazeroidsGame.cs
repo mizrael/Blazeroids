@@ -7,7 +7,6 @@ using Blazeroids.Core.Assets;
 using Blazeroids.Core.Components;
 using Blazeroids.Core.GameServices;
 using Blazeroids.Web.Game.Components;
-using Blazeroids.Web.Game.GameObjects;
 using Blazor.Extensions;
 using Blazeroids.Core.Utils;
 using Blazor.Extensions.Canvas.Canvas2D;
@@ -33,6 +32,7 @@ namespace Blazeroids.Web.Game
         private long _maxAsteroidSpawnRate = 500;
         private long _asteroidSpawnRate = 2000;
         private Spawner _asteroidsSpawner;
+        private Spawner _explosionsSpawner;
         private GameObject _player;
         private GameStatsUIComponent _gameStats;
         private int _killedAsteroids = 0;
@@ -52,6 +52,9 @@ namespace Blazeroids.Web.Game
             
             var sceneGraph = new SceneGraph(this);
             this.AddService(sceneGraph);
+
+            _explosionsSpawner = BuildExplosionsSpawner();
+            sceneGraph.Root.AddChild(_explosionsSpawner);
 
             _asteroidsSpawner = BuildAsteroidsSpawner(collisionService);
             sceneGraph.Root.AddChild(_asteroidsSpawner);
@@ -190,6 +193,35 @@ namespace Blazeroids.Web.Game
             return ui;
         }
 
+        private Spawner BuildExplosionsSpawner(){
+            var animations = _assetsResolver.Get<AnimationCollection>("assets/animations/explosions.json");
+            var explosionAnim = animations.GetAnimation("explosion1");
+
+            var spawner = new Spawner(() =>
+            {
+                var explosion = new GameObject();
+                explosion.Components.Add<TransformComponent>();
+
+                var renderer = explosion.Components.Add<AnimatedSpriteRenderComponent>();
+                renderer.Animation = explosionAnim;
+                renderer.LayerIndex = (int)Layers.Enemies;
+
+                return explosion;
+            }, explosion =>{
+                var transform = explosion.Components.Get<TransformComponent>();
+
+                transform.World.Reset(); 
+                transform.Local.Reset();
+
+                var renderer = explosion.Components.Add<AnimatedSpriteRenderComponent>();
+                renderer.Reset();
+            });
+
+            spawner.Components.Add<TransformComponent>();
+
+            return spawner;
+        }
+
         private Spawner BuildAsteroidsSpawner(CollisionService collisionService)
         {
             var spriteNames = new[]
@@ -211,7 +243,7 @@ namespace Blazeroids.Web.Game
             {
                 var asteroid = new GameObject();
                 
-                asteroid.Components.Add<TransformComponent>();
+                var transform = asteroid.Components.Add<TransformComponent>();
                 
                 var spriteRenderer = asteroid.Components.Add<SpriteRenderComponent>();
                 var sprite = spriteSheet.Get(spriteNames[spriteIndex]);
@@ -229,6 +261,10 @@ namespace Blazeroids.Web.Game
                 {
                     _killedAsteroids++;
                     _gameStats.IncreaseScore();
+
+                    var explosion = _explosionsSpawner.Spawn();
+                    explosion.Components.Get<TransformComponent>().Local.Clone(transform.Local);
+                    explosion.Enabled = true;
                 };
 
                 return asteroid;

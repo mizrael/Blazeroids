@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using Blazeroids.Core;
 using Blazeroids.Core.Components;
-using Blazeroids.Web.Game.GameObjects;
 using Blazor.Extensions.Canvas.Canvas2D;
 
 namespace Blazeroids.Web.Game.Components

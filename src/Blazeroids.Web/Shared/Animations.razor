@@ -4,7 +4,7 @@
     <div hidden data-type="animations" name="@this.Source.Name">
 
     @foreach(var animation in this.Source.Animations){
-        <img hidden src="data:image/png;base64,@animation.ImageData" @ref="animation.ImageRef" data-name="@animation.Name" />
+        <img hidden src="data:image/png;base64,@animation.ImageData" @ref="animation.ImageRef" name="@animation.ImageRef.Id" data-name="@animation.Name" />
     }
 
     </div>

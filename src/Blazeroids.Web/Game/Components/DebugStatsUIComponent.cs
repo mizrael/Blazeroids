@@ -6,7 +6,7 @@ using Blazor.Extensions.Canvas.Canvas2D;
 
 namespace Blazeroids.Web.Game.Components
 {
-    public class DebugStatsUIComponent : BaseComponent, IRenderable
+    public class DebugStatsUIComponent : Component, IRenderable
     {
         private const int startY = 50;
         private int y = 50;

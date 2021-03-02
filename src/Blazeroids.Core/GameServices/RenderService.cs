@@ -16,19 +16,25 @@ namespace Blazeroids.Core.GameServices
             _context = context;
         }
 
-        public async ValueTask Step()
+        public void Step()
         {
             var layers = BuildLayers();
-            
-            await _context.ClearRectAsync(0, 0, _game.Display.Size.Width, _game.Display.Size.Height);
+            RenderFrame(layers);
+        }
 
-            await _context.BeginBatchAsync();
+        private async ValueTask RenderFrame(IDictionary<int, IList<IRenderable>> layers){
+            await _context.ClearRectAsync(0, 0, _game.Display.Size.Width, _game.Display.Size.Height)
+                        .ConfigureAwait(false);
+
+            await _context.BeginBatchAsync().ConfigureAwait(false);
             
             foreach(var layer in layers.OrderBy(kv => kv.Key))
             foreach (var renderable in layer.Value)
-                await renderable.Render(_game, _context);
+                await renderable.Render(_game, _context).ConfigureAwait(false);
 
-            await _context.EndBatchAsync();
+            await _context.EndBatchAsync().ConfigureAwait(false);
+
+            await Task.Delay(10);
         }
 
         private IDictionary<int, IList<IRenderable>> BuildLayers()

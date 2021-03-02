@@ -4,7 +4,7 @@ using Blazor.Extensions.Canvas.Canvas2D;
 
 namespace Blazeroids.Core.Components
 {
-    public class BoundingBoxComponent : BaseComponent
+    public class BoundingBoxComponent : Component
 #if DEBUG
     //    , IRenderable
 #endif
@@ -18,7 +18,7 @@ namespace Blazeroids.Core.Components
             
         }
 
-        protected override async ValueTask OnStart(){
+        protected override void OnStart(){
             _transform = Owner.Components.Get<TransformComponent>();
         }
 
@@ -30,7 +30,7 @@ namespace Blazeroids.Core.Components
             _halfSize = size / 2;
         }
 
-        protected override async ValueTask OnUpdate(GameContext game)
+        protected override void OnUpdate(GameContext game)
         {
             var x = (int) _transform.World.Position.X - _halfSize.Width;
             var y = (int) _transform.World.Position.Y - _halfSize.Height;

@@ -7,7 +7,7 @@ using Blazeroids.Core.Utils;
 
 namespace Blazeroids.Web.Game.Components
 {
-    public class MovingBody : BaseComponent
+    public class MovingBody : Component
     {
         #region Members
 
@@ -22,11 +22,11 @@ namespace Blazeroids.Web.Game.Components
             
         }
 
-        protected override async ValueTask OnStart(){
+        protected override void OnStart(){
             _transform = Owner.Components.Get<TransformComponent>();
         }
 
-        protected override async ValueTask OnUpdate(GameContext game)
+        protected override void OnUpdate(GameContext game)
         {
             var dt = (float)game.GameTime.ElapsedMilliseconds / 1000;
 

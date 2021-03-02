@@ -35,7 +35,7 @@ namespace Blazeroids.Core.GameServices
 
         public ButtonState GetKeyState(Keys key) => _keyboardStates[key];
         
-        public ValueTask Step() => ValueTask.CompletedTask;
+        public void Step(){}
     }
 
     public enum MouseButtons

@@ -6,7 +6,7 @@ using Blazeroids.Core.Assets;
 
 namespace Blazeroids.Core.Components
 {
-    public class AnimationController : BaseComponent
+    public class AnimationController : Component
     {
         private readonly IList<AnimationState> _states;
         private AnimationState _defaultState;
@@ -22,7 +22,7 @@ namespace Blazeroids.Core.Components
             _boolParams = new Dictionary<string, bool>();
         }
 
-        protected override async ValueTask OnStart(){
+        protected override void OnStart(){
             _animationComponent = Owner.Components.Get<AnimatedSpriteRenderComponent>();
         }
 
@@ -33,7 +33,7 @@ namespace Blazeroids.Core.Components
             _states.Add(state);
         }
 
-        protected override async ValueTask OnUpdate(GameContext game)
+        protected override void OnUpdate(GameContext game)
         {
             if (null == _currentState)
             {
@@ -41,7 +41,7 @@ namespace Blazeroids.Core.Components
                 _currentState.Enter(_animationComponent);
             }
 
-            await _currentState.Update(this);
+            _currentState.Update(this);
         }
 
         public void SetCurrentState(AnimationState state)
@@ -85,7 +85,7 @@ namespace Blazeroids.Core.Components
             _transitions.Add(new Transition(to, conditions));
         }
 
-        public async ValueTask Update(AnimationController controller)
+        public void Update(AnimationController controller)
         {
             var transition = _transitions.FirstOrDefault(t => t.Check(controller));
             if(null != transition)

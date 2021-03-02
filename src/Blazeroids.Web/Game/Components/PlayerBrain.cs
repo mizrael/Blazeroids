@@ -22,7 +22,7 @@ namespace Blazeroids.Web.Game.Components
         };
     }
     
-    public class PlayerBrain : BaseComponent
+    public class PlayerBrain : Component
     {
         private MovingBody _movingBody;
         private TransformComponent _transform;
@@ -37,7 +37,7 @@ namespace Blazeroids.Web.Game.Components
         public PlayerBrain(GameObject owner) : base(owner)
         {
         }
-        protected override async ValueTask OnStart(){
+        protected override void OnStart(){
             _movingBody = Owner.Components.Get<MovingBody>();
             _transform = Owner.Components.Get<TransformComponent>();
             _spriteRender = Owner.Components.Get<SpriteRenderComponent>();
@@ -61,7 +61,7 @@ namespace Blazeroids.Web.Game.Components
         public event OnDeathHandler OnDeath;
         public delegate void OnDeathHandler(GameObject player);
 
-        protected override async ValueTask OnUpdate(GameContext game)
+        protected override void OnUpdate(GameContext game)
         {
             var inputService = game.GetService<InputService>();
             HandleMovement(game, inputService);

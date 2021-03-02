@@ -216,11 +216,11 @@ namespace Blazeroids.Web.Game
                     _gameStats.IncreaseScore();
 
                     var explosion = _explosionsSpawner.Spawn();
-                    explosion.Enabled = true;
                     var explosionTransform = explosion.Components.Get<TransformComponent>();
                     explosionTransform.Local.Position = transform.Local.Position;
                     explosionTransform.Local.Position.X -= sprite.Bounds.Width;
                     explosionTransform.Local.Position.Y -= sprite.Bounds.Height;                     
+                    explosion.Enabled = true;
                 };
 
                 return asteroid;

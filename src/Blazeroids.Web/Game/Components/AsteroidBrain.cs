@@ -7,7 +7,7 @@ using Blazor.Extensions;
 
 namespace Blazeroids.Web.Game.Components
 {
-    public class AsteroidBrain : BaseComponent
+    public class AsteroidBrain : Component
     {
         private TransformComponent _transform;
         private BoundingBoxComponent _boundingBox;
@@ -24,7 +24,7 @@ namespace Blazeroids.Web.Game.Components
         {   
         }
 
-        protected override async ValueTask OnStart(){
+        protected override void OnStart(){
             _transform = Owner.Components.Get<TransformComponent>();
             _boundingBox = Owner.Components.Get<BoundingBoxComponent>();
             _boundingBox.OnCollision += (sender, collidedWith) =>
@@ -37,7 +37,7 @@ namespace Blazeroids.Web.Game.Components
             };
         }
 
-        protected override async ValueTask OnUpdate(GameContext game)
+        protected override void OnUpdate(GameContext game)
         {
             _transform.Local.Rotation += RotationSpeed * game.GameTime.ElapsedMilliseconds;
             _transform.Local.Position += Direction * Speed * game.GameTime.ElapsedMilliseconds;

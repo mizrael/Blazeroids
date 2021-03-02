@@ -4,7 +4,7 @@ using Blazor.Extensions.Canvas.Canvas2D;
 
 namespace Blazeroids.Core.Components
 {
-    public class RectRenderComponent : BaseComponent, IRenderable
+    public class RectRenderComponent : Component, IRenderable
     {
         private TransformComponent _transform;
         
@@ -13,7 +13,7 @@ namespace Blazeroids.Core.Components
             
         }
 
-        protected override async ValueTask OnStart(){
+        protected override void OnStart(){
             _transform = Owner.Components.Get<TransformComponent>();
         }
 

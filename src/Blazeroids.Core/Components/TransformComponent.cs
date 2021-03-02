@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 namespace Blazeroids.Core.Components
 {
-    public class TransformComponent : BaseComponent
+    public class TransformComponent : Component
     {
         private readonly Transform _local = Transform.Identity();
         private readonly Transform _world = Transform.Identity();
@@ -11,7 +11,7 @@ namespace Blazeroids.Core.Components
         {
         }
 
-        protected override async ValueTask OnUpdate(GameContext game)
+        protected override void OnUpdate(GameContext game)
         {
             _world.Clone(_local);
             

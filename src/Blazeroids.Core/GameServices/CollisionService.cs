@@ -142,11 +142,10 @@ namespace Blazeroids.Core.GameServices
                     FindAllColliders(child, colliders);
         }
 
-        public ValueTask Step()
+        public void Step()
         {
             if(null == _buckets)
                 BuildBuckets();
-            return ValueTask.CompletedTask;
         }
 
         public void Add(BoundingBoxComponent collider)

@@ -5,7 +5,7 @@ using Blazeroids.Core.Components;
 
 namespace Blazeroids.Web.Game.Components
 {
-    public class Weapon : BaseComponent
+    public class Weapon : Component
     {
         private long _lastBulletFiredTime = 0;
         private TransformComponent _ownerTransform;
@@ -14,7 +14,7 @@ namespace Blazeroids.Web.Game.Components
         {
         }
 
-        protected override async ValueTask OnStart(){
+        protected override void OnStart(){
             _ownerTransform = Owner.Components.Get<TransformComponent>();
         }
 

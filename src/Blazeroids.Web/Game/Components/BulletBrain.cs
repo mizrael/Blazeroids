@@ -6,7 +6,7 @@ using Blazor.Extensions;
 
 namespace Blazeroids.Web.Game.Components
 {
-    public class BulletBrain : BaseComponent
+    public class BulletBrain : Component
     {
         private MovingBody _movingBody;
         private TransformComponent _transformComponent;
@@ -17,7 +17,7 @@ namespace Blazeroids.Web.Game.Components
            
         }
 
-        protected override async ValueTask OnStart(){
+        protected override void OnStart(){
             _movingBody = Owner.Components.Get<MovingBody>();
             _transformComponent = Owner.Components.Get<TransformComponent>();
             _boundingBox = Owner.Components.Get<BoundingBoxComponent>();
@@ -28,7 +28,7 @@ namespace Blazeroids.Web.Game.Components
             };
         }
 
-        protected override async ValueTask OnUpdate(GameContext game)
+        protected override void OnUpdate(GameContext game)
         {
             _movingBody.Thrust = this.Speed;
 

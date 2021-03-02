@@ -5,7 +5,7 @@ using Blazor.Extensions.Canvas.Canvas2D;
 
 namespace Blazeroids.Web.Game.Components
 {
-    public class PlayerStatsUIComponent : BaseComponent, IRenderable
+    public class PlayerStatsUIComponent : Component, IRenderable
     {
         private PlayerStatsUIComponent(GameObject owner) : base(owner)
         {

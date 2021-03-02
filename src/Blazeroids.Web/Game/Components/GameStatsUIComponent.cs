@@ -6,7 +6,7 @@ using Blazor.Extensions.Canvas.Canvas2D;
 
 namespace Blazeroids.Web.Game.Components
 {
-    public class GameStatsUIComponent : BaseComponent, IRenderable
+    public class GameStatsUIComponent : Component, IRenderable
     {
         private int _score = 0;
         private int _maxScore = 0;

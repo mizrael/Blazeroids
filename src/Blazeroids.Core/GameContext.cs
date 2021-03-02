@@ -38,7 +38,7 @@ namespace Blazeroids.Core
             this.GameTime.Step();
 
             foreach (var service in _services.Values)
-                await service.Step();
+                service.Step();
 
             await this.Update();
         }

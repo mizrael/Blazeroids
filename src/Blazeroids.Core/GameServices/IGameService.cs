@@ -4,6 +4,6 @@ namespace Blazeroids.Core.GameServices
 {
     public interface IGameService
     {
-        ValueTask Step();
+        void Step();
     }
 }

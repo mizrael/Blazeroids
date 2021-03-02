@@ -35,10 +35,7 @@ namespace Blazeroids.Web.Game.Components
         public PlayerStats Stats = PlayerStats.Default();
 
         public PlayerBrain(GameObject owner) : base(owner)
-        {
-        }
-        protected override void OnStart(){
-            _movingBody = Owner.Components.Get<MovingBody>();
+        { _movingBody = Owner.Components.Get<MovingBody>();
             _transform = Owner.Components.Get<TransformComponent>();
             _spriteRender = Owner.Components.Get<SpriteRenderComponent>();
             _halfSize = _spriteRender.Sprite.Bounds.Size / 2;
@@ -56,6 +53,9 @@ namespace Blazeroids.Web.Game.Components
                     }
                 }
             };
+        }
+        protected override void OnStart(){
+           
         }
 
         public event OnDeathHandler OnDeath;

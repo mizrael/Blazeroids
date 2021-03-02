@@ -10,9 +10,11 @@ namespace Blazeroids.Core.Components
 
         private SpriteRenderComponent(GameObject owner) : base(owner)
         {
+
         }
 
-        protected override void OnStart(){
+        protected override void OnStart()
+        {
             _transform = Owner.Components.Get<TransformComponent>();
         }
 
@@ -20,14 +22,14 @@ namespace Blazeroids.Core.Components
         {
             if (!this.Owner.Enabled)
                 return;
-            
+
             await context.SaveAsync();
 
             await context.TranslateAsync(_transform.World.Position.X, _transform.World.Position.Y);
             await context.RotateAsync(_transform.World.Rotation);
             await context.ScaleAsync(_transform.World.Scale.X, _transform.World.Scale.Y);
-            
-            await context.DrawImageAsync(Sprite.ElementRef, 
+
+            await context.DrawImageAsync(Sprite.ElementRef,
                 Sprite.Bounds.X, Sprite.Bounds.Y,
                 Sprite.Bounds.Width, Sprite.Bounds.Height,
                 Sprite.Origin.X, Sprite.Origin.Y,

@@ -14,10 +14,6 @@ namespace Blazeroids.Web.Game.Components
         
         public BulletBrain(GameObject owner) : base(owner)
         {
-           
-        }
-
-        protected override void OnStart(){
             _movingBody = Owner.Components.Get<MovingBody>();
             _transformComponent = Owner.Components.Get<TransformComponent>();
             _boundingBox = Owner.Components.Get<BoundingBoxComponent>();
@@ -26,6 +22,10 @@ namespace Blazeroids.Web.Game.Components
                 if (collidedWith.Owner.Components.TryGet<AsteroidBrain>(out var _))
                     this.Owner.Enabled = false;
             };
+        }
+
+        protected override void OnStart(){
+           
         }
 
         protected override void OnUpdate(GameContext game)

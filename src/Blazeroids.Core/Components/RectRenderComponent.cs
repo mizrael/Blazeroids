@@ -7,19 +7,19 @@ namespace Blazeroids.Core.Components
     public class RectRenderComponent : Component, IRenderable
     {
         private TransformComponent _transform;
-        
+
         public RectRenderComponent(GameObject owner) : base(owner)
         {
-            
         }
 
-        protected override void OnStart(){
+        protected override void OnStart()
+        {
             _transform = Owner.Components.Get<TransformComponent>();
         }
 
         public async ValueTask Render(GameContext game, Canvas2DContext context)
         {
-            if (!this.Owner.Enabled)
+            if (!this.Owner.Enabled || !this.Started)
                 return;
 
             var oldPattern = context.FillStyle;
@@ -31,7 +31,7 @@ namespace Blazeroids.Core.Components
             var h = _transform.World.Scale.Y * this.Sprite.Bounds.Height;
 
             await context.FillRectAsync(_transform.World.Position.X, _transform.World.Position.X, w, h);
-            
+
             await context.SetFillStyleAsync(oldPattern);
         }
 

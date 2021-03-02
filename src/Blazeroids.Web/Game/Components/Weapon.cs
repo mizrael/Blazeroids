@@ -11,11 +11,11 @@ namespace Blazeroids.Web.Game.Components
         private TransformComponent _ownerTransform;
         
         public Weapon(GameObject owner) : base(owner)
-        {
+        { _ownerTransform = Owner.Components.Get<TransformComponent>();
         }
 
         protected override void OnStart(){
-            _ownerTransform = Owner.Components.Get<TransformComponent>();
+           
         }
 
         public void Shoot(GameContext game)

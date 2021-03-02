@@ -19,11 +19,11 @@ namespace Blazeroids.Web.Game.Components
 
         public MovingBody(GameObject owner) : base(owner)
         {
-            
+              _transform = Owner.Components.Get<TransformComponent>();
         }
 
         protected override void OnStart(){
-            _transform = Owner.Components.Get<TransformComponent>();
+          
         }
 
         protected override void OnUpdate(GameContext game)

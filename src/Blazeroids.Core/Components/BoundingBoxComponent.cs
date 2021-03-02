@@ -9,16 +9,17 @@ namespace Blazeroids.Core.Components
     //    , IRenderable
 #endif
     {
-        private TransformComponent _transform; 
+        private TransformComponent _transform;
         private Rectangle _bounds;
         private Size _halfSize;
 
         private BoundingBoxComponent(GameObject owner) : base(owner)
         {
-            
+
         }
 
-        protected override void OnStart(){
+        protected override void OnStart()
+        {
             _transform = Owner.Components.Get<TransformComponent>();
         }
 
@@ -32,14 +33,14 @@ namespace Blazeroids.Core.Components
 
         protected override void OnUpdate(GameContext game)
         {
-            var x = (int) _transform.World.Position.X - _halfSize.Width;
-            var y = (int) _transform.World.Position.Y - _halfSize.Height;
+            var x = (int)_transform.World.Position.X - _halfSize.Width;
+            var y = (int)_transform.World.Position.Y - _halfSize.Height;
 
             var changed = _bounds.X != x || _bounds.Y != y;
             _bounds.X = x;
             _bounds.Y = y;
-            
-            if(changed)
+
+            if (changed)
                 OnPositionChanged?.Invoke(this);
         }
 
@@ -54,7 +55,7 @@ namespace Blazeroids.Core.Components
             await context.StrokeRectAsync(_bounds.X, _bounds.Y,
                 _bounds.Width,
                 _bounds.Height);
-            
+
             await context.SetStrokeStyleAsync(tmpS);
             await context.SetLineWidthAsync(tmpW);
         }

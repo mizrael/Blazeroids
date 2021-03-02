@@ -34,8 +34,6 @@ namespace Blazeroids.Core.GameServices
                     await renderable.Render(_game, _context).ConfigureAwait(false);
 
             await _context.EndBatchAsync().ConfigureAwait(false);
-
-            await Task.Delay(10);
         }
 
         private IDictionary<int, IList<IRenderable>> BuildLayers()
@@ -49,11 +47,11 @@ namespace Blazeroids.Core.GameServices
 
         private void BuildLayers(GameObject node, IDictionary<int, IList<IRenderable>> layers)
         {
-            if (null == node)
+            if (null == node || !node.Enabled)
                 return;
 
             foreach (var component in node.Components)
-                if (component is IRenderable renderable)
+                if (component is IRenderable renderable && component.Started)
                 {
                     if (!layers.ContainsKey(renderable.LayerIndex))
                         layers.Add(renderable.LayerIndex, new List<IRenderable>());

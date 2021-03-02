@@ -6,11 +6,15 @@ namespace Blazeroids.Core.Components
 {
     public class RectRenderComponent : BaseComponent, IRenderable
     {
-        private readonly TransformComponent _transform;
+        private TransformComponent _transform;
         
         public RectRenderComponent(GameObject owner) : base(owner)
         {
-            _transform = owner.Components.Get<TransformComponent>();
+            
+        }
+
+        protected override async ValueTask OnStart(){
+            _transform = Owner.Components.Get<TransformComponent>();
         }
 
         public async ValueTask Render(GameContext game, Canvas2DContext context)

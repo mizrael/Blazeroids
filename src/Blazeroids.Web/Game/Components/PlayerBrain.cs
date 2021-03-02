@@ -24,24 +24,26 @@ namespace Blazeroids.Web.Game.Components
     
     public class PlayerBrain : BaseComponent
     {
-        private readonly MovingBody _movingBody;
-        private readonly TransformComponent _transform;
-        private readonly SpriteRenderComponent _spriteRender;
-        private readonly BoundingBoxComponent _boundingBox;
+        private MovingBody _movingBody;
+        private TransformComponent _transform;
+        private SpriteRenderComponent _spriteRender;
+        private BoundingBoxComponent _boundingBox;
         
         private Weapon _weapon;
-        private readonly Size _halfSize;
+        private Size _halfSize;
 
         public PlayerStats Stats = PlayerStats.Default();
 
         public PlayerBrain(GameObject owner) : base(owner)
         {
-            _movingBody = owner.Components.Get<MovingBody>();
-            _transform = owner.Components.Get<TransformComponent>();
-            _spriteRender = owner.Components.Get<SpriteRenderComponent>();
+        }
+        protected override async ValueTask OnStart(){
+            _movingBody = Owner.Components.Get<MovingBody>();
+            _transform = Owner.Components.Get<TransformComponent>();
+            _spriteRender = Owner.Components.Get<SpriteRenderComponent>();
             _halfSize = _spriteRender.Sprite.Bounds.Size / 2;
 
-            _boundingBox = owner.Components.Get<BoundingBoxComponent>();
+            _boundingBox = Owner.Components.Get<BoundingBoxComponent>();
             _boundingBox.OnCollision += (sender, collidedWith) =>
             {
                 if (collidedWith.Owner.Components.TryGet<AsteroidBrain>(out var _))
@@ -59,7 +61,7 @@ namespace Blazeroids.Web.Game.Components
         public event OnDeathHandler OnDeath;
         public delegate void OnDeathHandler(GameObject player);
 
-        public override async ValueTask Update(GameContext game)
+        protected override async ValueTask OnUpdate(GameContext game)
         {
             var inputService = game.GetService<InputService>();
             HandleMovement(game, inputService);

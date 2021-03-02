@@ -6,7 +6,7 @@ namespace Blazeroids.Core.Components
 {
     public class AnimatedSpriteRenderComponent : BaseComponent, IRenderable
     {
-        private readonly TransformComponent _transform;
+        private TransformComponent _transform;
 
         private int _currFramePosX = 0;
         private int _currFramePosY = 0;
@@ -17,7 +17,10 @@ namespace Blazeroids.Core.Components
 
         private AnimatedSpriteRenderComponent(GameObject owner) : base(owner)
         {
-            _transform = owner.Components.Get<TransformComponent>();
+        }
+
+        protected override async ValueTask OnStart(){
+            _transform = Owner.Components.Get<TransformComponent>();
         }
 
         public async ValueTask Render(GameContext game, Canvas2DContext context)

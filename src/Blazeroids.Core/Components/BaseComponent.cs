@@ -5,14 +5,25 @@ namespace Blazeroids.Core.Components
 {
     public abstract class BaseComponent : IComponent
     {
+        private bool _started = false;
+
         protected BaseComponent(GameObject owner)
         {
             this.Owner = owner ?? throw new ArgumentNullException(nameof(owner));
         }
 
-        //TODO: add an OnStart method
+        protected virtual ValueTask OnStart() => ValueTask.CompletedTask;
 
-        public virtual ValueTask Update(GameContext game) => ValueTask.CompletedTask;
+        protected virtual ValueTask OnUpdate(GameContext game) => ValueTask.CompletedTask;
+
+        public virtual async ValueTask Update(GameContext game){
+            if(!_started){
+                _started = true;
+                await OnStart();
+            }
+            
+            await OnUpdate(game);
+        } 
 
         public GameObject Owner { get; }
     }

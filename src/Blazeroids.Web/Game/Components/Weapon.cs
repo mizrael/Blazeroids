@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using System.Threading.Tasks;
 using Blazeroids.Core;
 using Blazeroids.Core.Components;
 
@@ -7,10 +8,13 @@ namespace Blazeroids.Web.Game.Components
     public class Weapon : BaseComponent
     {
         private long _lastBulletFiredTime = 0;
-        private readonly TransformComponent _ownerTransform;
+        private TransformComponent _ownerTransform;
         
         public Weapon(GameObject owner) : base(owner)
         {
+        }
+
+        protected override async ValueTask OnStart(){
             _ownerTransform = Owner.Components.Get<TransformComponent>();
         }
 

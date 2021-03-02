@@ -11,7 +11,7 @@ namespace Blazeroids.Web.Game.Components
     {
         #region Members
 
-        private readonly TransformComponent _transform = null;
+        private TransformComponent _transform = null;
         private Vector2 _velocity = Vector2.Zero;
         private float _rotationVelocity = 0f;
 
@@ -19,10 +19,14 @@ namespace Blazeroids.Web.Game.Components
 
         public MovingBody(GameObject owner) : base(owner)
         {
-            _transform = owner.Components.Get<TransformComponent>();
+            
         }
 
-        public override async ValueTask Update(GameContext game)
+        protected override async ValueTask OnStart(){
+            _transform = Owner.Components.Get<TransformComponent>();
+        }
+
+        protected override async ValueTask OnUpdate(GameContext game)
         {
             var dt = (float)game.GameTime.ElapsedMilliseconds / 1000;
 

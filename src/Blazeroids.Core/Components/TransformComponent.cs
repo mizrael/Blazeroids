@@ -11,7 +11,7 @@ namespace Blazeroids.Core.Components
         {
         }
 
-        public override async ValueTask Update(GameContext game)
+        protected override async ValueTask OnUpdate(GameContext game)
         {
             _world.Clone(_local);
             

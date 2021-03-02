@@ -8,15 +8,19 @@ namespace Blazeroids.Web.Game.Components
 {
     public class BulletBrain : BaseComponent
     {
-        private readonly MovingBody _movingBody;
-        private readonly TransformComponent _transformComponent;
-        private readonly BoundingBoxComponent _boundingBox;
+        private MovingBody _movingBody;
+        private TransformComponent _transformComponent;
+        private BoundingBoxComponent _boundingBox;
         
         public BulletBrain(GameObject owner) : base(owner)
         {
-            _movingBody = owner.Components.Get<MovingBody>();
-            _transformComponent = owner.Components.Get<TransformComponent>();
-            _boundingBox = owner.Components.Get<BoundingBoxComponent>();
+           
+        }
+
+        protected override async ValueTask OnStart(){
+            _movingBody = Owner.Components.Get<MovingBody>();
+            _transformComponent = Owner.Components.Get<TransformComponent>();
+            _boundingBox = Owner.Components.Get<BoundingBoxComponent>();
             _boundingBox.OnCollision += (sender, collidedWith) =>
             {
                 if (collidedWith.Owner.Components.TryGet<AsteroidBrain>(out var _))
@@ -24,7 +28,7 @@ namespace Blazeroids.Web.Game.Components
             };
         }
 
-        public override async ValueTask Update(GameContext game)
+        protected override async ValueTask OnUpdate(GameContext game)
         {
             _movingBody.Thrust = this.Speed;
 

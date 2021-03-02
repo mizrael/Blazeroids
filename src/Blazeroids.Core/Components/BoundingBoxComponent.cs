@@ -9,13 +9,17 @@ namespace Blazeroids.Core.Components
     //    , IRenderable
 #endif
     {
-        private readonly TransformComponent _transform; 
+        private TransformComponent _transform; 
         private Rectangle _bounds;
         private Size _halfSize;
 
         private BoundingBoxComponent(GameObject owner) : base(owner)
         {
-            _transform = owner.Components.Get<TransformComponent>();
+            
+        }
+
+        protected override async ValueTask OnStart(){
+            _transform = Owner.Components.Get<TransformComponent>();
         }
 
         public Rectangle Bounds => _bounds;
@@ -26,7 +30,7 @@ namespace Blazeroids.Core.Components
             _halfSize = size / 2;
         }
 
-        public override async ValueTask Update(GameContext game)
+        protected override async ValueTask OnUpdate(GameContext game)
         {
             var x = (int) _transform.World.Position.X - _halfSize.Width;
             var y = (int) _transform.World.Position.Y - _halfSize.Height;

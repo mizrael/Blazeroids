@@ -11,17 +11,19 @@ namespace Blazeroids.Core.Components
         private readonly IList<AnimationState> _states;
         private AnimationState _defaultState;
         private AnimationState _currentState;
-        private readonly AnimatedSpriteRenderComponent _animationComponent;
+        private AnimatedSpriteRenderComponent _animationComponent;
         private readonly IDictionary<string, float> _floatParams;
         private readonly IDictionary<string, bool> _boolParams;
 
         private AnimationController(GameObject owner) : base(owner)
         {
             _states = new List<AnimationState>();
-            _animationComponent = owner.Components.Get<AnimatedSpriteRenderComponent>();
-
             _floatParams = new Dictionary<string, float>();
             _boolParams = new Dictionary<string, bool>();
+        }
+
+        protected override async ValueTask OnStart(){
+            _animationComponent = Owner.Components.Get<AnimatedSpriteRenderComponent>();
         }
 
         public void AddState(AnimationState state)
@@ -31,7 +33,7 @@ namespace Blazeroids.Core.Components
             _states.Add(state);
         }
 
-        public override async ValueTask Update(GameContext game)
+        protected override async ValueTask OnUpdate(GameContext game)
         {
             if (null == _currentState)
             {

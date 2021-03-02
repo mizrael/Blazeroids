@@ -178,11 +178,6 @@ namespace Blazeroids.Web.Game
 
                 return explosion;
             }, explosion =>{
-                var transform = explosion.Components.Get<TransformComponent>();
-
-                transform.World.Reset(); 
-                transform.Local.Reset();
-
                 var renderer = explosion.Components.Add<AnimatedSpriteRenderComponent>();
                 renderer.Reset();
             });
@@ -234,9 +229,8 @@ namespace Blazeroids.Web.Game
 
                     var explosion = _explosionsSpawner.Spawn();
                     var explosionTransform = explosion.Components.Get<TransformComponent>();
-                    explosionTransform.Local.Position = transform.Local.Position;
-                    explosionTransform.Local.Position.X -= sprite.Bounds.Width;
-                    explosionTransform.Local.Position.Y -= sprite.Bounds.Height;                     
+                    explosionTransform.Local.Clone(transform.Local);
+                    explosionTransform.World.Clone(transform.Local);
                 };
 
                 return asteroid;

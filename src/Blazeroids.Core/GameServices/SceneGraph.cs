@@ -12,14 +12,13 @@ namespace Blazeroids.Core.GameServices
             Root = new GameObject();
         }
 
-        public void Step()
+        public ValueTask Step()
         {
-            if (null == Root)
-                return;
-            
-            Root.Update(_game);
+            if (null != Root)
+                Root.Update(_game);
+            return ValueTask.CompletedTask;
         }
-        
+
         public GameObject Root { get; }
     }
 }

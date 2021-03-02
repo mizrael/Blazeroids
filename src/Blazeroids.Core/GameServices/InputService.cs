@@ -18,7 +18,7 @@ namespace Blazeroids.Core.GameServices
             _keyboardStates = EnumUtils.GetAllValues<Keys>()
                                        .ToDictionary(v => v, v => ButtonState.None);
         }
-        
+
         public void SetButtonState(MouseButtons button, ButtonState.States state)
         {
             var oldState = _buttonStates[button];
@@ -34,8 +34,8 @@ namespace Blazeroids.Core.GameServices
         }
 
         public ButtonState GetKeyState(Keys key) => _keyboardStates[key];
-        
-        public void Step(){}
+
+        public ValueTask Step() => ValueTask.CompletedTask;
     }
 
     public enum MouseButtons

@@ -16,14 +16,14 @@ namespace Blazeroids.Core.Components
         private static readonly Lazy<ComponentsFactory> _instance = new Lazy<ComponentsFactory>(new ComponentsFactory());
         public static ComponentsFactory Instance => _instance.Value;
 
-        public TC Create<TC>(GameObject owner) where TC : class, IComponent
+        public TC Create<TC>(GameObject owner) where TC : BaseComponent
         {
             var ctor = GetCtor<TC>();
 
             return ctor.Invoke(new[] {owner}) as TC;
         }
 
-        private ConstructorInfo GetCtor<TC>() where TC : class, IComponent
+        private ConstructorInfo GetCtor<TC>() where TC : BaseComponent
         {
             var type = typeof(TC);
 

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Blazeroids.Core.Components
 {
-    public abstract class BaseComponent : IComponent
+    public abstract class BaseComponent
     {
         private bool _started = false;
 

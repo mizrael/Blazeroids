@@ -5,18 +5,18 @@ using Blazeroids.Core.Exceptions;
 
 namespace Blazeroids.Core.Components
 {
-    public class ComponentsCollection : IEnumerable<IComponent>
+    public class ComponentsCollection : IEnumerable<BaseComponent>
     {
         private readonly GameObject _owner;
-        private readonly IDictionary<Type, IComponent> _items;
+        private readonly IDictionary<Type, BaseComponent> _items;
 
         public ComponentsCollection(GameObject owner)
         {
             _owner = owner;
-            _items = new Dictionary<Type, IComponent>();
+            _items = new Dictionary<Type, BaseComponent>();
         }
 
-        //public bool Add(IComponent component)
+        //public bool Add(BaseComponent component)
         //{
         //    var type = component.GetType();
         //    if (_items.ContainsKey(type))
@@ -26,7 +26,7 @@ namespace Blazeroids.Core.Components
         //    return true;
         //}
 
-        public TC Add<TC>() where TC : class, IComponent
+        public TC Add<TC>() where TC : BaseComponent
         {
             var type = typeof(TC);
             if (!_items.ContainsKey(type))
@@ -38,13 +38,13 @@ namespace Blazeroids.Core.Components
             return _items[type] as TC;
         }
 
-        public T Get<T>() where T : class, IComponent
+        public T Get<T>() where T : BaseComponent
         {
             var type = typeof(T);
             return _items.ContainsKey(type) ? _items[type] as T : throw new ComponentNotFoundException<T>();
         }
 
-        public bool TryGet<T>(out T result) where T : class, IComponent
+        public bool TryGet<T>(out T result) where T : BaseComponent
         {
             var type = typeof(T);
             _items.TryGetValue(type, out var tmp);
@@ -52,7 +52,7 @@ namespace Blazeroids.Core.Components
             return result != null;
         }
 
-        public IEnumerator<IComponent> GetEnumerator() => _items.Values.GetEnumerator();
+        public IEnumerator<BaseComponent> GetEnumerator() => _items.Values.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator()
         {

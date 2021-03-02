@@ -189,9 +189,14 @@ namespace Blazeroids.Web.Game
         {
             var ui = new GameObject();
             _gameStats = ui.Components.Add<GameStatsUIComponent>();
-            _gameStats.BulletSpawner = bulletSpawner;
-            _gameStats.AsteroidsSpawner = _asteroidsSpawner;
             _gameStats.LayerIndex = (int)Layers.UI;
+
+            #if DEBUG
+            var debugStats = ui.Components.Add<DebugStatsUIComponent>();
+            debugStats.BulletSpawner = bulletSpawner;
+            debugStats.AsteroidsSpawner = _asteroidsSpawner;
+            debugStats.LayerIndex = (int)Layers.UI;
+            #endif
             
             var playerStats = ui.Components.Add<PlayerStatsUIComponent>();
             playerStats.PlayerBrain = player.Components.Get<PlayerBrain>();

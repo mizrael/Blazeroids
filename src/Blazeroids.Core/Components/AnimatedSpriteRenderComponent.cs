@@ -69,8 +69,8 @@ namespace Blazeroids.Core.Components
             await context.DrawImageAsync(Animation.ImageRef,
                 _currFramePosX, _currFramePosY,
                 Animation.FrameSize.Width, Animation.FrameSize.Height,
-                0, 0,
-                Animation.FrameSize.Width, Animation.FrameSize.Height);
+                Animation.HalfFrameSize.Width, Animation.HalfFrameSize.Height,
+                -Animation.FrameSize.Width, -Animation.FrameSize.Height);
 
             await context.RestoreAsync();
         }

@@ -42,6 +42,7 @@ namespace Blazeroids.Core.Assets
                 Name = name;
                 Fps = fps;
                 FrameSize = frameSize;
+                HalfFrameSize = frameSize/2;
                 FramesCount = framesCount;
                 ImageRef = imageRef;
                 ImageData = imageData;
@@ -53,6 +54,7 @@ namespace Blazeroids.Core.Assets
             public int Fps { get; }
             public int FramesCount { get; }
             public Size FrameSize { get; }
+            public Size HalfFrameSize { get; }
             public Size ImageSize { get; }
             public ElementReference ImageRef { get; set; }
             public string ImageData { get; }

@@ -10,6 +10,9 @@
 @inject IAssetsResolver AssetsResolver
 
 <Assets Source="assets/assets.json" OnLoaded="@OnAssetsLoaded" />
+<audio autoplay loop>
+    <source src="/assets/sounds/POL-reckless-getaway-short.wav" type="audio/wav" /> 
+</audio>
 
 <div id="canvasContainer" style="position: fixed; opacity: 1; background-color: black; width: 100%; height: 100%">
     <BECanvas @ref="_canvas"></BECanvas>

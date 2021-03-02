@@ -16,6 +16,9 @@ namespace Blazeroids.Core.Components
         protected virtual void OnUpdate(GameContext game){}
 
         public virtual void Update(GameContext game){
+            if(!this.Owner.Enabled)
+                return;
+                
             if(!_started){
                 _started = true;
                 OnStart();

@@ -23,38 +23,45 @@ namespace Blazeroids.Core.Components
             _transform = Owner.Components.Get<TransformComponent>();
         }
 
+        protected override void OnUpdate(GameContext game)
+        {
+            if (null == Animation || !this.Owner.Enabled)
+                return;
+
+            var needUpdate = (game.GameTime.TotalMilliseconds - _lastUpdate > 1000f/Animation.Fps);
+            if(!needUpdate)
+                return; 
+            
+            _lastUpdate = game.GameTime.TotalMilliseconds;
+
+            _currFramePosX += Animation.FrameSize.Width;
+            if (_currFramePosX >= Animation.ImageSize.Width)
+            {
+                _currFramePosX = 0;
+                _currFramePosY += Animation.FrameSize.Height;
+            }
+
+            if (_currFramePosY >= Animation.ImageSize.Height)
+                _currFramePosY = 0;
+
+            _currFrameIndex++;
+            if(_currFrameIndex >= Animation.FramesCount){
+                this.Reset();
+                this.OnAnimationComplete?.Invoke(this);
+                if(!this.Owner.Enabled)
+                    return;
+            }                    
+        }
+
         public async ValueTask Render(GameContext game, Canvas2DContext context)
         {
             if (null == Animation || !this.Owner.Enabled)
                 return;
-            
-            if (game.GameTime.TotalMilliseconds - _lastUpdate > 1000f/Animation.Fps)
-            {
-                _lastUpdate = game.GameTime.TotalMilliseconds;
-
-                _currFramePosX += Animation.FrameSize.Width;
-                if (_currFramePosX >= Animation.ImageSize.Width)
-                {
-                    _currFramePosX = 0;
-                    _currFramePosY += Animation.FrameSize.Height;
-                }
-
-                if (_currFramePosY >= Animation.ImageSize.Height)
-                    _currFramePosY = 0;
-
-                _currFrameIndex++;
-                if(_currFrameIndex >= Animation.FramesCount){
-                    this.Reset();
-                    this.OnAnimationComplete?.Invoke(this);
-                    if(!this.Owner.Enabled)
-                        return;
-                }                    
-            }
 
             await context.SaveAsync();
 
             await context.TranslateAsync(_transform.World.Position.X + (MirrorVertically ? Animation.FrameSize.Width : 0f), _transform.World.Position.Y);
-
+            await context.RotateAsync(_transform.World.Rotation);
             await context.ScaleAsync(_transform.World.Scale.X * (MirrorVertically ? -1f:1f), _transform.World.Scale.Y);
 
             await context.DrawImageAsync(Animation.ImageRef, 

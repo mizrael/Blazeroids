@@ -220,7 +220,6 @@ namespace Blazeroids.Web.Game
                     explosionTransform.Local.Position = transform.Local.Position;
                     explosionTransform.Local.Position.X -= sprite.Bounds.Width;
                     explosionTransform.Local.Position.Y -= sprite.Bounds.Height;                     
-                    explosion.Enabled = true;
                 };
 
                 return asteroid;

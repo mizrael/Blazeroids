@@ -63,19 +63,30 @@
             game.instance.invokeMethodAsync('OnResize', game.canvas.width, game.canvas.height);
         }
 
+        function initSounds() {
+            const playBtn = document.getElementById('toggle-audio');
+            playBtn.addEventListener('click', () => {
+                const audio = document.getElementById('sounds-main-theme');
+                audio.load();
+                audio.play().catch(err => {
+                    console.log(err);
+                });
+            });
+        }
+
         window.gameWindowResize = (instance) => {
             onResize();
         };
 
         window.initCanvas = (instance) => {
-            var canvasContainer = document.getElementById('canvasContainer'),
+            const canvasContainer = document.getElementById('canvasContainer'),
                 canvases = canvasContainer.getElementsByTagName('canvas') || [];
             window.game = {
                 instance: instance,
                 canvas: canvases.length ? canvases[0] : null
             };
 
-            if (window.game.canvas) {               
+            if (window.game.canvas) {
                 window.game.canvas.onkeydown = (e) => {
                     game.instance.invokeMethodAsync('OnKeyDown', e.keyCode);
                 };
@@ -94,12 +105,14 @@
 
             window.requestAnimationFrame(gameLoop);
 
+            initSounds();
+
             return {
                 Width: window.game.canvas.width,
                 Height: window.game.canvas.height
             };
         };
     </script>
-</body >
+</body>
 
 </html>

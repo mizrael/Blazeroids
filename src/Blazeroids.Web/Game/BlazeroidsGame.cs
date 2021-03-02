@@ -1,15 +1,11 @@
 using System;
 using System.Drawing;
-using System.Numerics;
 using System.Threading.Tasks;
 using Blazeroids.Core;
 using Blazeroids.Core.Assets;
-using Blazeroids.Core.Components;
 using Blazeroids.Core.GameServices;
 using Blazeroids.Web.Game.Components;
 using Blazor.Extensions;
-using Blazeroids.Core.Utils;
-using Blazor.Extensions.Canvas.Canvas2D;
 
 namespace Blazeroids.Web.Game
 {
@@ -36,33 +32,16 @@ namespace Blazeroids.Web.Game
         }
 
         protected override async ValueTask Init()
-        {   
+        {
             this.AddService(new InputService());
 
             var collisionService = new CollisionService(this, new Size(64, 64));
             this.AddService(collisionService);
-            
+
             var sceneGraph = new SceneGraph(this);
             this.AddService(sceneGraph);
+            InitSceneGraph(collisionService, sceneGraph);
 
-            _explosionsSpawner = BuildExplosionsSpawner();
-            sceneGraph.Root.AddChild(_explosionsSpawner);
-
-            _asteroidsSpawner = BuildAsteroidsSpawner(collisionService);
-            sceneGraph.Root.AddChild(_asteroidsSpawner);
-
-            var bulletSpawner = BuildBulletSpawner(collisionService);
-            sceneGraph.Root.AddChild(bulletSpawner);
-            
-            _player = BuildPlayer(bulletSpawner);
-            sceneGraph.Root.AddChild(_player);
-
-            var ui = BuidUI(bulletSpawner, _player);
-            sceneGraph.Root.AddChild(ui);
-
-            var background = BuildBackground();
-            sceneGraph.Root.AddChild(background);
-            
             var context = await _canvas.CreateCanvas2DAsync();
             var renderService = new RenderService(this, context);
             this.AddService(renderService);

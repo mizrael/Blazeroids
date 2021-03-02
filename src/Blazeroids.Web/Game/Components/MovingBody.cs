@@ -19,11 +19,11 @@ namespace Blazeroids.Web.Game.Components
 
         public MovingBody(GameObject owner) : base(owner)
         {
-              _transform = Owner.Components.Get<TransformComponent>();
         }
 
-        protected override void OnStart(){
-          
+        protected override void OnStart()
+        {
+            _transform = Owner.Components.Get<TransformComponent>();
         }
 
         protected override void OnUpdate(GameContext game)
@@ -33,15 +33,15 @@ namespace Blazeroids.Web.Game.Components
             _rotationVelocity += RotationSpeed * dt;
             _rotationVelocity *= (1f - dt * RotationDrag);
             _transform.Local.Rotation += _rotationVelocity * dt;
-            
+
             var dir = new Vector2(MathF.Sin(_transform.Local.Rotation), -MathF.Cos(_transform.Local.Rotation));
-            
+
             var traction = dir * this.Thrust;
-          
+
             var acceleration = traction / Mass;
             _velocity += acceleration * dt;
             _velocity *= (1 - dt * Drag);
-            _velocity = Vector2Utils.ClampMagnitude(ref _velocity, MaxSpeed); 
+            _velocity = Vector2Utils.ClampMagnitude(ref _velocity, MaxSpeed);
 
             _transform.Local.Position += _velocity * dt;
         }
@@ -53,13 +53,13 @@ namespace Blazeroids.Web.Game.Components
             _rotationVelocity = 0;
             _velocity = Vector2.Zero;
         }
-        
+
         #region Properties
 
         public float Thrust = 0f;
         public float MaxSpeed = 1f;
         public float Drag = 5f;
-        
+
         public float RotationSpeed = 0f;
         public float RotationDrag = 5f;
 

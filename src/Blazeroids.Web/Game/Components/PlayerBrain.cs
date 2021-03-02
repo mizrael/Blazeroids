@@ -13,7 +13,7 @@ namespace Blazeroids.Web.Game.Components
         public int MaxHealth;
         public int Health;
 
-        public static PlayerStats Default() => new ()
+        public static PlayerStats Default() => new()
         {
             EnginePower = 2000f,
             RotationSpeed = 25f,
@@ -21,21 +21,25 @@ namespace Blazeroids.Web.Game.Components
             MaxHealth = 10
         };
     }
-    
+
     public class PlayerBrain : Component
     {
         private MovingBody _movingBody;
         private TransformComponent _transform;
         private SpriteRenderComponent _spriteRender;
         private BoundingBoxComponent _boundingBox;
-        
+
         private Weapon _weapon;
         private Size _halfSize;
 
         public PlayerStats Stats = PlayerStats.Default();
 
         public PlayerBrain(GameObject owner) : base(owner)
-        { _movingBody = Owner.Components.Get<MovingBody>();
+        {
+        }
+        protected override void OnStart()
+        {
+            _movingBody = Owner.Components.Get<MovingBody>();
             _transform = Owner.Components.Get<TransformComponent>();
             _spriteRender = Owner.Components.Get<SpriteRenderComponent>();
             _halfSize = _spriteRender.Sprite.Bounds.Size / 2;
@@ -53,9 +57,6 @@ namespace Blazeroids.Web.Game.Components
                     }
                 }
             };
-        }
-        protected override void OnStart(){
-           
         }
 
         public event OnDeathHandler OnDeath;

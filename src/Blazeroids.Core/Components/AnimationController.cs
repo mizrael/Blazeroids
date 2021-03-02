@@ -22,7 +22,8 @@ namespace Blazeroids.Core.Components
             _boolParams = new Dictionary<string, bool>();
         }
 
-        protected override void OnStart(){
+        protected override void OnStart()
+        {
             _animationComponent = Owner.Components.Get<AnimatedSpriteRenderComponent>();
         }
 
@@ -54,7 +55,7 @@ namespace Blazeroids.Core.Components
 
         public void SetFloat(string name, float value)
         {
-            if(!_floatParams.ContainsKey(name))
+            if (!_floatParams.ContainsKey(name))
                 _floatParams.Add(name, 0f);
             _floatParams[name] = value;
         }
@@ -88,7 +89,7 @@ namespace Blazeroids.Core.Components
         public void Update(AnimationController controller)
         {
             var transition = _transitions.FirstOrDefault(t => t.Check(controller));
-            if(null != transition)
+            if (null != transition)
                 controller.SetCurrentState(transition.To);
         }
 

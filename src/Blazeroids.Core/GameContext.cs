@@ -9,11 +9,13 @@ namespace Blazeroids.Core
     {
         private bool _isInitialized = false;
         
-        private Dictionary<Type, IGameService> _services = new();
+        private Dictionary<Type, IGameService> _servicesMap = new();
+        private List<IGameService> _services = new();
 
         public T GetService<T>() where T : class, IGameService
         {
-            _services.TryGetValue(typeof(T), out var service);
+            _servicesMap.TryGetValue(typeof(T), out var service);
+
             return service as T;
         }
         
@@ -21,7 +23,11 @@ namespace Blazeroids.Core
         {
             if (service == null) 
                 throw new ArgumentNullException(nameof(service));
-            _services[service.GetType()] = service;
+            var serviceType = service.GetType();
+            if(_servicesMap.ContainsKey(serviceType))
+                _services.Remove(service);
+            _services.Add(service);            
+            _servicesMap[serviceType] = service;
         }
 
         public async ValueTask Step()
@@ -37,8 +43,8 @@ namespace Blazeroids.Core
 
             this.GameTime.Step();
 
-            foreach (var service in _services.Values)
-                service.Step();
+            foreach (var service in _services)
+                await service.Step();
 
             await this.Update();
         }

@@ -21,10 +21,11 @@ namespace Blazeroids.Web.Game.Components
         public delegate void OnDeathHandler(GameObject asteroid);
 
         private AsteroidBrain(GameObject owner) : base(owner)
-        {   
+        {
         }
 
-        protected override void OnStart(){
+        protected override void OnStart()
+        {
             _transform = Owner.Components.Get<TransformComponent>();
             _boundingBox = Owner.Components.Get<BoundingBoxComponent>();
             _boundingBox.OnCollision += (sender, collidedWith) =>

@@ -16,25 +16,24 @@ namespace Blazeroids.Core.GameServices
             _context = context;
         }
 
-        public void Step()
+        public ValueTask Step()
         {
             var layers = BuildLayers();
-            RenderFrame(layers);
+            return RenderFrame(layers);
         }
 
-        private async ValueTask RenderFrame(IDictionary<int, IList<IRenderable>> layers){
+        private async ValueTask RenderFrame(IDictionary<int, IList<IRenderable>> layers)
+        {
             await _context.ClearRectAsync(0, 0, _game.Display.Size.Width, _game.Display.Size.Height)
                         .ConfigureAwait(false);
 
             await _context.BeginBatchAsync().ConfigureAwait(false);
-            
-            foreach(var layer in layers.OrderBy(kv => kv.Key))
-            foreach (var renderable in layer.Value)
-                await renderable.Render(_game, _context).ConfigureAwait(false);
+
+            foreach (var layer in layers.OrderBy(kv => kv.Key))
+                foreach (var renderable in layer.Value)
+                    await renderable.Render(_game, _context).ConfigureAwait(false);
 
             await _context.EndBatchAsync().ConfigureAwait(false);
-
-            await Task.Delay(10);
         }
 
         private IDictionary<int, IList<IRenderable>> BuildLayers()
@@ -48,13 +47,13 @@ namespace Blazeroids.Core.GameServices
 
         private void BuildLayers(GameObject node, IDictionary<int, IList<IRenderable>> layers)
         {
-            if (null == node)
+            if (null == node || !node.Enabled)
                 return;
 
             foreach (var component in node.Components)
-                if (component is IRenderable renderable)
+                if (component is IRenderable renderable && component.Started)
                 {
-                    if(!layers.ContainsKey(renderable.LayerIndex))
+                    if (!layers.ContainsKey(renderable.LayerIndex))
                         layers.Add(renderable.LayerIndex, new List<IRenderable>());
                     layers[renderable.LayerIndex].Add(renderable);
                 }

@@ -19,14 +19,15 @@ namespace Blazeroids.Core.Components
             if(!this.Owner.Enabled)
                 return;
                 
-            if(!_started){
-                _started = true;
+            if(!_started){                
                 OnStart();
+                _started = true;
             }
             
             OnUpdate(game);
         } 
 
         public GameObject Owner { get; }
+        public bool Started => _started;
     }
 }

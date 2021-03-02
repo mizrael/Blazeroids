@@ -1,13 +1,9 @@
-using System;
-using System.Drawing;
 using System.Numerics;
-using System.Threading.Tasks;
 using Blazeroids.Core;
 using Blazeroids.Core.Assets;
 using Blazeroids.Core.Components;
 using Blazeroids.Core.GameServices;
 using Blazeroids.Web.Game.Components;
-using Blazor.Extensions;
 using Blazeroids.Core.Utils;
 using Blazor.Extensions.Canvas.Canvas2D;
 
@@ -16,6 +12,27 @@ namespace Blazeroids.Web.Game
 
     public partial class BlazeroidsGame : GameContext
     {
+        private void InitSceneGraph(CollisionService collisionService, SceneGraph sceneGraph)
+        {
+            _explosionsSpawner = BuildExplosionsSpawner();
+            sceneGraph.Root.AddChild(_explosionsSpawner);
+
+            _asteroidsSpawner = BuildAsteroidsSpawner(collisionService);
+            sceneGraph.Root.AddChild(_asteroidsSpawner);
+
+            var bulletSpawner = BuildBulletSpawner(collisionService);
+            sceneGraph.Root.AddChild(bulletSpawner);
+
+            _player = BuildPlayer(bulletSpawner);
+            sceneGraph.Root.AddChild(_player);
+
+            var ui = BuidUI(bulletSpawner, _player);
+            sceneGraph.Root.AddChild(ui);
+
+            var background = BuildBackground();
+            sceneGraph.Root.AddChild(background);
+        }
+
         private GameObject BuildBackground()
         {
             var background = new GameObject();
@@ -161,11 +178,6 @@ namespace Blazeroids.Web.Game
 
                 return explosion;
             }, explosion =>{
-                var transform = explosion.Components.Get<TransformComponent>();
-
-                transform.World.Reset(); 
-                transform.Local.Reset();
-
                 var renderer = explosion.Components.Add<AnimatedSpriteRenderComponent>();
                 renderer.Reset();
             });
@@ -217,9 +229,8 @@ namespace Blazeroids.Web.Game
 
                     var explosion = _explosionsSpawner.Spawn();
                     var explosionTransform = explosion.Components.Get<TransformComponent>();
-                    explosionTransform.Local.Position = transform.Local.Position;
-                    explosionTransform.Local.Position.X -= sprite.Bounds.Width;
-                    explosionTransform.Local.Position.Y -= sprite.Bounds.Height;                     
+                    explosionTransform.Local.Clone(transform.Local);
+                    explosionTransform.World.Clone(transform.Local);
                 };
 
                 return asteroid;

@@ -9,12 +9,13 @@ namespace Blazeroids.Web.Game.Components
     {
         private long _lastBulletFiredTime = 0;
         private TransformComponent _ownerTransform;
-        
+
         public Weapon(GameObject owner) : base(owner)
         {
         }
 
-        protected override void OnStart(){
+        protected override void OnStart()
+        {
             _ownerTransform = Owner.Components.Get<TransformComponent>();
         }
 
@@ -23,7 +24,7 @@ namespace Blazeroids.Web.Game.Components
             var canShoot = game.GameTime.TotalMilliseconds - _lastBulletFiredTime >= FireRate;
             if (!canShoot)
                 return;
-            
+
             _lastBulletFiredTime = game.GameTime.TotalMilliseconds;
 
             var bullet = Spawner.Spawn();

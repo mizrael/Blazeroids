@@ -38,7 +38,7 @@ namespace Blazeroids.Web.Game.Components
             };
         }
 
-        protected override void UpdateCore(GameContext game)
+        protected override async ValueTask UpdateCore(GameContext game)
         {
             _transform.Local.Rotation += RotationSpeed * game.GameTime.ElapsedMilliseconds;
             _transform.Local.Position += Direction * Speed * game.GameTime.ElapsedMilliseconds;

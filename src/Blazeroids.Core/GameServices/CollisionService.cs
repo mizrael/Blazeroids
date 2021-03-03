@@ -19,7 +19,10 @@ namespace Blazeroids.Core.GameServices
             _game = game;
             _bucketSize = bucketSize;
             _game.Display.OnSizeChanged += BuildBuckets;
+            _game.SceneManager.OnSceneChanged += OnSceneChanged;
         }
+
+        private void OnSceneChanged(Scene currentScene) => BuildBuckets();
 
         private void BuildBuckets()
         {

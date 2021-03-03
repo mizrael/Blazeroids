@@ -29,7 +29,7 @@ namespace Blazeroids.Web.Game.Components
             };
         }
 
-        protected override void UpdateCore(GameContext game)
+        protected override async ValueTask UpdateCore(GameContext game)
         {
             _movingBody.Thrust = this.Speed;
 

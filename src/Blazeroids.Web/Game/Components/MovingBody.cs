@@ -26,7 +26,7 @@ namespace Blazeroids.Web.Game.Components
             _transform = Owner.Components.Get<TransformComponent>();
         }
 
-        protected override void UpdateCore(GameContext game)
+        protected override async ValueTask UpdateCore(GameContext game)
         {
             var dt = (float)game.GameTime.ElapsedMilliseconds / 1000;
 

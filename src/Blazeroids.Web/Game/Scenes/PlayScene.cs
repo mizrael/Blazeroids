@@ -11,7 +11,7 @@ using System;
 
 namespace Blazeroids.Web.Game.Scenes
 {
-    public class GameScene : Scene
+    public class PlayScene : Scene
     {
         #region "private members"
 
@@ -29,7 +29,7 @@ namespace Blazeroids.Web.Game.Scenes
 
         #endregion "private members"
 
-        public GameScene(GameContext game, IAssetsResolver assetsResolver) : base(game)
+        public PlayScene(GameContext game, IAssetsResolver assetsResolver) : base(game)
         {
             _assetsResolver = assetsResolver;
         }
@@ -293,10 +293,10 @@ namespace Blazeroids.Web.Game.Scenes
 
         #endregion "private methods"
 
-        public override ValueTask Enter(){
+        public override ValueTask Enter(){            
             var collisionService = this.Game.GetService<CollisionService>();
             this.InitSceneGraph(collisionService);
-            return ValueTask.CompletedTask;
+            return base.Enter();
         }
 
         protected override ValueTask Update()

@@ -72,6 +72,8 @@ namespace Blazeroids.Core.GameServices
         Down = 40,
         Right = 39,
         Space = 32,
+        Enter = 13,
+        Esc = 27,
         LeftCtrl = 17,
         LeftAlt = 18,
     }

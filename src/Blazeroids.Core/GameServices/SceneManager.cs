@@ -13,17 +13,16 @@ namespace Blazeroids.Core.GameServices
             this.Game = game ?? throw new ArgumentNullException(nameof(game));
         }
 
-        public ValueTask Step()
+        public async ValueTask Step()
         {
             if (null != Root)
-                Root.Update(this.Game);
-            return this.Update();
+                await Root.Update(this.Game);
+            await this.Update();
         }
 
         public virtual ValueTask Enter() => ValueTask.CompletedTask;
         public virtual ValueTask Exit() => ValueTask.CompletedTask;
-
-        protected abstract ValueTask Update();
+        protected virtual ValueTask Update() => ValueTask.CompletedTask;
 
         public GameObject Root { get; } = new();
     }
@@ -59,6 +58,8 @@ namespace Blazeroids.Core.GameServices
             this.Current = _scenes[name];
 
             await this.Current.Enter();
+
+            this.OnSceneChanged?.Invoke(this.Current);
         }
 
         public async ValueTask Step()
@@ -68,5 +69,8 @@ namespace Blazeroids.Core.GameServices
         }
 
         public Scene Current { get; private set; }
+
+        public event OnSceneChangedHandler OnSceneChanged;
+        public delegate void OnSceneChangedHandler(Scene currentScene);
     }
 }

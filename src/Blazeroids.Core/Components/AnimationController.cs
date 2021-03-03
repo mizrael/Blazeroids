@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Blazeroids.Core.Assets;
 
 namespace Blazeroids.Core.Components
@@ -33,7 +34,7 @@ namespace Blazeroids.Core.Components
             _states.Add(state);
         }
 
-        protected override void UpdateCore(GameContext game)
+        protected override ValueTask UpdateCore(GameContext game)
         {
             if (null == _currentState)
             {
@@ -42,6 +43,7 @@ namespace Blazeroids.Core.Components
             }
 
             _currentState.Update(this);
+            return ValueTask.CompletedTask;
         }
 
         public void SetCurrentState(AnimationState state)

@@ -62,7 +62,7 @@ namespace Blazeroids.Web.Game.Components
         public event OnDeathHandler OnDeath;
         public delegate void OnDeathHandler(GameObject player);
 
-        protected override void UpdateCore(GameContext game)
+        protected override async ValueTask UpdateCore(GameContext game)
         {
             var inputService = game.GetService<InputService>();
             HandleMovement(game, inputService);

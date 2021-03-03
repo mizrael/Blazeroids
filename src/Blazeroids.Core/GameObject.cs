@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Blazeroids.Core.Components;
 
 namespace Blazeroids.Core
@@ -51,16 +52,16 @@ namespace Blazeroids.Core
             _children.Add(child);
         }
 
-        public void Update(GameContext game)
+        public async ValueTask Update(GameContext game)
         {
             if (!Enabled)
                 return;
             
             foreach (var component in this.Components)
-                component.Update(game);
+                await component.Update(game);
 
             foreach (var child in _children)
-                child.Update(game);
+                await child.Update(game);
         }
 
         public override int GetHashCode() => this.Id;

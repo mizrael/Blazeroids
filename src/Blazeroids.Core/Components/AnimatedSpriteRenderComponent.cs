@@ -24,7 +24,7 @@ namespace Blazeroids.Core.Components
             _transform = Owner.Components.Get<TransformComponent>();
         }
 
-        protected override void UpdateCore(GameContext game)
+        protected override async ValueTask UpdateCore(GameContext game)
         {
             if (null == Animation || !this.Owner.Enabled)
                 return;

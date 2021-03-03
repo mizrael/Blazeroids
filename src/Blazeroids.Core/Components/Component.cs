@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 namespace Blazeroids.Core.Components
 {
@@ -13,18 +14,18 @@ namespace Blazeroids.Core.Components
 
         protected virtual void Init(){}
 
-        protected virtual void UpdateCore(GameContext game){}
+        protected virtual ValueTask UpdateCore(GameContext game) => ValueTask.CompletedTask;
 
-        public virtual void Update(GameContext game){
+        public virtual ValueTask Update(GameContext game){
             if(!this.Owner.Enabled)
-                return;
+                return ValueTask.CompletedTask;
                 
             if(!_initialized){                
                 Init();
                 _initialized = true;
             }
             
-            UpdateCore(game);
+            return UpdateCore(game);
         } 
 
         public GameObject Owner { get; }

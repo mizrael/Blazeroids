@@ -23,10 +23,11 @@ namespace Blazeroids.Web.Game
 
             var collisionService = new CollisionService(this, new Size(64, 64));
             this.AddService(collisionService);
+            
+            this.SceneManager.AddScene(SceneNames.Welcome, new Scenes.WelcomeScene(this));
+            this.SceneManager.AddScene(SceneNames.Play, new Scenes.PlayScene(this, _assetsResolver));
 
-            var gameScene = new Scenes.GameScene(this, _assetsResolver);
-            this.SceneManager.AddScene("game", gameScene);
-            await this.SceneManager.SetCurrentScene("game");
+            await this.SceneManager.SetCurrentScene(SceneNames.Welcome);
         }
     }
 }

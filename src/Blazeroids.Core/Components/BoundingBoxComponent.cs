@@ -31,7 +31,7 @@ namespace Blazeroids.Core.Components
             _halfSize = size / 2;
         }
 
-        protected override void UpdateCore(GameContext game)
+        protected override async ValueTask UpdateCore(GameContext game)
         {
             var x = (int)_transform.World.Position.X - _halfSize.Width;
             var y = (int)_transform.World.Position.Y - _halfSize.Height;

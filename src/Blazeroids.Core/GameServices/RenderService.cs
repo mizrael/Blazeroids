@@ -22,30 +22,30 @@ namespace Blazeroids.Core.GameServices
             return RenderFrame(layers);
         }
 
-        private async ValueTask RenderFrame(IDictionary<int, IList<IRenderable>> layers)
+        private async ValueTask RenderFrame(SortedList<int, IList<IRenderable>> layers)
         {
             await _context.ClearRectAsync(0, 0, _game.Display.Size.Width, _game.Display.Size.Height)
                         .ConfigureAwait(false);
 
             await _context.BeginBatchAsync().ConfigureAwait(false);
 
-            foreach (var layer in layers.OrderBy(kv => kv.Key))
-                foreach (var renderable in layer.Value)
+            foreach (var layer in layers.Values)
+                foreach (var renderable in layer)
                     await renderable.Render(_game, _context).ConfigureAwait(false);
 
             await _context.EndBatchAsync().ConfigureAwait(false);
         }
 
-        private IDictionary<int, IList<IRenderable>> BuildLayers()
+        private SortedList<int, IList<IRenderable>> BuildLayers()
         {
             var sceneGraph = _game.GetService<SceneGraph>();
-            var layers = new Dictionary<int, IList<IRenderable>>();
+            var layers = new SortedList<int, IList<IRenderable>>();
             BuildLayers(sceneGraph.Root, layers);
 
             return layers;
         }
 
-        private void BuildLayers(GameObject node, IDictionary<int, IList<IRenderable>> layers)
+        private void BuildLayers(GameObject node, SortedList<int, IList<IRenderable>> layers)
         {
             if (null == node || !node.Enabled)
                 return;

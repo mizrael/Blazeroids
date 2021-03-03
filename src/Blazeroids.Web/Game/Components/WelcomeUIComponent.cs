@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Blazeroids.Core;
 using Blazeroids.Core.Components;
@@ -7,23 +6,30 @@ using Blazor.Extensions.Canvas.Canvas2D;
 
 namespace Blazeroids.Web.Game.Components
 {
-    public class StartScreenUIComponent : Component, IRenderable
+    public class WelcomeUIComponent : Component, IRenderable
     {
-        private StartScreenUIComponent(GameObject owner) : base(owner)
+        private WelcomeUIComponent(GameObject owner) : base(owner)
         {
         }
 
         public async ValueTask Render(GameContext game, Canvas2DContext context)
         {
-            await context.SetStrokeStyleAsync("#fff").ConfigureAwait(false);
-            await context.SetFontAsync("28px verdana").ConfigureAwait(false);
-
+            await context.SetFillStyleAsync("#fff").ConfigureAwait(false);
+            await context.SetFontAsync("40px verdana").ConfigureAwait(false);
+            
             var text = "Blazeroids!";
-            var textSize = await context.MeasureTextAsync(text);
+            var textSize = await context.MeasureTextAsync(text).ConfigureAwait(false);
             var y = game.Display.Size.Height / 2;
             var x = game.Display.Size.Width / 2 - textSize.Width / 2;
 
-            await context.StrokeTextAsync("Blazeroids!", x, y)
+            await context.FillTextAsync(text, x, y).ConfigureAwait(false);          
+
+            await context.SetFontAsync("28px verdana").ConfigureAwait(false);
+            text = "press Enter to start";
+            textSize = await context.MeasureTextAsync(text).ConfigureAwait(false);
+            y += 40;
+            x = game.Display.Size.Width / 2 - textSize.Width / 2;
+            await context.FillTextAsync(text, x, y)
                         .ConfigureAwait(false);
         }
 

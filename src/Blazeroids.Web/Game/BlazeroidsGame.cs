@@ -24,7 +24,7 @@ namespace Blazeroids.Web.Game
             var collisionService = new CollisionService(this, new Size(64, 64));
             this.AddService(collisionService);
             
-            this.SceneManager.AddScene(SceneNames.Welcome, new Scenes.WelcomeScene(this));
+            this.SceneManager.AddScene(SceneNames.Welcome, new Scenes.WelcomeScene(this, _assetsResolver));
             this.SceneManager.AddScene(SceneNames.Play, new Scenes.PlayScene(this, _assetsResolver));
 
             await this.SceneManager.SetCurrentScene(SceneNames.Welcome);

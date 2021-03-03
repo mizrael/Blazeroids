@@ -25,6 +25,7 @@ namespace Blazeroids.Web.Game.Components
             await context.SetFillStyleAsync("green");
             await context.FillRectAsync(10, 50, 300, _height);
 
+            await context.SetFillStyleAsync("#fff");
             await context.SetFontAsync("18px verdana");
             
             y = startY;
@@ -43,7 +44,7 @@ namespace Blazeroids.Web.Game.Components
         private async ValueTask WriteLine(string text, Canvas2DContext context)
         {
             y += _lineHeight;
-            await context.StrokeTextAsync(text, x, y).ConfigureAwait(false);
+            await context.FillTextAsync(text, x, y).ConfigureAwait(false);
         }
 
         public Spawner BulletSpawner;

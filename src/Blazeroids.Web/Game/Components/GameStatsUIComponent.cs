@@ -17,7 +17,7 @@ namespace Blazeroids.Web.Game.Components
 
         public async ValueTask Render(GameContext game, Canvas2DContext context)
         {
-            await context.SetStrokeStyleAsync("#fff").ConfigureAwait(false);
+            await context.SetFillStyleAsync("#fff").ConfigureAwait(false);
             await context.SetFontAsync("18px verdana").ConfigureAwait(false);
             
             var hiScore = Math.Max(_score, _maxScore);
@@ -25,7 +25,7 @@ namespace Blazeroids.Web.Game.Components
             var textSize = await context.MeasureTextAsync(text).ConfigureAwait(false);
             var x = game.Display.Size.Width - textSize.Width - 50;
             
-            await context.StrokeTextAsync(text, x, 50).ConfigureAwait(false);
+            await context.FillTextAsync(text, x, 50).ConfigureAwait(false);
         }
 
         public int LayerIndex { get; set; }

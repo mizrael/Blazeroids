@@ -17,7 +17,7 @@ namespace Blazeroids.Web.Game.Components
 
         }
 
-        protected override void OnStart()
+        protected override void Init()
         {
             _movingBody = Owner.Components.Get<MovingBody>();
             _transformComponent = Owner.Components.Get<TransformComponent>();
@@ -29,19 +29,19 @@ namespace Blazeroids.Web.Game.Components
             };
         }
 
-        protected override void OnUpdate(GameContext game)
+        protected override async ValueTask UpdateCore(GameContext game)
         {
             _movingBody.Thrust = this.Speed;
 
             var isOutScreen = _transformComponent.World.Position.X < 0 ||
                               _transformComponent.World.Position.Y < 0 ||
-                              _transformComponent.World.Position.X > this.Canvas.Width ||
-                              _transformComponent.World.Position.Y > this.Canvas.Height;
+                              _transformComponent.World.Position.X > this.Display.Size.Width ||
+                              _transformComponent.World.Position.Y > this.Display.Size.Height;
             if (isOutScreen)
                 this.Owner.Enabled = false;
         }
 
         public float Speed { get; set; }
-        public BECanvasComponent Canvas { get; set; }
+        public Display Display { get; set; }
     }
 }

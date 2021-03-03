@@ -19,7 +19,10 @@ namespace Blazeroids.Core.GameServices
             _game = game;
             _bucketSize = bucketSize;
             _game.Display.OnSizeChanged += BuildBuckets;
+            _game.SceneManager.OnSceneChanged += OnSceneChanged;
         }
+
+        private void OnSceneChanged(Scene currentScene) => BuildBuckets();
 
         private void BuildBuckets()
         {
@@ -92,7 +95,7 @@ namespace Blazeroids.Core.GameServices
 
         private IEnumerable<BoundingBoxComponent> FindAllColliders()
         {
-            var scenegraph = _game.GetService<SceneGraph>();
+            var scenegraph = _game.SceneManager.Current;
             var colliders = new List<BoundingBoxComponent>();
 
             FindAllColliders(scenegraph.Root, colliders);

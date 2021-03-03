@@ -19,12 +19,12 @@ namespace Blazeroids.Core.Components
         {
         }
 
-        protected override void OnStart()
+        protected override void Init()
         {
             _transform = Owner.Components.Get<TransformComponent>();
         }
 
-        protected override void OnUpdate(GameContext game)
+        protected override async ValueTask UpdateCore(GameContext game)
         {
             if (null == Animation || !this.Owner.Enabled)
                 return;

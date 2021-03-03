@@ -16,42 +16,44 @@ namespace Blazeroids.Core.GameServices
             _context = context;
         }
 
-        public ValueTask Step()
+        public ValueTask Step() => ValueTask.CompletedTask;
+
+        public ValueTask Render()
         {
             var layers = BuildLayers();
             return RenderFrame(layers);
         }
 
-        private async ValueTask RenderFrame(IDictionary<int, IList<IRenderable>> layers)
+        private async ValueTask RenderFrame(SortedList<int, IList<IRenderable>> layers)
         {
             await _context.ClearRectAsync(0, 0, _game.Display.Size.Width, _game.Display.Size.Height)
                         .ConfigureAwait(false);
 
             await _context.BeginBatchAsync().ConfigureAwait(false);
 
-            foreach (var layer in layers.OrderBy(kv => kv.Key))
-                foreach (var renderable in layer.Value)
+            foreach (var layer in layers.Values)
+                foreach (var renderable in layer)
                     await renderable.Render(_game, _context).ConfigureAwait(false);
 
             await _context.EndBatchAsync().ConfigureAwait(false);
         }
 
-        private IDictionary<int, IList<IRenderable>> BuildLayers()
+        private SortedList<int, IList<IRenderable>> BuildLayers()
         {
-            var sceneGraph = _game.GetService<SceneGraph>();
-            var layers = new Dictionary<int, IList<IRenderable>>();
-            BuildLayers(sceneGraph.Root, layers);
+            var activeScene = _game.SceneManager.Current;
+            var layers = new SortedList<int, IList<IRenderable>>();
+            BuildLayers(activeScene.Root, layers);
 
             return layers;
         }
 
-        private void BuildLayers(GameObject node, IDictionary<int, IList<IRenderable>> layers)
+        private void BuildLayers(GameObject node, SortedList<int, IList<IRenderable>> layers)
         {
             if (null == node || !node.Enabled)
                 return;
 
             foreach (var component in node.Components)
-                if (component is IRenderable renderable && component.Started)
+                if (component is IRenderable renderable && component.Initialized)
                 {
                     if (!layers.ContainsKey(renderable.LayerIndex))
                         layers.Add(renderable.LayerIndex, new List<IRenderable>());

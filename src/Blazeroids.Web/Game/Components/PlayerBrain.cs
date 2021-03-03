@@ -37,7 +37,7 @@ namespace Blazeroids.Web.Game.Components
         public PlayerBrain(GameObject owner) : base(owner)
         {
         }
-        protected override void OnStart()
+        protected override void Init()
         {
             _movingBody = Owner.Components.Get<MovingBody>();
             _transform = Owner.Components.Get<TransformComponent>();
@@ -62,7 +62,7 @@ namespace Blazeroids.Web.Game.Components
         public event OnDeathHandler OnDeath;
         public delegate void OnDeathHandler(GameObject player);
 
-        protected override void OnUpdate(GameContext game)
+        protected override async ValueTask UpdateCore(GameContext game)
         {
             var inputService = game.GetService<InputService>();
             HandleMovement(game, inputService);

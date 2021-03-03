@@ -6,41 +6,68 @@ using Blazeroids.Core.GameServices;
 using Blazeroids.Web.Game.Components;
 using Blazeroids.Core.Utils;
 using Blazor.Extensions.Canvas.Canvas2D;
+using System.Threading.Tasks;
+using Blazor.Extensions;
+using System;
 
-namespace Blazeroids.Web.Game
+namespace Blazeroids.Web.Game.Scenes
 {
-
-    public partial class BlazeroidsGame : GameContext
+    public class GameScene : Scene
     {
-        private void InitSceneGraph(CollisionService collisionService, SceneGraph sceneGraph)
+        #region "private members"
+
+        private readonly BECanvasComponent _canvas;
+        private readonly IAssetsResolver _assetsResolver;
+
+        private long _lastAsteroidSpawnTime = 0;
+        private long _startAsteroidSpawnRate = 2000;
+        private long _maxAsteroidSpawnRate = 500;
+        private long _asteroidSpawnRate = 2000;
+        private int _killedAsteroids = 0;
+        private Spawner _asteroidsSpawner;
+        private Spawner _explosionsSpawner;
+        private GameObject _player;
+        private GameStatsUIComponent _gameStats;
+
+        #endregion "private members"
+
+        public GameScene(GameContext game, BECanvasComponent canvas, IAssetsResolver assetsResolver) : base(game)
+        {
+            _canvas = canvas;
+            _assetsResolver = assetsResolver;
+        }
+
+        #region "private methods"
+
+        private void InitSceneGraph(CollisionService collisionService)
         {
             _explosionsSpawner = BuildExplosionsSpawner();
-            sceneGraph.Root.AddChild(_explosionsSpawner);
+            this.Root.AddChild(_explosionsSpawner);
 
             _asteroidsSpawner = BuildAsteroidsSpawner(collisionService);
-            sceneGraph.Root.AddChild(_asteroidsSpawner);
+            this.Root.AddChild(_asteroidsSpawner);
 
             var bulletSpawner = BuildBulletSpawner(collisionService);
-            sceneGraph.Root.AddChild(bulletSpawner);
+            this.Root.AddChild(bulletSpawner);
 
             _player = BuildPlayer(bulletSpawner);
-            sceneGraph.Root.AddChild(_player);
+            this.Root.AddChild(_player);
 
             var ui = BuidUI(bulletSpawner, _player);
-            sceneGraph.Root.AddChild(ui);
+            this.Root.AddChild(ui);
 
             var background = BuildBackground();
-            sceneGraph.Root.AddChild(background);
+            this.Root.AddChild(background);
         }
 
         private GameObject BuildBackground()
         {
             var background = new GameObject();
-            
+
             var sprite = _assetsResolver.Get<Sprite>("assets/backgrounds/blue.png");
 
             var transform = background.Components.Add<TransformComponent>();
-            if(_canvas.Width > sprite.Bounds.Width)
+            if (_canvas.Width > sprite.Bounds.Width)
                 transform.Local.Scale.X = 2f * (float)_canvas.Width / sprite.Bounds.Width;
             if (_canvas.Height > sprite.Bounds.Height)
                 transform.Local.Scale.Y = 2f * (float)_canvas.Height / sprite.Bounds.Height;
@@ -52,11 +79,11 @@ namespace Blazeroids.Web.Game
 
             return background;
         }
-        
+
         private Spawner BuildBulletSpawner(CollisionService collisionService)
         {
             var spriteSheet = _assetsResolver.Get<SpriteSheet>("assets/sheet.json");
-            
+
             var spawner = new Spawner(() =>
             {
                 var bullet = new GameObject();
@@ -65,12 +92,12 @@ namespace Blazeroids.Web.Game
                 var bulletSpriteRenderer = bullet.Components.Add<SpriteRenderComponent>();
                 bulletSpriteRenderer.Sprite = spriteSheet.Get("fire01.png");
                 bulletSpriteRenderer.LayerIndex = (int)RenderLayers.Items;
-                
+
                 var bulletBBox = bullet.Components.Add<BoundingBoxComponent>();
                 bulletBBox.SetSize(bulletSpriteRenderer.Sprite.Bounds.Size);
 
                 var speed = 7000f;
-                
+
                 var bulletRigidBody = bullet.Components.Add<MovingBody>();
                 bulletRigidBody.MaxSpeed = speed;
 
@@ -84,7 +111,7 @@ namespace Blazeroids.Web.Game
             }, bullet =>
             {
                 bullet.Components.Get<MovingBody>().Reset();
-                
+
                 bullet.Components.Get<TransformComponent>().Local.Reset();
                 bullet.Components.Get<TransformComponent>().World.Reset();
             });
@@ -109,18 +136,18 @@ namespace Blazeroids.Web.Game
             var playerSpriteRenderer = player.Components.Add<SpriteRenderComponent>();
             playerSpriteRenderer.Sprite = sprite;
             playerSpriteRenderer.LayerIndex = (int)RenderLayers.Player;
-            
+
             var bbox = player.Components.Add<BoundingBoxComponent>();
             bbox.SetSize(sprite.Bounds.Size);
 
             var rigidBody = player.Components.Add<MovingBody>();
-            
+
             var weapon = player.Components.Add<Weapon>();
             weapon.Spawner = bulletSpawner;
 
             var brain = player.Components.Add<PlayerBrain>();
             rigidBody.MaxSpeed = brain.Stats.EnginePower;
-            
+
             brain.OnDeath += player =>
             {
                 var explosion = _explosionsSpawner.Spawn();
@@ -129,16 +156,16 @@ namespace Blazeroids.Web.Game
                 explosionTransform.Local.Position = playerTransform.Local.Position;
                 explosionTransform.Local.Position.X -= sprite.Bounds.Width;
                 explosionTransform.Local.Position.Y -= sprite.Bounds.Height;
-                
+
                 _asteroidSpawnRate = _startAsteroidSpawnRate;
-                    
+
                 brain.Stats = PlayerStats.Default();
                 playerTransform.Local.Position.X = _canvas.Width / 2;
                 playerTransform.Local.Position.Y = _canvas.Height / 2;
                 player.Enabled = true;
                 _gameStats.ResetScore();
             };
-            
+
             return player;
         }
 
@@ -148,21 +175,22 @@ namespace Blazeroids.Web.Game
             _gameStats = ui.Components.Add<GameStatsUIComponent>();
             _gameStats.LayerIndex = (int)RenderLayers.UI;
 
-            #if DEBUG
+#if DEBUG
             var debugStats = ui.Components.Add<DebugStatsUIComponent>();
             debugStats.BulletSpawner = bulletSpawner;
             debugStats.AsteroidsSpawner = _asteroidsSpawner;
             debugStats.LayerIndex = (int)RenderLayers.UI;
-            #endif
-            
+#endif
+
             var playerStats = ui.Components.Add<PlayerStatsUIComponent>();
             playerStats.PlayerBrain = player.Components.Get<PlayerBrain>();
             playerStats.LayerIndex = (int)RenderLayers.UI;
-            
+
             return ui;
         }
 
-        private Spawner BuildExplosionsSpawner(){
+        private Spawner BuildExplosionsSpawner()
+        {
             var animations = _assetsResolver.Get<AnimationCollection>("assets/animations/explosions.json");
             var explosionAnim = animations.GetAnimation("explosion1");
 
@@ -177,7 +205,8 @@ namespace Blazeroids.Web.Game
                 renderer.OnAnimationComplete += _ => explosion.Enabled = false;
 
                 return explosion;
-            }, explosion =>{
+            }, explosion =>
+            {
                 var renderer = explosion.Components.Add<AnimatedSpriteRenderComponent>();
                 renderer.Reset();
             });
@@ -201,15 +230,15 @@ namespace Blazeroids.Web.Game
                 "meteorGrey_big4.png",
             };
             int spriteIndex = 0;
-            
+
             var spriteSheet = _assetsResolver.Get<SpriteSheet>("assets/sheet.json");
-            
+
             var spawner = new Spawner(() =>
             {
                 var asteroid = new GameObject();
-                
+
                 var transform = asteroid.Components.Add<TransformComponent>();
-                
+
                 var spriteRenderer = asteroid.Components.Add<SpriteRenderComponent>();
                 var sprite = spriteSheet.Get(spriteNames[spriteIndex]);
                 spriteIndex = spriteIndex + 1 % spriteNames.Length;
@@ -219,7 +248,7 @@ namespace Blazeroids.Web.Game
                 var bbox = asteroid.Components.Add<BoundingBoxComponent>();
                 bbox.SetSize(sprite.Bounds.Size);
                 collisionService.Add(bbox);
-                
+
                 var brain = asteroid.Components.Add<AsteroidBrain>();
                 brain.Canvas = _canvas;
                 brain.OnDeath += o =>
@@ -238,12 +267,12 @@ namespace Blazeroids.Web.Game
             {
                 var transform = asteroid.Components.Get<TransformComponent>();
 
-                transform.World.Reset(); 
+                transform.World.Reset();
                 transform.Local.Reset();
-                
+
                 transform.Local.Position.X = MathUtils.Random.NextBool() ? 0 : _canvas.Width;
                 transform.Local.Position.Y = MathUtils.Random.NextBool() ? 0 : _canvas.Height;
-                
+
                 var brain = asteroid.Components.Get<AsteroidBrain>();
                 var dir = _player.Components.Get<TransformComponent>().Local.Position - transform.Local.Position;
                 brain.Direction = Vector2.Normalize(dir);
@@ -264,6 +293,27 @@ namespace Blazeroids.Web.Game
 
             return spawner;
         }
-        
+
+        #endregion "private methods"
+
+        public override ValueTask Enter(){
+            var collisionService = this.Game.GetService<CollisionService>();
+            this.InitSceneGraph(collisionService);
+            return ValueTask.CompletedTask;
+        }
+
+        protected override ValueTask Update()
+        {
+            _asteroidSpawnRate = Math.Max(_asteroidSpawnRate - 1, _maxAsteroidSpawnRate);
+
+            var canSpawnAsteroid = Game.GameTime.TotalMilliseconds - _lastAsteroidSpawnTime >= _asteroidSpawnRate;
+            if (canSpawnAsteroid)
+            {
+                _lastAsteroidSpawnTime = Game.GameTime.TotalMilliseconds;
+                _asteroidsSpawner.Spawn();
+            }
+
+            return ValueTask.CompletedTask;
+        }
     }
 }

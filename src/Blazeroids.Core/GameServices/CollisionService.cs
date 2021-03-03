@@ -92,7 +92,7 @@ namespace Blazeroids.Core.GameServices
 
         private IEnumerable<BoundingBoxComponent> FindAllColliders()
         {
-            var scenegraph = _game.GetService<SceneGraph>();
+            var scenegraph = _game.SceneManager.Current;
             var colliders = new List<BoundingBoxComponent>();
 
             FindAllColliders(scenegraph.Root, colliders);

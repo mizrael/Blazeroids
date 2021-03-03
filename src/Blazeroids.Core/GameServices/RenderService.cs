@@ -38,9 +38,9 @@ namespace Blazeroids.Core.GameServices
 
         private SortedList<int, IList<IRenderable>> BuildLayers()
         {
-            var sceneGraph = _game.GetService<SceneGraph>();
+            var activeScene = _game.SceneManager.Current;
             var layers = new SortedList<int, IList<IRenderable>>();
-            BuildLayers(sceneGraph.Root, layers);
+            BuildLayers(activeScene.Root, layers);
 
             return layers;
         }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Blazeroids.Core.Assets;
 
 namespace Blazeroids.Core.Components

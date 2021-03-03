@@ -14,22 +14,17 @@ namespace Blazeroids.Web.Game.Components
 
         public async ValueTask Render(GameContext game, Canvas2DContext context)
         {
+            var y = (double)game.Display.Size.Height / 2;
+            var x = (double)game.Display.Size.Width / 2;
+
             await context.SetFillStyleAsync("#fff").ConfigureAwait(false);
             await context.SetFontAsync("40px verdana").ConfigureAwait(false);
-            
-            var text = "Blazeroids!";
-            var textSize = await context.MeasureTextAsync(text).ConfigureAwait(false);
-            var y = game.Display.Size.Height / 2;
-            var x = game.Display.Size.Width / 2 - textSize.Width / 2;
+            await context.SetTextAlignAsync(TextAlign.Center).ConfigureAwait(false);
 
-            await context.FillTextAsync(text, x, y).ConfigureAwait(false);          
+            await context.FillTextAsync("Blazeroids!", x, y).ConfigureAwait(false);          
 
-            await context.SetFontAsync("28px verdana").ConfigureAwait(false);
-            text = "press Enter to start";
-            textSize = await context.MeasureTextAsync(text).ConfigureAwait(false);
-            y += 40;
-            x = game.Display.Size.Width / 2 - textSize.Width / 2;
-            await context.FillTextAsync(text, x, y)
+            await context.SetFontAsync("28px verdana").ConfigureAwait(false);                                 
+            await context.FillTextAsync("press Enter to start", x, y + 40)
                         .ConfigureAwait(false);
         }
 

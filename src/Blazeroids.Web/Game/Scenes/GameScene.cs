@@ -7,7 +7,6 @@ using Blazeroids.Web.Game.Components;
 using Blazeroids.Core.Utils;
 using Blazor.Extensions.Canvas.Canvas2D;
 using System.Threading.Tasks;
-using Blazor.Extensions;
 using System;
 
 namespace Blazeroids.Web.Game.Scenes
@@ -16,7 +15,6 @@ namespace Blazeroids.Web.Game.Scenes
     {
         #region "private members"
 
-        private readonly BECanvasComponent _canvas;
         private readonly IAssetsResolver _assetsResolver;
 
         private long _lastAsteroidSpawnTime = 0;
@@ -31,9 +29,8 @@ namespace Blazeroids.Web.Game.Scenes
 
         #endregion "private members"
 
-        public GameScene(GameContext game, BECanvasComponent canvas, IAssetsResolver assetsResolver) : base(game)
+        public GameScene(GameContext game, IAssetsResolver assetsResolver) : base(game)
         {
-            _canvas = canvas;
             _assetsResolver = assetsResolver;
         }
 
@@ -67,10 +64,10 @@ namespace Blazeroids.Web.Game.Scenes
             var sprite = _assetsResolver.Get<Sprite>("assets/backgrounds/blue.png");
 
             var transform = background.Components.Add<TransformComponent>();
-            if (_canvas.Width > sprite.Bounds.Width)
-                transform.Local.Scale.X = 2f * (float)_canvas.Width / sprite.Bounds.Width;
-            if (_canvas.Height > sprite.Bounds.Height)
-                transform.Local.Scale.Y = 2f * (float)_canvas.Height / sprite.Bounds.Height;
+            if (this.Game.Display.Size.Width > sprite.Bounds.Width)
+                transform.Local.Scale.X = 2f * (float)this.Game.Display.Size.Width / sprite.Bounds.Width;
+            if (this.Game.Display.Size.Height > sprite.Bounds.Height)
+                transform.Local.Scale.Y = 2f * (float)this.Game.Display.Size.Height / sprite.Bounds.Height;
 
             var renderer = background.Components.Add<RectRenderComponent>();
             renderer.Sprite = sprite;
@@ -103,7 +100,7 @@ namespace Blazeroids.Web.Game.Scenes
 
                 var brain = bullet.Components.Add<BulletBrain>();
                 brain.Speed = speed;
-                brain.Canvas = _canvas;
+                brain.Display = this.Game.Display;
 
                 collisionService.Add(bulletBBox);
 
@@ -130,8 +127,8 @@ namespace Blazeroids.Web.Game.Scenes
 
             var playerTransform = player.Components.Add<TransformComponent>();
 
-            playerTransform.Local.Position.X = _canvas.Width / 2;
-            playerTransform.Local.Position.Y = _canvas.Height / 2;
+            playerTransform.Local.Position.X = this.Game.Display.Size.Width / 2;
+            playerTransform.Local.Position.Y = this.Game.Display.Size.Height / 2;
 
             var playerSpriteRenderer = player.Components.Add<SpriteRenderComponent>();
             playerSpriteRenderer.Sprite = sprite;
@@ -160,8 +157,8 @@ namespace Blazeroids.Web.Game.Scenes
                 _asteroidSpawnRate = _startAsteroidSpawnRate;
 
                 brain.Stats = PlayerStats.Default();
-                playerTransform.Local.Position.X = _canvas.Width / 2;
-                playerTransform.Local.Position.Y = _canvas.Height / 2;
+                playerTransform.Local.Position.X = this.Game.Display.Size.Width / 2;
+                playerTransform.Local.Position.Y = this.Game.Display.Size.Height / 2;
                 player.Enabled = true;
                 _gameStats.ResetScore();
             };
@@ -250,7 +247,7 @@ namespace Blazeroids.Web.Game.Scenes
                 collisionService.Add(bbox);
 
                 var brain = asteroid.Components.Add<AsteroidBrain>();
-                brain.Canvas = _canvas;
+                brain.Display = this.Game.Display;
                 brain.OnDeath += o =>
                 {
                     _killedAsteroids++;
@@ -270,20 +267,20 @@ namespace Blazeroids.Web.Game.Scenes
                 transform.World.Reset();
                 transform.Local.Reset();
 
-                transform.Local.Position.X = MathUtils.Random.NextBool() ? 0 : _canvas.Width;
-                transform.Local.Position.Y = MathUtils.Random.NextBool() ? 0 : _canvas.Height;
+                transform.Local.Position.X = MathUtils.Random.NextBool() ? 0 : this.Game.Display.Size.Width;
+                transform.Local.Position.Y = MathUtils.Random.NextBool() ? 0 : this.Game.Display.Size.Height;
 
                 var brain = asteroid.Components.Get<AsteroidBrain>();
                 var dir = _player.Components.Get<TransformComponent>().Local.Position - transform.Local.Position;
                 brain.Direction = Vector2.Normalize(dir);
                 brain.Speed = (float)MathUtils.Random.NextDouble(0.15, 0.5);
 
-                //var w = (double)_canvas.Width;
+                //var w = (double)this.Game.Display.Size.Width;
                 //var rx = MathUtils.Random.NextDouble(0, .4, .6, 1);
                 //var tx = MathUtils.Normalize(rx, 0, 1, -1, 1);
                 //transform.Local.Position.X = (float)(tx * w / 2.5 + w / 2);
 
-                //var h = (double)_canvas.Height;
+                //var h = (double)this.Game.Display.Size.Height;
                 //var ry = MathUtils.Random.NextDouble(0, .35, .65, 1);
                 //var ty = MathUtils.Normalize(ry, 0, 1, -1, 1);
                 //transform.Local.Position.Y = (float)(ty * h / 2.5 + h / 2);

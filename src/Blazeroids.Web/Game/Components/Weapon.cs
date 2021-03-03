@@ -14,7 +14,7 @@ namespace Blazeroids.Web.Game.Components
         {
         }
 
-        protected override void OnStart()
+        protected override void Init()
         {
             _ownerTransform = Owner.Components.Get<TransformComponent>();
         }

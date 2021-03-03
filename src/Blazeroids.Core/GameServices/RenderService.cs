@@ -16,7 +16,9 @@ namespace Blazeroids.Core.GameServices
             _context = context;
         }
 
-        public ValueTask Step()
+        public ValueTask Step() => ValueTask.CompletedTask;
+
+        public ValueTask Render()
         {
             var layers = BuildLayers();
             return RenderFrame(layers);
@@ -51,7 +53,7 @@ namespace Blazeroids.Core.GameServices
                 return;
 
             foreach (var component in node.Components)
-                if (component is IRenderable renderable && component.Started)
+                if (component is IRenderable renderable && component.Initialized)
                 {
                     if (!layers.ContainsKey(renderable.LayerIndex))
                         layers.Add(renderable.LayerIndex, new List<IRenderable>());

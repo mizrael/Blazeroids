@@ -15,7 +15,7 @@ namespace Blazeroids.Web.Game.Components
         public float RotationSpeed = (float)MathUtils.Random.NextDouble(-0.005, 0.005);
         public Vector2 Direction;
         public float Speed = (float)MathUtils.Random.NextDouble(0.15, 0.5);
-        public BECanvasComponent Canvas;
+        public Display Display;
 
         public event OnDeathHandler OnDeath;
         public delegate void OnDeathHandler(GameObject asteroid);
@@ -24,7 +24,7 @@ namespace Blazeroids.Web.Game.Components
         {
         }
 
-        protected override void OnStart()
+        protected override void Init()
         {
             _transform = Owner.Components.Get<TransformComponent>();
             _boundingBox = Owner.Components.Get<BoundingBoxComponent>();
@@ -38,15 +38,15 @@ namespace Blazeroids.Web.Game.Components
             };
         }
 
-        protected override void OnUpdate(GameContext game)
+        protected override void UpdateCore(GameContext game)
         {
             _transform.Local.Rotation += RotationSpeed * game.GameTime.ElapsedMilliseconds;
             _transform.Local.Position += Direction * Speed * game.GameTime.ElapsedMilliseconds;
 
             var isOutScreen = _transform.World.Position.X < 0 ||
                               _transform.World.Position.Y < 0 ||
-                              _transform.World.Position.X > this.Canvas.Width ||
-                              _transform.World.Position.Y > this.Canvas.Height;
+                              _transform.World.Position.X > this.Display.Size.Width ||
+                              _transform.World.Position.Y > this.Display.Size.Height;
             if (isOutScreen)
                 this.Owner.Enabled = false;
         }

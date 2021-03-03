@@ -12,14 +12,14 @@ namespace Blazeroids.Core.Components
         {
         }
 
-        protected override void OnStart()
+        protected override void Init()
         {
             _transform = Owner.Components.Get<TransformComponent>();
         }
 
         public async ValueTask Render(GameContext game, Canvas2DContext context)
         {
-            if (!this.Owner.Enabled || !this.Started)
+            if (!this.Owner.Enabled || !this.Initialized)
                 return;
 
             var oldPattern = context.FillStyle;

@@ -10,12 +10,10 @@ namespace Blazeroids.Web.Game
 
     public class BlazeroidsGame : GameContext
     {
-        private readonly BECanvasComponent _canvas;
         private readonly IAssetsResolver _assetsResolver;
 
-        public BlazeroidsGame(BECanvasComponent canvas, IAssetsResolver assetsResolver)
+        public BlazeroidsGame(BECanvasComponent canvas, IAssetsResolver assetsResolver) : base(canvas)
         {
-            _canvas = canvas;
             _assetsResolver = assetsResolver;
         }
 
@@ -26,11 +24,7 @@ namespace Blazeroids.Web.Game
             var collisionService = new CollisionService(this, new Size(64, 64));
             this.AddService(collisionService);
 
-            var context = await _canvas.CreateCanvas2DAsync();
-            var renderService = new RenderService(this, context);
-            this.AddService(renderService);
-
-            var gameScene = new Scenes.GameScene(this, _canvas, _assetsResolver);
+            var gameScene = new Scenes.GameScene(this, _assetsResolver);
             this.SceneManager.AddScene("game", gameScene);
             await this.SceneManager.SetCurrentScene("game");
         }

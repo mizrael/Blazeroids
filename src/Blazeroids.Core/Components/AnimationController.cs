@@ -22,7 +22,7 @@ namespace Blazeroids.Core.Components
             _boolParams = new Dictionary<string, bool>();
         }
 
-        protected override void OnStart()
+        protected override void Init()
         {
             _animationComponent = Owner.Components.Get<AnimatedSpriteRenderComponent>();
         }
@@ -34,7 +34,7 @@ namespace Blazeroids.Core.Components
             _states.Add(state);
         }
 
-        protected override void OnUpdate(GameContext game)
+        protected override void UpdateCore(GameContext game)
         {
             if (null == _currentState)
             {

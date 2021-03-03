@@ -11,7 +11,7 @@ namespace Blazeroids.Core.Components
         {
         }
 
-        protected override void OnUpdate(GameContext game)
+        protected override void UpdateCore(GameContext game)
         {
             _world.Clone(_local);
             

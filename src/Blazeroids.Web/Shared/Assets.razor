@@ -57,23 +57,24 @@
     protected override async Task OnInitializedAsync()
     {
         var items = await Http.GetFromJsonAsync<AssetMeta[]>(this.Source);
-
-        foreach (var item in items)
-        {
-            IAsset asset = null;
-            if (item.Type == "sprite")
-                asset = await this.AssetsResolver.Load<Sprite>(item);
-            else if (item.Type == "spritesheet")
-                asset = await this.AssetsResolver.Load<SpriteSheet>(item);
-            else if (item.Type == "animations")
-                asset = await this.AssetsResolver.Load<AnimationCollection>(item);
-            else if (item.Type == "sound")
-                asset = await this.AssetsResolver.Load<Core.Assets.Sound>(item);
-
-            if (null != asset)
-                _items.Add(new (asset, item));
-        }
+        var tasks = items.Select(Load).ToArray();
+        await Task.WhenAll(tasks);
 
         await this.OnLoaded.InvokeAsync(this);
+    }
+
+    private async Task Load(AssetMeta item){
+        IAsset asset = null;
+        if (item.Type == "sprite")
+            asset = await this.AssetsResolver.Load<Sprite>(item);
+        else if (item.Type == "spritesheet")
+            asset = await this.AssetsResolver.Load<SpriteSheet>(item);
+        else if (item.Type == "animations")
+            asset = await this.AssetsResolver.Load<AnimationCollection>(item);
+        else if (item.Type == "sound")
+            asset = await this.AssetsResolver.Load<Core.Assets.Sound>(item);
+
+        if (null != asset)
+            _items.Add(new (asset, item));
     }
 }

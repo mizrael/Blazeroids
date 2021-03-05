@@ -1,6 +1,5 @@
 ﻿@if(this.Source is not null){
-    <audio id="@this.Source.Name">
-        <source src="@this.Source.Url" type="@this.Source.Type" /> 
+    <audio id="@this.Source.Name" preload="none" src="@this.Source.Url" type="@this.Source.Type" >
     </audio>
 }
 

@@ -16,10 +16,10 @@
     }
   },
   {
-    "path": "assets/sounds/POL-reckless-getaway-short.wav",
+    "path": "assets/sounds/main-theme.ogg",
     "type": "sound",
     "properties": {
-      "type": "audio/wav",
+      "type": "audio/ogg",
       "name": "main-theme"
     }
   }

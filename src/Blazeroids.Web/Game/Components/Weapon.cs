@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Blazeroids.Core;
 using Blazeroids.Core.Components;
+using Blazeroids.Web.Game.GameServices;
 
 namespace Blazeroids.Web.Game.Components
 {
@@ -31,8 +32,9 @@ namespace Blazeroids.Web.Game.Components
             var bulletTransform = bullet.Components.Get<TransformComponent>();
 
             bulletTransform.Local.Rotation = _ownerTransform.Local.Rotation;
-
             bulletTransform.Local.Position = GetBulletStartPosition();
+
+            game.GetService<SoundService>().Play(Sounds.Laser);
         }
 
         private Vector2 GetBulletStartPosition() => _ownerTransform.World.Position +

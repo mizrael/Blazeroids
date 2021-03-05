@@ -207,6 +207,8 @@ namespace Blazeroids.Web.Game.Scenes
             {
                 var renderer = explosion.Components.Add<AnimatedSpriteRenderComponent>();
                 renderer.Reset();
+
+                this.Game.GetService<SoundService>().Play(Sounds.Explosion);
             });
 
             spawner.Components.Add<TransformComponent>();

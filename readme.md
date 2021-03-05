@@ -8,3 +8,4 @@ Deployment is handled via Github Actions using the approach outlined [here](http
 Assets were downloaded from https://www.kenney.nl/assets/space-shooter-redux .
 
 Music: https://www.youtube.com/watch?v=AcWH1abWs4o
+Additional sound effects from https://www.zapsplat.com

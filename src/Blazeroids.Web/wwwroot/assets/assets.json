@@ -22,5 +22,21 @@
       "type": "audio/ogg",
       "name": "main-theme"
     }
+  },
+  {
+    "path": "assets/sounds/explosion.ogg",
+    "type": "sound",
+    "properties": {
+      "type": "audio/ogg",
+      "name": "explosion"
+    }
+  },
+  {
+    "path": "assets/sounds/laser.ogg",
+    "type": "sound",
+    "properties": {
+      "type": "audio/ogg",
+      "name": "laser"
+    }
   }
 ]

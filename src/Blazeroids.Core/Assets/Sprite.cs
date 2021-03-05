@@ -14,6 +14,5 @@ namespace Blazeroids.Core.Assets
         }
 
         public string ImagePath { get; }
-       
     }
 }

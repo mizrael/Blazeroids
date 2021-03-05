@@ -9,7 +9,7 @@ namespace Blazeroids.Core.Assets.Loaders
     public class SpriteAssetLoader : IAssetLoader<Sprite>
     {
         private readonly HttpClient _httpClient;
-        
+
         public SpriteAssetLoader(HttpClient httpClient)
         {
             _httpClient = httpClient;
@@ -21,8 +21,8 @@ namespace Blazeroids.Core.Assets.Loaders
                 throw new ArgumentNullException(nameof(meta));
             if (null == meta.Properties)
                 throw new ArgumentException("properties missing", nameof(AssetMeta.Properties));
-            
-            if(!meta.Properties.TryGetValue("width", out var tmp) ||
+
+            if (!meta.Properties.TryGetValue("width", out var tmp) ||
                !int.TryParse(tmp.ToString(), out var width))
                 throw new ArgumentException("invalid width", nameof(AssetMeta.Properties));
 

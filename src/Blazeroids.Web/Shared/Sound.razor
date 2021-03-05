@@ -1,0 +1,10 @@
+﻿@if(this.Source is not null){
+    <audio id="@this.Source.Name">
+        <source src="@this.Source.Url" type="@this.Source.Type" /> 
+    </audio>
+}
+
+@code{
+    [Parameter]
+    public Blazeroids.Core.Assets.Sound Source { get; set; }
+}

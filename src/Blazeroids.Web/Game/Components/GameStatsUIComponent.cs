@@ -18,6 +18,7 @@ namespace Blazeroids.Web.Game.Components
         public async ValueTask Render(GameContext game, Canvas2DContext context)
         {
             await context.SetFillStyleAsync("#fff").ConfigureAwait(false);
+            await context.SetTextAlignAsync(TextAlign.Left).ConfigureAwait(false);
             await context.SetFontAsync("18px verdana").ConfigureAwait(false);
             
             var hiScore = Math.Max(_score, _maxScore);

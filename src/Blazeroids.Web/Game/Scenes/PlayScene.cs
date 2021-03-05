@@ -8,6 +8,7 @@ using Blazeroids.Core.Utils;
 using Blazor.Extensions.Canvas.Canvas2D;
 using System.Threading.Tasks;
 using System;
+using Blazeroids.Web.Game.GameServices;
 
 namespace Blazeroids.Web.Game.Scenes
 {
@@ -293,10 +294,15 @@ namespace Blazeroids.Web.Game.Scenes
 
         #endregion "private methods"
 
-        public override ValueTask Enter(){            
+        public override async ValueTask Enter()
+        {
             var collisionService = this.Game.GetService<CollisionService>();
             this.InitSceneGraph(collisionService);
-            return base.Enter();
+
+            var soundService = this.Game.GetService<SoundService>();
+            await soundService.Play(Sounds.MainTheme, loop: true);
+
+            await base.Enter();
         }
 
         protected override ValueTask Update()

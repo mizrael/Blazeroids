@@ -5,6 +5,7 @@
 @using Blazeroids.Core.GameServices
 @using Blazeroids.Web.Game
 @using Blazor.Extensions
+@using Game.GameServices
 
 @inject IJSRuntime JsRuntime
 @inject IAssetsResolver AssetsResolver
@@ -13,13 +14,6 @@
 
 <div id="canvasContainer" style="position: fixed; opacity: 1; background-color: black; width: 100%; height: 100%">
     <BECanvas @ref="_canvas"></BECanvas>
-</div>
-
-<div id="sounds">
-    <audio id="sounds-main-theme" autoplay loop>
-        <source src="/assets/sounds/POL-reckless-getaway-short.wav" type="audio/wav" /> 
-    </audio>
-    <button id="toggle-audio">sound</button>
 </div>
 
 @code
@@ -47,15 +41,17 @@
 
     private async ValueTask InitGame()
     {
-        var canvasMeta = await JsRuntime.InvokeAsync<CanvasMeta>("initCanvas", DotNetObjectReference.Create(this));
+        var instance = DotNetObjectReference.Create(this);
+        var canvasMeta = await JsRuntime.InvokeAsync<CanvasMeta>("initGame", instance);
 
         _canvas.Height = canvasMeta.Height;
         _canvas.Width = canvasMeta.Width;
 
-        _game = new BlazeroidsGame(_canvas, AssetsResolver);
+        var soundService = new SoundService(JsRuntime);
+        _game = new BlazeroidsGame(_canvas, AssetsResolver, soundService);
 
         // this will make sure that the viewport is correctly initialized
-        await JsRuntime.InvokeAsync<object>("gameWindowResize", DotNetObjectReference.Create(this));
+        await JsRuntime.InvokeAsync<object>("onResize");
     }
 
     [JSInvokable]

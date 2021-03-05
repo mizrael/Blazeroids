@@ -22,11 +22,12 @@ namespace Blazeroids.Web.Game.Components
         {
             var fps = 1000f / game.GameTime.ElapsedMilliseconds;
 
-            await context.SetFillStyleAsync("green");
-            await context.FillRectAsync(10, 50, 300, _height);
+            await context.SetFillStyleAsync("green").ConfigureAwait(false);
+            await context.FillRectAsync(10, 50, 300, _height).ConfigureAwait(false);
 
-            await context.SetFillStyleAsync("#fff");
-            await context.SetFontAsync("18px verdana");
+            await context.SetTextAlignAsync(TextAlign.Left).ConfigureAwait(false);
+            await context.SetFillStyleAsync("#fff").ConfigureAwait(false);
+            await context.SetFontAsync("18px verdana").ConfigureAwait(false);
             
             y = startY;
 

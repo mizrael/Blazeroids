@@ -53,7 +53,7 @@
             game.instance.invokeMethodAsync('GameLoop');
         }
 
-        function onResize() {
+        window.onResize = function () {
             if (!window.game.canvas)
                 return;
 
@@ -63,28 +63,35 @@
             game.instance.invokeMethodAsync('OnResize', game.canvas.width, game.canvas.height);
         }
 
-        function initSounds() {
-            const playBtn = document.getElementById('toggle-audio');
-            playBtn.addEventListener('click', () => {
-                const audio = document.getElementById('sounds-main-theme');
-                audio.load();
-                audio.play().catch(err => {
-                    console.log(err);
-                });
-            });
+        window.playSound = function (name, loop) {
+            //TODO: caching
+           // const audio = document.getElementById(name);
+            const audio = window.game.sounds[name];
+            audio.loop = loop;
+            audio.load();
+            audio.play();
         }
 
-        window.gameWindowResize = (instance) => {
-            onResize();
-        };
-
-        window.initCanvas = (instance) => {
-            const canvasContainer = document.getElementById('canvasContainer'),
-                canvases = canvasContainer.getElementsByTagName('canvas') || [];
-            window.game = {
-                instance: instance,
-                canvas: canvases.length ? canvases[0] : null
+        window.initGame = (instance) => {
+            const loadSounds = () =>{
+                const sounds = [...document.getElementsByTagName("audio") || []],
+                    results = [];
+                sounds.forEach(sound =>{
+                    results[sound.id] = sound;
+                });
+                return results;
             };
+
+            const canvasContainer = document.getElementById('canvasContainer'),
+                canvases = canvasContainer.getElementsByTagName('canvas') || [],
+                game = {
+                    instance: instance,
+                    canvas: canvases.length ? canvases[0] : null,
+                    sounds: loadSounds()
+                };
+            window.game = game;
+
+            
 
             if (window.game.canvas) {
                 window.game.canvas.onkeydown = (e) => {
@@ -104,8 +111,6 @@
             window.addEventListener("resize", onResize);
 
             window.requestAnimationFrame(gameLoop);
-
-            initSounds();
 
             return {
                 Width: window.game.canvas.width,

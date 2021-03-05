@@ -14,5 +14,13 @@
       "width": 256,
       "height": 256
     }
+  },
+  {
+    "path": "assets/sounds/POL-reckless-getaway-short.wav",
+    "type": "sound",
+    "properties": {
+      "type": "audio/wav",
+      "name": "main-theme"
+    }
   }
 ]

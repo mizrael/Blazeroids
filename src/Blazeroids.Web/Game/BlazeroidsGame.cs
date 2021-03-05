@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Blazeroids.Core;
 using Blazeroids.Core.Assets;
 using Blazeroids.Core.GameServices;
+using Blazeroids.Web.Game.GameServices;
 using Blazor.Extensions;
 
 namespace Blazeroids.Web.Game
@@ -12,9 +13,13 @@ namespace Blazeroids.Web.Game
     {
         private readonly IAssetsResolver _assetsResolver;
 
-        public BlazeroidsGame(BECanvasComponent canvas, IAssetsResolver assetsResolver) : base(canvas)
+        public BlazeroidsGame(BECanvasComponent canvas, 
+                              IAssetsResolver assetsResolver,
+                              ISoundService soundService) : base(canvas)
         {
             _assetsResolver = assetsResolver;
+
+            this.AddService(soundService);
         }
 
         protected override async ValueTask Init()

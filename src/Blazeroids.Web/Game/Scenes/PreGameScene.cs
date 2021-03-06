@@ -8,16 +8,20 @@ using System.Threading.Tasks;
 
 namespace Blazeroids.Web.Game.Scenes
 {
-    public class WelcomeScene : Scene
+    public class PreGameScene : Scene
     {
         private readonly IAssetsResolver _assetsResolver;
+        private readonly string _mainText;
 
-        public WelcomeScene(GameContext game, IAssetsResolver assetsResolver) : base(game)
+        public PreGameScene(GameContext game, 
+                            IAssetsResolver assetsResolver,
+                            string mainText) : base(game)
         {
             _assetsResolver = assetsResolver;
+            _mainText = mainText;
         }
 
-        public override ValueTask Enter()
+        protected override ValueTask EnterCore()
         {
             var ui = BuidUI();
             this.Root.AddChild(ui);            
@@ -25,15 +29,16 @@ namespace Blazeroids.Web.Game.Scenes
             var background = BuildBackground();
             this.Root.AddChild(background);
                         
-            return base.Enter();
+            return base.EnterCore();
         }
 
         private GameObject BuidUI()
         {
             var ui = new GameObject();            
             
-            var debugStats = ui.Components.Add<WelcomeUIComponent>();
-            debugStats.LayerIndex = (int)RenderLayers.UI;
+            var textComponent = ui.Components.Add<PreGameUIComponent>();
+            textComponent.LayerIndex = (int)RenderLayers.UI;
+            textComponent.MainText = _mainText;
 
             return ui;
         }

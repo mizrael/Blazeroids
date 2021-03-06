@@ -20,11 +20,23 @@ namespace Blazeroids.Core.GameServices
             await this.Update();
         }
 
-        public virtual ValueTask Enter() => ValueTask.CompletedTask;
-        public virtual ValueTask Exit() => ValueTask.CompletedTask;
+        public ValueTask Enter()
+        {
+            this.Root = new GameObject();
+            return this.EnterCore();
+        }
+        protected virtual ValueTask EnterCore() => ValueTask.CompletedTask;
+
+        public ValueTask Exit()
+        {
+            this.Root = null;
+            return this.ExitCore();
+        }
+
+        protected virtual ValueTask ExitCore() => ValueTask.CompletedTask;
         protected virtual ValueTask Update() => ValueTask.CompletedTask;
 
-        public GameObject Root { get; } = new();
+        public GameObject Root { get; private set; }
     }
 
     public class SceneManager : IGameService

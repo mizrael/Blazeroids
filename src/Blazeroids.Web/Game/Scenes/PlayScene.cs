@@ -148,20 +148,7 @@ namespace Blazeroids.Web.Game.Scenes
 
             brain.OnDeath += player =>
             {
-                var explosion = _explosionsSpawner.Spawn();
-                explosion.Enabled = true;
-                var explosionTransform = explosion.Components.Get<TransformComponent>();
-                explosionTransform.Local.Position = playerTransform.Local.Position;
-                explosionTransform.Local.Position.X -= sprite.Bounds.Width;
-                explosionTransform.Local.Position.Y -= sprite.Bounds.Height;
-
-                _asteroidSpawnRate = _startAsteroidSpawnRate;
-
-                brain.Stats = PlayerStats.Default();
-                playerTransform.Local.Position.X = this.Game.Display.Size.Width / 2;
-                playerTransform.Local.Position.Y = this.Game.Display.Size.Height / 2;
-                player.Enabled = true;
-                _gameStats.ResetScore();
+               this.Game.SceneManager.SetCurrentScene(SceneNames.GameOver);
             };
 
             return player;
@@ -296,7 +283,7 @@ namespace Blazeroids.Web.Game.Scenes
 
         #endregion "private methods"
 
-        public override async ValueTask Enter()
+        protected override async ValueTask EnterCore()
         {
             var collisionService = this.Game.GetService<CollisionService>();
             this.InitSceneGraph(collisionService);
@@ -304,7 +291,7 @@ namespace Blazeroids.Web.Game.Scenes
             var soundService = this.Game.GetService<SoundService>();
             await soundService.Play(Sounds.MainTheme, loop: true);
 
-            await base.Enter();
+            await base.EnterCore();
         }
 
         protected override ValueTask Update()

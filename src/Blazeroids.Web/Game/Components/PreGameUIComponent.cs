@@ -6,9 +6,9 @@ using Blazor.Extensions.Canvas.Canvas2D;
 
 namespace Blazeroids.Web.Game.Components
 {
-    public class WelcomeUIComponent : Component, IRenderable
+    public class PreGameUIComponent : Component, IRenderable
     {
-        private WelcomeUIComponent(GameObject owner) : base(owner)
+        private PreGameUIComponent(GameObject owner) : base(owner)
         {
         }
 
@@ -21,9 +21,9 @@ namespace Blazeroids.Web.Game.Components
             await context.SetFontAsync("40px verdana").ConfigureAwait(false);
             await context.SetTextAlignAsync(TextAlign.Center).ConfigureAwait(false);
 
-            await context.FillTextAsync("Blazeroids!", x, y).ConfigureAwait(false);          
+            await context.FillTextAsync(this.MainText, x, y).ConfigureAwait(false);
 
-            await context.SetFontAsync("28px verdana").ConfigureAwait(false);                                 
+            await context.SetFontAsync("28px verdana").ConfigureAwait(false);
             await context.FillTextAsync("press Enter to start", x, y + 40)
                         .ConfigureAwait(false);
         }
@@ -37,5 +37,7 @@ namespace Blazeroids.Web.Game.Components
         }
 
         public int LayerIndex { get; set; }
+
+        public string MainText { get; set; } = "Blazeroids!";
     }
 }

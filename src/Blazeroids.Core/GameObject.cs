@@ -52,6 +52,13 @@ namespace Blazeroids.Core
             _children.Add(child);
         }
 
+        public void RemoveChild(GameObject child){
+            if (!this.Equals(child.Parent))
+                return;
+            child.Parent = null;
+            _children.Remove(child);
+        }
+
         public async ValueTask Update(GameContext game)
         {
             if (!Enabled)

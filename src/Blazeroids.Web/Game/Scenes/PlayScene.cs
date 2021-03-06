@@ -148,7 +148,7 @@ namespace Blazeroids.Web.Game.Scenes
 
             brain.OnDeath += player =>
             {
-               this.Game.SceneManager.SetCurrentScene(SceneNames.GameOver);
+                this.Game.SceneManager.SetCurrentScene(SceneNames.GameOver);
             };
 
             return player;
@@ -219,6 +219,7 @@ namespace Blazeroids.Web.Game.Scenes
             int spriteIndex = 0;
 
             var spriteSheet = _assetsResolver.Get<SpriteSheet>("assets/sheet.json");
+            var powerupsFactory = new PowerupFactory(spriteSheet, collisionService);
 
             var spawner = new Spawner(() =>
             {
@@ -238,6 +239,7 @@ namespace Blazeroids.Web.Game.Scenes
 
                 var brain = asteroid.Components.Add<AsteroidBrain>();
                 brain.Display = this.Game.Display;
+
                 brain.OnDeath += o =>
                 {
                     _killedAsteroids++;
@@ -247,6 +249,16 @@ namespace Blazeroids.Web.Game.Scenes
                     var explosionTransform = explosion.Components.Get<TransformComponent>();
                     explosionTransform.Local.Clone(transform.Local);
                     explosionTransform.World.Clone(transform.Local);
+
+                    var canSpawnPowerup = MathUtils.Random.Next(10) < 2;
+                    if (canSpawnPowerup)
+                    {
+                        var powerup = powerupsFactory.Create();
+                        var powerupTransform = powerup.Components.Get<TransformComponent>();
+                        powerupTransform.Local.Clone(transform.Local);
+                        powerupTransform.Local.Rotation = 0;
+                        this.Root.AddChild(powerup);
+                    }
                 };
 
                 return asteroid;

@@ -30,7 +30,8 @@ namespace Blazeroids.Web.Game.Components
             _boundingBox = Owner.Components.Get<BoundingBoxComponent>();
             _boundingBox.OnCollision += (sender, collidedWith) =>
             {
-                if (collidedWith.Owner.Components.TryGet<AsteroidBrain>(out var _))
+                if (!collidedWith.Owner.Components.TryGet<PlayerBrain>(out var _) &&
+                    !collidedWith.Owner.Components.TryGet<BulletBrain>(out var _))
                     return;
 
                 this.Owner.Enabled = false;

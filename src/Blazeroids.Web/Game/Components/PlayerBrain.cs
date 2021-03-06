@@ -13,12 +13,17 @@ namespace Blazeroids.Web.Game.Components
         public int MaxHealth;
         public int Health;
 
+        public int ShieldMaxHealth;
+        public int ShieldHealth;
+
         public static PlayerStats Default() => new()
         {
             EnginePower = 2000f,
             RotationSpeed = 25f,
             Health = 10,
-            MaxHealth = 10
+            MaxHealth = 10,
+            ShieldMaxHealth = 3,
+            ShieldHealth = 3
         };
     }
 
@@ -49,7 +54,11 @@ namespace Blazeroids.Web.Game.Components
             {
                 if (collidedWith.Owner.Components.TryGet<AsteroidBrain>(out var _))
                 {
-                    this.Stats.Health--;
+                    if(this.Stats.ShieldHealth > 0)
+                        this.Stats.ShieldHealth--;
+                    else
+                        this.Stats.Health--;
+
                     if (0 == this.Stats.Health)
                     {
                         this.Owner.Enabled = false;

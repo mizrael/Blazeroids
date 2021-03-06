@@ -123,14 +123,13 @@ namespace Blazeroids.Web.Game.Scenes
         {
             var player = new GameObject();
 
-            var spriteSheet = _assetsResolver.Get<SpriteSheet>("assets/sheet.json");
-            var sprite = spriteSheet.Get("playerShip2_green.png");
-
             var playerTransform = player.Components.Add<TransformComponent>();
-
             playerTransform.Local.Position.X = this.Game.Display.Size.Width / 2;
             playerTransform.Local.Position.Y = this.Game.Display.Size.Height / 2;
 
+            var spriteSheet = _assetsResolver.Get<SpriteSheet>("assets/sheet.json");
+            
+            var sprite = spriteSheet.Get("playerShip2_green.png");
             var playerSpriteRenderer = player.Components.Add<SpriteRenderComponent>();
             playerSpriteRenderer.Sprite = sprite;
             playerSpriteRenderer.LayerIndex = (int)RenderLayers.Player;
@@ -149,6 +148,20 @@ namespace Blazeroids.Web.Game.Scenes
             brain.OnDeath += player =>
             {
                 this.Game.SceneManager.SetCurrentScene(SceneNames.GameOver);
+            };
+
+            var shield = new GameObject();
+            player.AddChild(shield);
+            var shieldTransform = shield.Components.Add<TransformComponent>();
+            var shieldRenderer = shield.Components.Add<SpriteRenderComponent>();
+            shieldRenderer.Sprite = spriteSheet.Get("shield3.png");
+            shieldRenderer.LayerIndex = (int)RenderLayers.Items;
+            var shieldBrain = shield.Components.Add<LambdaComponent>();
+            shieldBrain.OnUpdate = (_, game) => {
+                shieldRenderer.Hidden = (brain.Stats.ShieldHealth < 1);
+
+                shieldTransform.Local.Rotation = playerTransform.Local.Rotation;
+                return ValueTask.CompletedTask;
             };
 
             return player;

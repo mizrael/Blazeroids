@@ -20,7 +20,7 @@ namespace Blazeroids.Core.Components
 
         public async ValueTask Render(GameContext game, Canvas2DContext context)
         {
-            if (!this.Owner.Enabled)
+            if (!this.Owner.Enabled || this.Hidden)
                 return;
 
             await context.SaveAsync();
@@ -40,5 +40,6 @@ namespace Blazeroids.Core.Components
 
         public SpriteBase Sprite { get; set; }
         public int LayerIndex { get; set; }
+        public bool Hidden { get; set; }
     }
 }

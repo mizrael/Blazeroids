@@ -8,5 +8,7 @@ namespace Blazeroids.Core
         ValueTask Render(GameContext game, Canvas2DContext context);
         
         int LayerIndex { get; set; }
+
+        bool Hidden { get; set; }
     }
 }

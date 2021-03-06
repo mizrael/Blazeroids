@@ -37,6 +37,7 @@ namespace Blazeroids.Core.Components
 
         public SpriteBase Sprite { get; set; }
         public int LayerIndex { get; set; }
+        public bool Hidden { get; set; }
 
         public RepeatPattern RepeatPattern { get; set; } = RepeatPattern.NoRepeat;
     }

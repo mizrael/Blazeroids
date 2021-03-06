@@ -37,6 +37,7 @@ namespace Blazeroids.Web.Game.Components
         }
 
         public int LayerIndex { get; set; }
+        public bool Hidden { get; set; }
 
         public string MainText { get; set; } = "Blazeroids!";
     }

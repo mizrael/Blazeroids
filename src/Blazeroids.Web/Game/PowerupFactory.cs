@@ -4,6 +4,7 @@ using Blazeroids.Core;
 using Blazeroids.Core.Assets;
 using Blazeroids.Core.Components;
 using Blazeroids.Core.GameServices;
+using Blazeroids.Core.Utils;
 using Blazeroids.Web.Game.Components;
 
 namespace Blazeroids.Web.Game
@@ -21,10 +22,27 @@ namespace Blazeroids.Web.Game
 
         public GameObject Create()
         {
+            return MathUtils.Random.NextBool() ? CreateHealth() : CreateShield();
+        }
+
+        private GameObject CreateHealth()
+            => CreateBase("powerupGreen_bolt.png", playerBrain =>
+            {
+                playerBrain.Stats.Health = playerBrain.Stats.MaxHealth;
+            });
+
+        private GameObject CreateShield()
+            => CreateBase("powerupBlue_shield.png", playerBrain =>
+            {
+                playerBrain.Stats.ShieldHealth = playerBrain.Stats.ShieldMaxHealth;
+            });
+
+        private GameObject CreateBase(string spriteName, Action<PlayerBrain> onPlayerCollision)
+        {
             var powerup = new GameObject();
             var transform = powerup.Components.Add<TransformComponent>();
 
-            var sprite = _spriteSheet.Get("powerupGreen_shield.png");
+            var sprite = _spriteSheet.Get(spriteName);
             var spriteRenderer = powerup.Components.Add<SpriteRenderComponent>();
             spriteRenderer.Sprite = sprite;
             spriteRenderer.LayerIndex = (int)RenderLayers.Items;
@@ -37,13 +55,16 @@ namespace Blazeroids.Web.Game
             {
                 if (!with.Owner.Components.TryGet<PlayerBrain>(out var playerBrain))
                     return;
-                playerBrain.Stats.Health = playerBrain.Stats.MaxHealth;
+
                 powerup.Enabled = false;
                 powerup.Parent?.RemoveChild(powerup);
+
+                onPlayerCollision(playerBrain);
             };
 
             var lambdaComp = powerup.Components.Add<LambdaComponent>();
-            lambdaComp.OnUpdate = (_, game) =>{
+            lambdaComp.OnUpdate = (_, game) =>
+            {
                 var dt = (float)game.GameTime.TotalMilliseconds * 0.004f;
                 transform.Local.Position.Y += MathF.Sin(dt);
                 transform.Local.Position.X += MathF.Cos(dt);
@@ -53,5 +74,7 @@ namespace Blazeroids.Web.Game
 
             return powerup;
         }
+
+
     }
 }

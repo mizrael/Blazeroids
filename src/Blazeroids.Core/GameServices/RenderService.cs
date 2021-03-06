@@ -53,7 +53,9 @@ namespace Blazeroids.Core.GameServices
                 return;
 
             foreach (var component in node.Components)
-                if (component is IRenderable renderable && component.Initialized)
+                if (component is IRenderable renderable &&
+                    component.Initialized &&
+                    !renderable.Hidden)
                 {
                     if (!layers.ContainsKey(renderable.LayerIndex))
                         layers.Add(renderable.LayerIndex, new List<IRenderable>());

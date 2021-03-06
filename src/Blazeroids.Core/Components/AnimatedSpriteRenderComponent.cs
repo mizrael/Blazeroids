@@ -99,5 +99,6 @@ namespace Blazeroids.Core.Components
 
         public bool MirrorVertically { get; set; }
         public int LayerIndex { get; set; }
+        public bool Hidden { get; set; }
     }
 }

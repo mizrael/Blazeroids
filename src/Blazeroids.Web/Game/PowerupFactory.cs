@@ -62,10 +62,12 @@ namespace Blazeroids.Web.Game
                 onPlayerCollision(playerBrain);
             };
 
+            var offset = (float)MathUtils.Random.NextDouble(-5, 5);
+
             var lambdaComp = powerup.Components.Add<LambdaComponent>();
             lambdaComp.OnUpdate = (_, game) =>
             {
-                var dt = (float)game.GameTime.TotalMilliseconds * 0.004f;
+                float dt = (float)game.GameTime.TotalMilliseconds * 0.004f + offset;
                 transform.Local.Position.Y += MathF.Sin(dt);
                 transform.Local.Position.X += MathF.Cos(dt);
 

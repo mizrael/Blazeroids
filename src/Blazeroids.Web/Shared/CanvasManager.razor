@@ -1,0 +1,10 @@
+﻿@inherits Core.Web.Components.CanvasManagerBase
+
+<div class="canvases">
+    @foreach (var (name, options) in _names)
+    {
+        <div id="@(name)Container" class="canvasContainer" hidden="@options.Hidden">
+            <BECanvas @ref="_canvases[name]" />
+        </div>
+    }
+</div> 

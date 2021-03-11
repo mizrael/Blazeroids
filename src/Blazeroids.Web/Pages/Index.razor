@@ -12,46 +12,42 @@
 
 <Assets Source="assets/assets.json" OnLoaded="@OnAssetsLoaded" />
 
-<div id="canvasContainer" style="position: fixed; opacity: 1; background-color: black; width: 100%; height: 100%">
-    <BECanvas @ref="_canvas"></BECanvas>
-</div>
+@if(!_assetsLoaded){
+    <div class="preloading"><span>Loading assets...</span></div>
+}
+
+<CanvasManager @ref="_canvasManager" OnCanvasAdded="@OnCanvasAdded" />
 
 @code
 {
-    BECanvasComponent _canvas;
+    CanvasManager _canvasManager;
     GameContext _game;
     InputService _inputService;
 
     bool _assetsLoaded = false;
     bool _initialized = false;
 
-    protected void OnAssetsLoaded()
-    {
+    private async Task OnAssetsLoaded(){
         _assetsLoaded = true;
+        if(!_initialized){
+            await InitGame();       
+            _initialized = true;
+        }             
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (!_initialized && _assetsLoaded)
-        {
-            await InitGame();
-            _initialized = true;
-        }
+    private async Task OnCanvasAdded(){
+        await JsRuntime.InvokeAsync<object>("onResize");              
     }
 
     private async ValueTask InitGame()
     {
         var instance = DotNetObjectReference.Create(this);
-        var canvasMeta = await JsRuntime.InvokeAsync<CanvasMeta>("initGame", instance);
-
-        _canvas.Height = canvasMeta.Height;
-        _canvas.Width = canvasMeta.Width;
+        await JsRuntime.InvokeAsync<object>("initGame", instance);
 
         var soundService = new SoundService(JsRuntime);
-        _game = new BlazeroidsGame(_canvas, AssetsResolver, soundService);
+        _game = new BlazeroidsGame(_canvasManager, AssetsResolver, soundService);
 
-        // this will make sure that the viewport is correctly initialized
-        await JsRuntime.InvokeAsync<object>("onResize");
+        await JsRuntime.InvokeAsync<object>("startGame");       
     }
 
     [JSInvokable]
@@ -65,23 +61,21 @@
     }
 
     [JSInvokable]
-    public async ValueTask OnResize(int screenWidth, int screenHeight)
+    public void OnResize(int screenWidth, int screenHeight)
     {
         if (null == _game) return;
         _game.Display.Size = new Size(screenWidth, screenHeight);
     }
 
     [JSInvokable]
-    public async ValueTask OnKeyDown(int keyCode) =>
-        _inputService.SetKeyState((Keys)keyCode, ButtonState.States.Down);
+    public void OnKeyDown(int keyCode) =>
+        _inputService?.Keyboard.SetKeyState((Keys)keyCode, ButtonState.States.Down);
 
     [JSInvokable]
-    public async ValueTask OnKeyUp(int keyCode) =>
-        _inputService.SetKeyState((Keys)keyCode, ButtonState.States.Up);
+    public void OnKeyUp(int keyCode) =>
+        _inputService?.Keyboard.SetKeyState((Keys)keyCode, ButtonState.States.Up);
 
-    public class CanvasMeta
-    {
-        public int Width { get; set; }
-        public int Height { get; set; }
-    }
+    [JSInvokable]
+    public void OnMouseMove(int x, int y) =>
+        _inputService?.Mouse.SetPosition(x, y);
 }

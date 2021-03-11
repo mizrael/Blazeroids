@@ -321,8 +321,8 @@ namespace Blazeroids.Web.Game.Scenes
             var collisionService = this.Game.GetService<CollisionService>();
             this.InitSceneGraph(collisionService);
 
-            var soundService = this.Game.GetService<SoundService>();
-            await soundService.Play(Sounds.MainTheme, loop: true);
+           var soundService = this.Game.GetService<SoundService>();
+           await soundService.Play(Sounds.MainTheme, loop: true);
 
             await base.EnterCore();
         }

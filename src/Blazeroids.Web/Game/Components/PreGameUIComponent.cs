@@ -31,7 +31,7 @@ namespace Blazeroids.Web.Game.Components
         protected override async ValueTask UpdateCore(GameContext game)
         {
             var inputService = game.GetService<InputService>();
-            var canStart = (inputService.GetKeyState(Keys.Enter).State == ButtonState.States.Down);
+            var canStart = (inputService.Keyboard.GetKeyState(Keys.Enter).State == ButtonState.States.Down);
             if (canStart)
                 await game.SceneManager.SetCurrentScene(SceneNames.Play);
         }

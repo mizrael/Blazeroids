@@ -80,7 +80,7 @@ namespace Blazeroids.Web.Game.Components
 
         private void HandleShooting(GameContext game, InputService inputService)
         {
-            var isShooting = (inputService.GetKeyState(Keys.Space).State == ButtonState.States.Down);
+            var isShooting = (inputService.Keyboard.GetKeyState(Keys.Space).State == ButtonState.States.Down);
             if (isShooting)
             {
                 _weapon ??= Owner.Components.Get<Weapon>();
@@ -100,16 +100,16 @@ namespace Blazeroids.Web.Game.Components
             else if (_transform.World.Position.Y > game.Display.Size.Height + _spriteRender.Sprite.Bounds.Height)
                 _transform.Local.Position.Y = -_halfSize.Height;
 
-            if (inputService.GetKeyState(Keys.Right).State == ButtonState.States.Down)
+            if (inputService.Keyboard.GetKeyState(Keys.Right).State == ButtonState.States.Down)
                 _movingBody.RotationSpeed = this.Stats.RotationSpeed;
-            else if (inputService.GetKeyState(Keys.Left).State == ButtonState.States.Down)
+            else if (inputService.Keyboard.GetKeyState(Keys.Left).State == ButtonState.States.Down)
                 _movingBody.RotationSpeed = -this.Stats.RotationSpeed;
             else
                 _movingBody.RotationSpeed = 0f;
 
-            if (inputService.GetKeyState(Keys.Up).State == ButtonState.States.Down)
+            if (inputService.Keyboard.GetKeyState(Keys.Up).State == ButtonState.States.Down)
                 _movingBody.Thrust = this.Stats.EnginePower;
-            else if (inputService.GetKeyState(Keys.Down).State == ButtonState.States.Down)
+            else if (inputService.Keyboard.GetKeyState(Keys.Down).State == ButtonState.States.Down)
                 _movingBody.Thrust = -this.Stats.EnginePower;
             else
                 _movingBody.Thrust = 0f;

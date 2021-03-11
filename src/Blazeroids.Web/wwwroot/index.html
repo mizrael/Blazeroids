@@ -48,74 +48,59 @@
     <script src="_content/Blazor.Extensions.Canvas/blazor.extensions.canvas.js"></script>
 
     <script>
-        function gameLoop(timeStamp) {
-            window.requestAnimationFrame(gameLoop);
-            game.instance.invokeMethodAsync('GameLoop');
-        }
-
         window.onResize = function () {
-            if (!window.game.canvas)
-                return;
+            const canvases = [...document.getElementsByTagName('canvas') || []];
+            canvases.forEach(c => {
+                c.width = window.innerWidth;
+                c.height = window.innerHeight;
+            });
 
-            game.canvas.width = window.innerWidth;
-            game.canvas.height = window.innerHeight;
-
-            game.instance.invokeMethodAsync('OnResize', game.canvas.width, game.canvas.height);
+            game.instance.invokeMethodAsync('OnResize', window.innerWidth, window.innerHeight);
         }
 
         window.playSound = function (name, loop) {
-            //TODO: caching
-           // const audio = document.getElementById(name);
             const audio = window.game.sounds[name];
+            if(!audio) return;
             audio.loop = loop;
-            //audio.load();
             audio.play();
         }
 
         window.initGame = (instance) => {
-            const loadSounds = () =>{
+            const loadSounds = () => {
                 const sounds = [...document.getElementsByTagName("audio") || []],
                     results = [];
-                sounds.forEach(sound =>{
+                sounds.forEach(sound => {
                     results[sound.id] = sound;
                 });
                 return results;
             };
 
-            const canvasContainer = document.getElementById('canvasContainer'),
-                canvases = canvasContainer.getElementsByTagName('canvas') || [],
-                game = {
-                    instance: instance,
-                    canvas: canvases.length ? canvases[0] : null,
-                    sounds: loadSounds()
-                };
+            const game = {
+                instance: instance,
+                sounds: loadSounds()
+            };
             window.game = game;
 
-            
-
-            if (window.game.canvas) {
-                window.game.canvas.onkeydown = (e) => {
-                    game.instance.invokeMethodAsync('OnKeyDown', e.keyCode);
-                };
-                window.game.canvas.onkeyup = (e) => {
-                    game.instance.invokeMethodAsync('OnKeyUp', e.keyCode);
-                };
-                window.game.canvas.onblur = (e) => {
-                    window.game.canvas.focus();
-                };
-                window.game.canvas.tabIndex = 0;
-                window.game.canvas.focus();
-            }
-
-            onResize();
-            window.addEventListener("resize", onResize);
-
-            window.requestAnimationFrame(gameLoop);
-
-            return {
-                Width: window.game.canvas.width,
-                Height: window.game.canvas.height
+            window.onkeydown = (e) => {
+                game.instance.invokeMethodAsync('OnKeyDown', e.keyCode);
             };
+            window.onkeyup = (e) => {
+                game.instance.invokeMethodAsync('OnKeyUp', e.keyCode);
+            };
+            window.onmousemove = (e) => {
+                game.instance.invokeMethodAsync('OnMouseMove', e.offsetX, e.offsetY);
+            };
+
+            window.addEventListener("resize", onResize);
+        };
+
+        window.startGame = () => {
+            const gameLoop = (timeStamp) => {
+                window.requestAnimationFrame(gameLoop);
+                game.instance.invokeMethodAsync('GameLoop');
+            };
+            window.requestAnimationFrame(gameLoop);
+            onResize();
         };
     </script>
 </body>

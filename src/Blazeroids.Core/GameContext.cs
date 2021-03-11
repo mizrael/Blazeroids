@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Blazeroids.Core.GameServices;
+using Blazeroids.Core.Web.Components;
 using Blazor.Extensions;
 
 namespace Blazeroids.Core
@@ -14,11 +15,13 @@ namespace Blazeroids.Core
         private List<IGameService> _services = new();
 
         private RenderService _renderService;
-        private readonly BECanvasComponent _canvas;
 
-        protected GameContext(Blazor.Extensions.BECanvasComponent canvas)
+        protected GameContext(CanvasManagerBase canvasManager)
         {
-            _canvas = canvas ?? throw new ArgumentNullException(nameof(canvas));
+            this.Display = new Display(canvasManager);
+
+            this.SceneManager = new SceneManager(this);
+            this.AddService(this.SceneManager);
         }
 
         public T GetService<T>() where T : class, IGameService
@@ -28,7 +31,7 @@ namespace Blazeroids.Core
             return service as T;
         }
 
-        protected void AddService(IGameService service)
+        public void AddService(IGameService service)
         {
             if (service == null)
                 throw new ArgumentNullException(nameof(service));
@@ -43,7 +46,7 @@ namespace Blazeroids.Core
         {
             if (!_isInitialized)
             {
-                await this.InitServices();
+                await this.InitRenderer();
                 await this.Init();
 
                 this.GameTime.Start();
@@ -61,12 +64,11 @@ namespace Blazeroids.Core
             await _renderService.Render();
         }
 
-        private async ValueTask InitServices()
+        private async ValueTask InitRenderer()
         {
-            this.SceneManager = new SceneManager(this);
-            this.AddService(this.SceneManager);
-
-            var context = await _canvas.CreateCanvas2DAsync();
+            var canvas = await this.Display.CanvasManager.CreateCanvas("main");
+            
+            var context = await canvas.CreateCanvas2DAsync();
             _renderService = new RenderService(this, context);
             this.AddService(_renderService);
         }
@@ -75,9 +77,7 @@ namespace Blazeroids.Core
         protected virtual ValueTask Update() => ValueTask.CompletedTask;
 
         public GameTime GameTime { get; } = new();
-        public Display Display { get; } = new();
-
-        public SceneManager SceneManager { get; private set;}
-
+        public Display Display { get; }
+        public SceneManager SceneManager { get; private set; }
     }
 }

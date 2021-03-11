@@ -1,13 +1,23 @@
-﻿@using Microsoft.Extensions.Logging
-@using Blazeroids.Core.Assets
-@inject HttpClient Http
-@inject ILogger<Assets> Logger
-@inject IAssetsResolver AssetsResolver
+﻿@inject HttpClient Http
+@inject Core.Assets.IAssetsResolver AssetsResolver
 
 <div class="assets" hidden>
-    @foreach (var item in _items)
+    @foreach (var (asset, meta) in _items)
     {
-        @_renderers[item.Item1.GetType()](item.Item1, item.Item2)
+        switch(asset){
+            case Core.Assets.Sprite:
+                <Sprite Source="@(asset as Core.Assets.Sprite)" OnLoaded="@OnAssetLoaded" />
+                break;
+            case Core.Assets.SpriteSheet:
+                <SpriteSheet Source="@(asset as Core.Assets.SpriteSheet)" OnLoaded="@OnAssetLoaded" />
+                break;
+            case Core.Assets.AnimationCollection:
+                <Animations Source="@(asset as Core.Assets.AnimationCollection)" OnLoaded="@OnAssetLoaded" />
+                break;
+            case Core.Assets.Sound:
+                <Sound Source="@(asset as Core.Assets.Sound)" OnLoaded="@OnAssetLoaded" />
+                break;
+        }
     }
 </div>
 
@@ -18,63 +28,38 @@
     [Parameter]
     public EventCallback OnLoaded { get; set; }
 
-    private readonly List<(IAsset asset, AssetMeta data)> _items = new ();
+    private int _assetsToLoad;
 
-    private readonly Dictionary<Type, Func<IAsset, AssetMeta, RenderFragment>> _renderers = new Dictionary<Type, Func<IAsset, AssetMeta, RenderFragment>>()
-    {
-        {
-            typeof(Sprite), (a, d) => {
-                var sprite = a as Sprite;
-                return @<img name="@sprite.ElementRef.Id" @ref="sprite.ElementRef" src="@sprite.ImagePath" hidden />;
-            }
-        },
-        {
-            typeof(SpriteSheet), (a, d) =>
-            {
-                var spriteSheet = a as SpriteSheet;
-                
-                return @<img name="@spriteSheet.ElementRef.Id" @ref="spriteSheet.ElementRef" src="@spriteSheet.ImagePath" hidden />;
-            }
-        },
-        {
-            typeof(AnimationCollection), (a, d) =>
-            {
-                var animColl = a as AnimationCollection;
-
-                return @<Animations Source="@animColl" />;                 
-            }
-        },
-        {
-            typeof(Core.Assets.Sound), (a, d) =>
-            {
-                var sound = a as Core.Assets.Sound;
-
-                return @<Sound Source="@sound" />;                 
-            }
-        }
-    };
+    private readonly List<(Core.Assets.IAsset asset, Core.Assets.AssetMeta data)> _items = new ();
 
     protected override async Task OnInitializedAsync()
     {
-        var items = await Http.GetFromJsonAsync<AssetMeta[]>(this.Source);
-        var tasks = items.Select(Load).ToArray();
-        await Task.WhenAll(tasks);
+        var items = await Http.GetFromJsonAsync<Core.Assets.AssetMeta[]>(this.Source);
 
-        await this.OnLoaded.InvokeAsync(this);
+        _assetsToLoad = items.Length;
+
+        var tasks = items.Select(Load).ToArray();
+        await Task.WhenAll(tasks);        
     }
 
-    private async Task Load(AssetMeta item){
-        IAsset asset = null;
+    private async Task Load(Core.Assets.AssetMeta item){
+        Core.Assets.IAsset asset = null;
         if (item.Type == "sprite")
-            asset = await this.AssetsResolver.Load<Sprite>(item);
+            asset = await this.AssetsResolver.Load<Core.Assets.Sprite>(item);
         else if (item.Type == "spritesheet")
-            asset = await this.AssetsResolver.Load<SpriteSheet>(item);
+            asset = await this.AssetsResolver.Load<Core.Assets.SpriteSheet>(item);
         else if (item.Type == "animations")
-            asset = await this.AssetsResolver.Load<AnimationCollection>(item);
+            asset = await this.AssetsResolver.Load<Core.Assets.AnimationCollection>(item);
         else if (item.Type == "sound")
             asset = await this.AssetsResolver.Load<Core.Assets.Sound>(item);
 
         if (null != asset)
             _items.Add(new (asset, item));
+    }
+
+    private async Task OnAssetLoaded(){
+        _assetsToLoad--;
+        if(_assetsToLoad < 1)
+            await this.OnLoaded.InvokeAsync(this);
     }
 }

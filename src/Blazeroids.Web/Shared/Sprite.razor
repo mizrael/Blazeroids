@@ -1,0 +1,6 @@
+﻿@inherits BaseAsset<Core.Assets.Sprite>
+    
+@if(this.Source is not null){
+    <img name="@Source.ElementRef.Id" @ref="Source.ElementRef" 
+        src="@Source.ImagePath" hidden @onload="@OnLoaded" />;
+}

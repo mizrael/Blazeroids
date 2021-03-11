@@ -1,0 +1,9 @@
+﻿@typeparam TItem
+
+@code{
+    [Parameter]
+    public TItem Source { get; set; }
+
+    [Parameter]
+    public EventCallback OnLoaded { get; set; }
+}

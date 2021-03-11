@@ -1,9 +1,14 @@
-﻿@if(this.Source is not null){
-    <audio id="@this.Source.Name" preload="none" src="@this.Source.Url" type="@this.Source.Type" >
-    </audio>
+﻿@inherits BaseAsset<Core.Assets.Sound>
+    
+@if(this.Source is not null){
+    <audio id="@this.Source.Name" @onload="@OnLoaded"
+        preload="auto" src="@this.Source.Url" type="@this.Source.Type" >
+    </audio>    
 }
 
 @code{
-    [Parameter]
-    public Blazeroids.Core.Assets.Sound Source { get; set; }
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if(firstRender)
+            await this.OnLoaded.InvokeAsync();
+    }
 }

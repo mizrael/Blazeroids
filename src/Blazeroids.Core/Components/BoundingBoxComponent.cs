@@ -1,6 +1,5 @@
 using System.Drawing;
 using System.Threading.Tasks;
-using Blazor.Extensions.Canvas.Canvas2D;
 
 namespace Blazeroids.Core.Components
 {
@@ -44,20 +43,22 @@ namespace Blazeroids.Core.Components
                 OnPositionChanged?.Invoke(this);
         }
 
-        public async ValueTask Render(GameContext game, Canvas2DContext context)
+        public async ValueTask Render(GameContext game, Blazorex.IRenderContext context)
         {
             var tmpW = context.LineWidth;
             var tmpS = context.StrokeStyle;
 
-            await context.BeginPathAsync();
-            await context.SetStrokeStyleAsync("rgb(255,255,0)");
-            await context.SetLineWidthAsync(3);
-            await context.StrokeRectAsync(_bounds.X, _bounds.Y,
+            context.BeginPath();
+
+            context.StrokeStyle = "rgb(255,255,0)";
+            context.LineWidth = 3;
+
+            context.StrokeRect(_bounds.X, _bounds.Y,
                 _bounds.Width,
                 _bounds.Height);
 
-            await context.SetStrokeStyleAsync(tmpS);
-            await context.SetLineWidthAsync(tmpW);
+            context.StrokeStyle = tmpS;
+            context.LineWidth = tmpW;
         }
 
         public event OnPositionChangedHandler OnPositionChanged;

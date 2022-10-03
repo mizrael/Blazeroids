@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Blazeroids.Core.Assets;
-using Blazor.Extensions.Canvas.Canvas2D;
 
 namespace Blazeroids.Core.Components
 {
@@ -55,24 +54,24 @@ namespace Blazeroids.Core.Components
             }
         }
 
-        public async ValueTask Render(GameContext game, Canvas2DContext context)
+        public async ValueTask Render(GameContext game, Blazorex.IRenderContext context)
         {
             if (null == Animation || !this.Owner.Enabled)
                 return;
 
-            await context.SaveAsync();
+            context.Save();
 
-            await context.TranslateAsync(_transform.World.Position.X + (MirrorVertically ? Animation.FrameSize.Width : 0f), _transform.World.Position.Y);
-            await context.RotateAsync(_transform.World.Rotation);
-            await context.ScaleAsync(_transform.World.Scale.X * (MirrorVertically ? -1f : 1f), _transform.World.Scale.Y);
+            context.Translate(_transform.World.Position.X + (MirrorVertically ? Animation.FrameSize.Width : 0f), _transform.World.Position.Y);
+            context.Rotate(_transform.World.Rotation);
+            context.Scale(_transform.World.Scale.X * (MirrorVertically ? -1f : 1f), _transform.World.Scale.Y);
 
-            await context.DrawImageAsync(Animation.ImageRef,
+            context.DrawImage(Animation.ImageRef,
                 _currFramePosX, _currFramePosY,
                 Animation.FrameSize.Width, Animation.FrameSize.Height,
                 Animation.HalfFrameSize.Width, Animation.HalfFrameSize.Height,
                 -Animation.FrameSize.Width, -Animation.FrameSize.Height);
 
-            await context.RestoreAsync();
+            context.Restore();
         }
 
         public AnimationCollection.Animation Animation

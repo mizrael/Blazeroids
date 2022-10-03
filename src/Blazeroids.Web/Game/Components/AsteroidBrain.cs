@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Blazeroids.Core;
 using Blazeroids.Core.Components;
 using Blazeroids.Core.Utils;
-using Blazor.Extensions;
 
 namespace Blazeroids.Web.Game.Components
 {

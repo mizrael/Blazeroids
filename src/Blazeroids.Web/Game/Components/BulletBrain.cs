@@ -1,8 +1,6 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Blazeroids.Core;
 using Blazeroids.Core.Components;
-using Blazor.Extensions;
 
 namespace Blazeroids.Web.Game.Components
 {

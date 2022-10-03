@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using Blazeroids.Core;
 using Blazeroids.Core.Components;
-using Blazor.Extensions.Canvas.Canvas2D;
 
 namespace Blazeroids.Web.Game.Components
 {
@@ -18,13 +17,13 @@ namespace Blazeroids.Web.Game.Components
         {
         }
 
-        public async ValueTask Render(GameContext game, Canvas2DContext context)
+        public async ValueTask Render(GameContext game, Blazorex.IRenderContext context)
         {
             await RenderHealth(game, context);
             await RenderShield(game, context);
         }
 
-        private async Task RenderShield(GameContext game, Canvas2DContext context)
+        private async Task RenderShield(GameContext game, Blazorex.IRenderContext context)
         {
             float ratio = (float)this.PlayerBrain.Stats.ShieldHealth / this.PlayerBrain.Stats.ShieldMaxHealth;
             int width = (int)(ratio * _maxWidth);
@@ -32,11 +31,11 @@ namespace Blazeroids.Web.Game.Components
             int x = game.Display.Size.Width - width - _rightOffset;
             int y = game.Display.Size.Height - _maxHeight - _bottomOffset - _maxHeight - 5;
 
-            await context.SetFillStyleAsync(_shieldColor);
-            await context.FillRectAsync(x, y, width, _maxHeight);
+            context.FillStyle = _shieldColor;
+            context.FillRect(x, y, width, _maxHeight);
         }
 
-        private async Task RenderHealth(GameContext game, Canvas2DContext context)
+        private async Task RenderHealth(GameContext game, Blazorex.IRenderContext context)
         {
             float ratio = (float)this.PlayerBrain.Stats.Health / this.PlayerBrain.Stats.MaxHealth;
             int width = (int)(ratio * _maxWidth);
@@ -46,8 +45,8 @@ namespace Blazeroids.Web.Game.Components
 
             var color = ratio > .5 ? "green" : "red";
 
-            await context.SetFillStyleAsync(color);
-            await context.FillRectAsync(x, y, width, _maxHeight);
+            context.FillStyle = color;
+            context.FillRect(x, y, width, _maxHeight);
         }
 
         public PlayerBrain PlayerBrain { get; set; }

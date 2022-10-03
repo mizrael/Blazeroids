@@ -3,7 +3,7 @@ using Blazeroids.Core.Assets;
 using Blazeroids.Core.Components;
 using Blazeroids.Core.GameServices;
 using Blazeroids.Web.Game.Components;
-using Blazor.Extensions.Canvas.Canvas2D;
+using Blazorex;
 using System.Threading.Tasks;
 
 namespace Blazeroids.Web.Game.Scenes

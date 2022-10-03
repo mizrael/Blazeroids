@@ -1,16 +1,14 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Blazor.Extensions.Canvas.Canvas2D;
 
 namespace Blazeroids.Core.GameServices
 {
     public class RenderService : IGameService
     {
         private readonly GameContext _game;
-        private readonly Canvas2DContext _context;
+        private readonly Blazorex.IRenderContext _context;
 
-        public RenderService(GameContext game, Canvas2DContext context)
+        public RenderService(GameContext game, Blazorex.IRenderContext context)
         {
             _game = game;
             _context = context;
@@ -26,16 +24,11 @@ namespace Blazeroids.Core.GameServices
 
         private async ValueTask RenderFrame(SortedList<int, IList<IRenderable>> layers)
         {
-            await _context.ClearRectAsync(0, 0, _game.Display.Size.Width, _game.Display.Size.Height)
-                        .ConfigureAwait(false);
-
-            await _context.BeginBatchAsync().ConfigureAwait(false);
+            _context.ClearRect(0, 0, _game.Display.Size.Width, _game.Display.Size.Height);
 
             foreach (var layer in layers.Values)
                 foreach (var renderable in layer)
                     await renderable.Render(_game, _context).ConfigureAwait(false);
-
-            await _context.EndBatchAsync().ConfigureAwait(false);
         }
 
         private SortedList<int, IList<IRenderable>> BuildLayers()

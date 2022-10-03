@@ -2,8 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Blazeroids.Core.GameServices;
-using Blazeroids.Core.Web.Components;
-using Blazor.Extensions;
+using Blazorex;
 
 namespace Blazeroids.Core
 {
@@ -66,11 +65,18 @@ namespace Blazeroids.Core
 
         private async ValueTask InitRenderer()
         {
-            var canvas = await this.Display.CanvasManager.CreateCanvas("main");
-            
-            var context = await canvas.CreateCanvas2DAsync();
-            _renderService = new RenderService(this, context);
-            this.AddService(_renderService);
+            var canvasOptions = new CanvasCreationOptions()
+            {
+                Hidden = false,
+                Width = this.Display.Size.Width,
+                Heigth = this.Display.Size.Height,
+                OnCanvasReady = (context) =>
+                {
+                    _renderService = new RenderService(this, context);
+                    this.AddService(_renderService);
+                }
+            };
+            await this.Display.CanvasManager.CreateCanvas("main", canvasOptions);           
         }
 
         protected abstract ValueTask Init();

@@ -1,6 +1,6 @@
 using System;
 using System.Drawing;
-using Blazeroids.Core.Web.Components;
+using Blazorex;
 
 namespace Blazeroids.Core
 {

@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Blazeroids.Core;
 using Blazeroids.Core.Components;
 using Blazeroids.Core.GameServices;
-using Blazor.Extensions.Canvas.Canvas2D;
+
 
 namespace Blazeroids.Web.Game.Components
 {
@@ -12,20 +12,19 @@ namespace Blazeroids.Web.Game.Components
         {
         }
 
-        public async ValueTask Render(GameContext game, Canvas2DContext context)
+        public async ValueTask Render(GameContext game, Blazorex.IRenderContext context)
         {
-            var y = (double)game.Display.Size.Height / 2;
-            var x = (double)game.Display.Size.Width / 2;
+            var y = (float)game.Display.Size.Height / 2;
+            var x = (float)game.Display.Size.Width / 2;
 
-            await context.SetFillStyleAsync("#fff").ConfigureAwait(false);
-            await context.SetFontAsync("40px verdana").ConfigureAwait(false);
-            await context.SetTextAlignAsync(TextAlign.Center).ConfigureAwait(false);
+            context.FillStyle = "#fff";
+            context.Font = "40px verdana";
+            context.TextAlign = Blazorex.TextAlign.Center;
 
-            await context.FillTextAsync(this.MainText, x, y).ConfigureAwait(false);
+            context.FillText(this.MainText, x, y);
 
-            await context.SetFontAsync("28px verdana").ConfigureAwait(false);
-            await context.FillTextAsync("press Enter to start", x, y + 40)
-                        .ConfigureAwait(false);
+            context.Font = "28px verdana";
+            context.FillText("press Enter to start", x, y + 40);
         }
 
         protected override async ValueTask UpdateCore(GameContext game)

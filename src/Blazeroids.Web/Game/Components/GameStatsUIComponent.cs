@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using Blazeroids.Core;
 using Blazeroids.Core.Components;
-using Blazor.Extensions.Canvas.Canvas2D;
 
 namespace Blazeroids.Web.Game.Components
 {
@@ -15,18 +14,18 @@ namespace Blazeroids.Web.Game.Components
         {
         }
 
-        public async ValueTask Render(GameContext game, Canvas2DContext context)
+        public async ValueTask Render(GameContext game, Blazorex.IRenderContext context)
         {
-            await context.SetFillStyleAsync("#fff").ConfigureAwait(false);
-            await context.SetTextAlignAsync(TextAlign.Left).ConfigureAwait(false);
-            await context.SetFontAsync("18px verdana").ConfigureAwait(false);
+            context.FillStyle = "#fff";
+            context.TextAlign = Blazorex.TextAlign.Left;
+            context.Font = "18px verdana"; ;
             
             var hiScore = Math.Max(_score, _maxScore);
             var text = $"Score: {_score:###} Hi Score: {hiScore:###}";
-            var textSize = await context.MeasureTextAsync(text).ConfigureAwait(false);
+            var textSize = context.MeasureText(text);
             var x = game.Display.Size.Width - textSize.Width - 50;
             
-            await context.FillTextAsync(text, x, 50).ConfigureAwait(false);
+             context.FillText(text, x, 50);
         }
 
         public int LayerIndex { get; set; }

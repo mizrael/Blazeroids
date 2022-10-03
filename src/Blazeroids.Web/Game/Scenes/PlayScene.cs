@@ -5,10 +5,11 @@ using Blazeroids.Core.Components;
 using Blazeroids.Core.GameServices;
 using Blazeroids.Web.Game.Components;
 using Blazeroids.Core.Utils;
-using Blazor.Extensions.Canvas.Canvas2D;
+
 using System.Threading.Tasks;
 using System;
 using Blazeroids.Web.Game.GameServices;
+using Blazorex;
 
 namespace Blazeroids.Web.Game.Scenes
 {

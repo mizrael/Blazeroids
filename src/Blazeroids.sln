@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30523.141
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazeroids.Core", "Blazeroids.Core\Blazeroids.Core.csproj", "{FA6F8E0C-BDAC-43F1-89FD-728EEDE7B083}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazeroids.Core", "Blazeroids.Core\Blazeroids.Core.csproj", "{FA6F8E0C-BDAC-43F1-89FD-728EEDE7B083}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazeroids.Web", "Blazeroids.Web\Blazeroids.Web.csproj", "{E87C7C9B-F29F-4BF1-9ABF-E4560EF33B77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazeroids.Web", "Blazeroids.Web\Blazeroids.Web.csproj", "{E87C7C9B-F29F-4BF1-9ABF-E4560EF33B77}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

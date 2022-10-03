@@ -1,5 +1,5 @@
 # Description
-Blazeroids is a 2d space shooter implemented using Blazor and .NET 5.
+Blazeroids is a 2d space shooter implemented using Blazor and .NET 6. Canvas interop is handled using https://github.com/mizrael/Blazorex/
 
 You can see it in action here: https://mizrael.github.io/Blazeroids/
 

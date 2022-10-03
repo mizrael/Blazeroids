@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using Blazeroids.Core;
 using Blazeroids.Core.Assets;
 using Blazeroids.Core.GameServices;
-using Blazeroids.Core.Web.Components;
 using Blazeroids.Web.Game.GameServices;
+using Blazorex;
 
 namespace Blazeroids.Web.Game
 {

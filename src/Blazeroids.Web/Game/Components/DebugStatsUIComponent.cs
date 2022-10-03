@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Blazeroids.Core;
 using Blazeroids.Core.Components;
-using Blazor.Extensions.Canvas.Canvas2D;
+
 
 namespace Blazeroids.Web.Game.Components
 {
@@ -18,16 +18,16 @@ namespace Blazeroids.Web.Game.Components
         {
         }
 
-        public async ValueTask Render(GameContext game, Canvas2DContext context)
+        public async ValueTask Render(GameContext game, Blazorex.IRenderContext context)
         {
             var fps = 1000f / game.GameTime.ElapsedMilliseconds;
 
-            await context.SetFillStyleAsync("green").ConfigureAwait(false);
-            await context.FillRectAsync(10, 50, 300, _height).ConfigureAwait(false);
+            context.FillStyle = "green";
+            context.FillRect(10, 50, 300, _height);
 
-            await context.SetTextAlignAsync(TextAlign.Left).ConfigureAwait(false);
-            await context.SetFillStyleAsync("#fff").ConfigureAwait(false);
-            await context.SetFontAsync("18px verdana").ConfigureAwait(false);
+            context.TextAlign = Blazorex.TextAlign.Left;
+            context.FillStyle = "#fff";
+            context.Font = "18px verdana";
             
             y = startY;
 
@@ -42,10 +42,10 @@ namespace Blazeroids.Web.Game.Components
                 await WriteLine($"Bullets spawned: {BulletSpawner.Alive:###}", context);
         }
 
-        private async ValueTask WriteLine(string text, Canvas2DContext context)
+        private async ValueTask WriteLine(string text, Blazorex.IRenderContext context)
         {
             y += _lineHeight;
-            await context.FillTextAsync(text, x, y).ConfigureAwait(false);
+            context.FillText(text, x, y);
         }
 
         public Spawner BulletSpawner;

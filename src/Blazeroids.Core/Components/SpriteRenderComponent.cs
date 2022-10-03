@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Blazeroids.Core.Assets;
-using Blazor.Extensions.Canvas.Canvas2D;
 
 namespace Blazeroids.Core.Components
 {
@@ -18,24 +17,24 @@ namespace Blazeroids.Core.Components
             _transform = Owner.Components.Get<TransformComponent>();
         }
 
-        public async ValueTask Render(GameContext game, Canvas2DContext context)
+        public async ValueTask Render(GameContext game, Blazorex.IRenderContext context)
         {
             if (!this.Owner.Enabled || this.Hidden)
                 return;
 
-            await context.SaveAsync();
+            context.Save();
 
-            await context.TranslateAsync(_transform.World.Position.X, _transform.World.Position.Y);
-            await context.RotateAsync(_transform.World.Rotation);
-            await context.ScaleAsync(_transform.World.Scale.X, _transform.World.Scale.Y);
+            context.Translate(_transform.World.Position.X, _transform.World.Position.Y);
+            context.Rotate(_transform.World.Rotation);
+            context.Scale(_transform.World.Scale.X, _transform.World.Scale.Y);
 
-            await context.DrawImageAsync(Sprite.ElementRef,
+            context.DrawImage(Sprite.ElementRef,
                 Sprite.Bounds.X, Sprite.Bounds.Y,
                 Sprite.Bounds.Width, Sprite.Bounds.Height,
                 Sprite.Origin.X, Sprite.Origin.Y,
                 -Sprite.Bounds.Width, -Sprite.Bounds.Height);
 
-            await context.RestoreAsync();
+            context.Restore();
         }
 
         public SpriteBase Sprite { get; set; }

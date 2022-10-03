@@ -14,9 +14,7 @@ namespace Blazeroids.Core.GameServices
             _context = context;
         }
 
-        public ValueTask Step() => ValueTask.CompletedTask;
-
-        public ValueTask Render()
+        public ValueTask Step() 
         {
             var layers = BuildLayers();
             return RenderFrame(layers);

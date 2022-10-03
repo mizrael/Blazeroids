@@ -45,8 +45,8 @@
     </script>
     <!-- End Single Page Apps for GitHub Pages -->
 
-    <script src="_framework/blazor.webassembly.js"></script>    
-
+    <script src="_framework/blazor.webassembly.js"></script>
+    
     <script>
         window.onResize = function () {
             const canvases = [...document.getElementsByTagName('canvas') || []];
@@ -60,7 +60,7 @@
 
         window.playSound = function (name, loop) {
             const audio = window.game.sounds[name];
-            if(!audio) return;
+            if (!audio) return;
             audio.loop = loop;
             audio.play();
         }
@@ -81,26 +81,7 @@
             };
             window.game = game;
 
-            window.onkeydown = (e) => {
-                game.instance.invokeMethodAsync('OnKeyDown', e.keyCode);
-            };
-            window.onkeyup = (e) => {
-                game.instance.invokeMethodAsync('OnKeyUp', e.keyCode);
-            };
-            window.onmousemove = (e) => {
-                game.instance.invokeMethodAsync('OnMouseMove', e.offsetX, e.offsetY);
-            };
-
             window.addEventListener("resize", onResize);
-        };
-
-        window.startGame = () => {
-            const gameLoop = (timeStamp) => {
-                window.requestAnimationFrame(gameLoop);
-                game.instance.invokeMethodAsync('GameLoop');
-            };
-            window.requestAnimationFrame(gameLoop);
-            onResize();
         };
     </script>
 </body>

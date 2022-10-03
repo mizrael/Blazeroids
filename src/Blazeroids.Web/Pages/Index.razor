@@ -21,42 +21,32 @@
 {
     CanvasManager _canvasManager;
     GameContext _game;
-    InputService _inputService;
-
+    
     bool _assetsLoaded = false;
     bool _initialized = false;
 
-    private async Task OnAssetsLoaded(){
+    private async Task OnAssetsLoaded()
+    {
         _assetsLoaded = true;
         if(!_initialized){
-            await InitGame();       
+            await InitGame();
             _initialized = true;
-        }             
+        }
     }
 
-    private async Task OnCanvasAdded(){
-        await JsRuntime.InvokeAsync<object>("onResize");              
+    private async Task OnCanvasAdded()
+    {
+        await JsRuntime.InvokeAsync<object>("onResize");
     }
 
     private async ValueTask InitGame()
     {
         var instance = DotNetObjectReference.Create(this);
-        await JsRuntime.InvokeAsync<object>("initGame", instance);
+        await JsRuntime.InvokeVoidAsync("initGame", instance);
 
         var soundService = new SoundService(JsRuntime);
         _game = new BlazeroidsGame(_canvasManager, AssetsResolver, soundService);
-
-        await JsRuntime.InvokeAsync<object>("startGame");       
-    }
-
-    [JSInvokable]
-    public async ValueTask GameLoop()
-    {
-        if (null == _game)
-            return;
-        await _game.Step();
-
-        _inputService ??= _game.GetService<InputService>();
+        await _game.InitAsync();
     }
 
     [JSInvokable]
@@ -65,16 +55,4 @@
         if (null == _game) return;
         _game.Display.Size = new Size(screenWidth, screenHeight);
     }
-
-    [JSInvokable]
-    public void OnKeyDown(int keyCode) =>
-        _inputService?.Keyboard.SetKeyState((Keys)keyCode, ButtonState.States.Down);
-
-    [JSInvokable]
-    public void OnKeyUp(int keyCode) =>
-        _inputService?.Keyboard.SetKeyState((Keys)keyCode, ButtonState.States.Up);
-
-    [JSInvokable]
-    public void OnMouseMove(int x, int y) =>
-        _inputService?.Mouse.SetPosition(x, y);
 }

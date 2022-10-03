@@ -13,8 +13,6 @@ namespace Blazeroids.Core
         private Dictionary<Type, IGameService> _servicesMap = new();
         private List<IGameService> _services = new();
 
-        private RenderService _renderService;
-
         protected GameContext(CanvasManagerBase canvasManager)
         {
             this.Display = new Display(canvasManager);
@@ -41,46 +39,30 @@ namespace Blazeroids.Core
             _servicesMap[serviceType] = service;
         }
 
-        public async ValueTask Step()
+        public async ValueTask InitAsync()
+        {
+            await this.InitGameAsync();
+
+            this.GameTime.Start();
+
+            _isInitialized = true;
+        }
+
+        protected async ValueTask StepAsync()
         {
             if (!_isInitialized)
-            {
-                await this.InitRenderer();
-                await this.Init();
-
-                this.GameTime.Start();
-
-                _isInitialized = true;
-            }
+                return;
 
             this.GameTime.Step();
 
             foreach (var service in _services)
                 await service.Step();
 
-            await this.Update();
-
-            await _renderService.Render();
+            await this.UpdateAsync();
         }
 
-        private async ValueTask InitRenderer()
-        {
-            var canvasOptions = new CanvasCreationOptions()
-            {
-                Hidden = false,
-                Width = this.Display.Size.Width,
-                Heigth = this.Display.Size.Height,
-                OnCanvasReady = (context) =>
-                {
-                    _renderService = new RenderService(this, context);
-                    this.AddService(_renderService);
-                }
-            };
-            await this.Display.CanvasManager.CreateCanvas("main", canvasOptions);           
-        }
-
-        protected abstract ValueTask Init();
-        protected virtual ValueTask Update() => ValueTask.CompletedTask;
+        protected abstract ValueTask InitGameAsync();
+        protected virtual ValueTask UpdateAsync() => ValueTask.CompletedTask;
 
         public GameTime GameTime { get; } = new();
         public Display Display { get; }

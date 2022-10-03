@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Blazeroids.Core.Utils;
+using Blazorex;
 
 namespace Blazeroids.Core.GameServices
 {
@@ -48,17 +50,11 @@ namespace Blazeroids.Core.GameServices
     public class MouseState
     {
         private readonly IDictionary<MouseButtons, ButtonState> _buttonStates;
-        private int _x;
-        private int _y;
+        private MouseCoords _coords;
 
         public MouseState(){
              _buttonStates = EnumUtils.GetAllValues<MouseButtons>()
                 .ToDictionary(v => v, v => ButtonState.None);
-        }
-
-        public void SetPosition(int x, int y){
-            _x = x;
-            _y = y;
         }
 
         public void SetButtonState(MouseButtons button, ButtonState.States state)
@@ -69,8 +65,12 @@ namespace Blazeroids.Core.GameServices
 
         public ButtonState GetButtonState(MouseButtons button) => _buttonStates[button];
 
-        public int X => _x;
-        public int Y => _y;
+        public void SetPosition(MouseCoords coords)
+        {
+            _coords = coords;
+        }
+
+        public MouseCoords Coords => _coords;
     }
 
     public class KeyboardState

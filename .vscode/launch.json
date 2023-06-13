@@ -4,21 +4,31 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        // {
+        //     "name": "Launch game",
+        //     "type": "chrome",
+        //     "request": "launch",
+        //     "preLaunchTask": "build",
+        //     "cwd": "${workspaceFolder}/src/Blazeroids.Web",            
+        //     "serverReadyAction": {
+        //         "action": "openExternally",
+        //         "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+        //     },
+        //     "env": {
+        //         "ASPNETCORE_ENVIRONMENT": "Development"
+        //     }
+        // }
         {
             "name": "Launch game",
             "type": "blazorwasm",
-            "request": "launch",
             "preLaunchTask": "build",
-            "cwd": "${workspaceFolder}/src/Blazeroids.Web",            
-           
-            "serverReadyAction": {
-                "action": "openExternally",
-                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
-            },
+            "request": "launch",
+            "cwd": "${workspaceFolder}/src/Blazeroids.Web",
+            "url": "https://localhost:5001",
+            "browser": "edge",
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development"
             }
         }
-
     ]
 }

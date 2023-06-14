@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Blazeroids.Web
 {
+
     public class Program
     {
         public static async Task Main(string[] args)

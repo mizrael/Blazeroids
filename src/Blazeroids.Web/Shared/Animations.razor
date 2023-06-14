@@ -6,7 +6,7 @@
     @foreach(var animation in this.Source.Animations){
         <img hidden src="data:image/png;base64,@animation.ImageData" 
              @ref="animation.ImageRef" 
-             @onload="@OnImageLoaded"
+             onload="@OnImageLoaded"
              name="@animation.ImageRef.Id" 
              data-name="@animation.Name" />
     }
@@ -24,7 +24,6 @@
 
         if(_imagesToLoad < 1){
             await this.OnLoaded.InvokeAsync(this);
-        }
-            
+        }            
     }
 }

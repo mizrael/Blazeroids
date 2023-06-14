@@ -8,7 +8,6 @@ using Blazorex;
 
 namespace Blazeroids.Web.Game
 {
-
     public class BlazeroidsGame : GameContext
     {
         private readonly IAssetsResolver _assetsResolver;
@@ -30,10 +29,10 @@ namespace Blazeroids.Web.Game
             {
                 Hidden = false,
                 Width = this.Display.Size.Width,
-                Heigth = this.Display.Size.Height,
-                OnCanvasReady = async (context) =>
+                Height = this.Display.Size.Height,
+                OnCanvasReady = async (canvas) =>
                 {
-                    _renderService = new RenderService(this, context);
+                    _renderService = new RenderService(this, canvas.RenderContext);
                     this.AddService(_renderService);
 
                     _inputService = new InputService();
@@ -66,7 +65,7 @@ namespace Blazeroids.Web.Game
                 }
             };
 
-            await this.Display.CanvasManager.CreateCanvas("main", canvasOptions);           
+            this.Display.CanvasManager.CreateCanvas("main", canvasOptions);           
         }
     }
 }

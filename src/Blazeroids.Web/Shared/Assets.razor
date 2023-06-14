@@ -2,21 +2,25 @@
 @inject Core.Assets.IAssetsResolver AssetsResolver
 
 <div class="assets" hidden>
-    @foreach (var (asset, meta) in _items)
+    @if (_items is not null)
     {
-        switch(asset){
-            case Core.Assets.Sprite:
-                <Sprite Source="@(asset as Core.Assets.Sprite)" OnLoaded="@OnAssetLoaded" />
-                break;
-            case Core.Assets.SpriteSheet:
-                <SpriteSheet Source="@(asset as Core.Assets.SpriteSheet)" OnLoaded="@OnAssetLoaded" />
-                break;
-            case Core.Assets.AnimationCollection:
-                <Animations Source="@(asset as Core.Assets.AnimationCollection)" OnLoaded="@OnAssetLoaded" />
-                break;
-            case Core.Assets.Sound:
-                <Sound Source="@(asset as Core.Assets.Sound)" OnLoaded="@OnAssetLoaded" />
-                break;
+        foreach (var (asset, meta) in _items)
+        {
+            switch (asset)
+            {
+                case Core.Assets.Sprite sp:
+                    <Sprite Source="@sp" OnLoaded="@OnAssetLoaded" />
+                    break;
+                case Core.Assets.SpriteSheet sps:
+                    <SpriteSheet Source="@sps" OnLoaded="@OnAssetLoaded" />
+                    break;
+                case Core.Assets.AnimationCollection ac:
+                    <Animations Source="@ac" OnLoaded="@OnAssetLoaded" />
+                    break;
+                case Core.Assets.Sound s:
+                    <Sound Source="@s" OnLoaded="@OnAssetLoaded" />
+                    break;
+            }
         }
     }
 </div>
@@ -39,10 +43,11 @@
         _assetsToLoad = items.Length;
 
         var tasks = items.Select(Load).ToArray();
-        await Task.WhenAll(tasks);        
+        await Task.WhenAll(tasks);
     }
 
-    private async Task Load(Core.Assets.AssetMeta item){
+    private async Task Load(Core.Assets.AssetMeta item)
+    {
         Core.Assets.IAsset asset = null;
         if (item.Type == "sprite")
             asset = await this.AssetsResolver.Load<Core.Assets.Sprite>(item);
@@ -57,7 +62,8 @@
             _items.Add(new (asset, item));
     }
 
-    private async Task OnAssetLoaded(){
+    private async Task OnAssetLoaded()
+    {
         _assetsToLoad--;
         if(_assetsToLoad < 1)
             await this.OnLoaded.InvokeAsync(this);

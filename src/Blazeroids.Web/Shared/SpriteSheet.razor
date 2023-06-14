@@ -1,6 +1,6 @@
 ﻿@inherits BaseAsset<Core.Assets.SpriteSheet>
 
 @if(this.Source is not null){
-    <img name="@Source.ElementRef.Id" @onload="@OnLoaded"
+    <img name="@Source.ElementRef.Id" @onload="e => this.OnLoaded.InvokeAsync(this)"
         @ref="Source.ElementRef" src="@Source.ImagePath" hidden />
 }

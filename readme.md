@@ -9,3 +9,5 @@ Assets were downloaded from https://www.kenney.nl/assets/space-shooter-redux .
 
 Music: https://www.youtube.com/watch?v=AcWH1abWs4o
 Additional sound effects from https://www.zapsplat.com
+
+There's also an offline version based on [Monogame](https://monogame.net/), [check it out!](https://github.com/mizrael/Solo/tree/main/games/Monoroids)
